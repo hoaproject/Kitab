@@ -1,0 +1,35 @@
+{
+    "name"       : "hoa/kitab",
+    "description": "Kitab is a documentation generator application.",
+    "type"       : "library",
+    "keywords"   : ["library", "documentation", "generator"],
+    "homepage"   : "https://hoa-project.net/",
+    "license"    : "BSD-3-Clause",
+    "authors"    : [
+        {
+            "name" : "Ivan Enderlin",
+            "email": "ivan.enderlin@hoa-project.net"
+        }
+    ],
+    "require": {
+        "php"              : ">=7.1.0",
+        "hoa/console"      : "~3.0",
+        "hoa/dispatcher"   : "~1.0",
+        "hoa/exception"    : "~1.0",
+        "hoa/file"         : "~1.0",
+        "hoa/router"       : "~3.0",
+        "league/commonmark": "~0.15",
+        "nikic/php-parser" : "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kitab\\": "src/"
+        }
+    },
+    "bin"  : ["bin/kitab"],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.x-dev"
+        }
+    }
+}
