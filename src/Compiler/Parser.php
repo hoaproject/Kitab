@@ -78,10 +78,10 @@ class Parser
             );
         }
 
-        return $this->collectTokens($statements);
+        return $this->intoIntermediateRepresentation($statements);
     }
 
-    protected function collectTokens(array $statements): IntermediateRepresentation\File
+    protected function intoIntermediateRepresentation(array $statements): IntermediateRepresentation\File
     {
         $intoIR = new IntermediateRepresentation\Into();
 
