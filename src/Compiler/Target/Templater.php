@@ -34,38 +34,69 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler;
+namespace Kitab\Compiler\Target;
 
-use Kitab\Finder;
-use PhpParser\ParserFactory;
+use Hoa\Router\Router;
+use Hoa\Stream\IStream\Out;
+use Hoa\View\Viewable;
+use StdClass;
 
-class Compiler
+class Templater implements Viewable
 {
-    protected static $_parser = null;
+    protected $_out    = null;
+    protected $_data   = null;
+    protected $_router = null;
 
-    public function __construct()
-    {
-        if (null === self::$_parser) {
-            self::$_parser = new Parser();
-        }
-
-        return;
-    }
-
-    public function compile(Finder $finder, Target\Target $target)
-    {
-        $parser = self::getParser();
-
-        foreach ($finder as $file) {
-            $intermediateRepresentation = $parser->parse($file);
-            $target->compile($intermediateRepresentation);
-        }
+    public function __construct(Out $out, Router $router = null) {
+        $this->_out    = $out;
+        $this->_router = $router;
 
         return;
     }
 
-    protected function getParser(): Parser
+    public function getOutputStream(): Out
     {
-        return self::$_parser;
+        return $this->_out;
+    }
+
+    public function getData(): ?StdClass
+    {
+        return $this->_data;
+    }
+
+    public function render(string $template = null, StdClass $data = null)
+    {
+        if (empty($template)) {
+            return;
+        }
+
+        $this->_data = $data;
+        $router      = $this->getRouter();
+
+        ob_start();
+        require $template;
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        $this->getOutputStream()->writeAll($content);
+
+        return;
+    }
+
+    public function getRouter(): ?Router
+    {
+        return $this->_router;
+    }
+
+    public function import($template, $data = null)
+    {
+        $new = new static(
+            $this->getOutputStream(),
+            $this->getRouter(),
+            $data
+        );
+        $new->render($template);
+
+        return;
     }
 }

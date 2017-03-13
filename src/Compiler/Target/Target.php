@@ -36,7 +36,9 @@
 
 namespace Kitab\Compiler\Target;
 
+use Kitab\Compiler\IntermediateRepresentation\File;
+
 interface Target
 {
-    public function compile(): mixed;
+    public function compile(File $file);
 }

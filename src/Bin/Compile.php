@@ -38,6 +38,7 @@ namespace Kitab\Bin;
 
 use Hoa\Console;
 use Kitab\Compiler\Compiler;
+use Kitab\Compiler\Target\Html\Html;
 use Kitab\Finder;
 
 class Compile extends Console\Dispatcher\Kit
@@ -81,8 +82,10 @@ class Compile extends Console\Dispatcher\Kit
         $finder = new Finder();
         $finder->in($directoryToScan);
 
+        $target = new Html();
+
         $compiler = new Compiler();
-        $compiler->compile($finder);
+        $compiler->compile($finder, $target);
 
         return;
     }

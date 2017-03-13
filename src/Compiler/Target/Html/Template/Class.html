@@ -1,0 +1,10 @@
+<h1><?php echo $data->class->name ?></h1>
+
+<dl>
+  <?php foreach ($data->class->methods as $method): ?>
+    <dt>
+      <?php echo $method->name ?>
+    </dt>
+    <dd>...</dd>
+  <?php endforeach ?>
+</dl>

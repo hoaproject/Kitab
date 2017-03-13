@@ -34,38 +34,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler;
+namespace Kitab\Exception;
 
-use Kitab\Finder;
-use PhpParser\ParserFactory;
-
-class Compiler
+class TargetUnknownIntermediateRepresentation extends Exception
 {
-    protected static $_parser = null;
-
-    public function __construct()
-    {
-        if (null === self::$_parser) {
-            self::$_parser = new Parser();
-        }
-
-        return;
-    }
-
-    public function compile(Finder $finder, Target\Target $target)
-    {
-        $parser = self::getParser();
-
-        foreach ($finder as $file) {
-            $intermediateRepresentation = $parser->parse($file);
-            $target->compile($intermediateRepresentation);
-        }
-
-        return;
-    }
-
-    protected function getParser(): Parser
-    {
-        return self::$_parser;
-    }
 }

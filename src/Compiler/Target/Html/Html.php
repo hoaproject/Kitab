@@ -36,12 +36,49 @@
 
 namespace Kitab\Compiler\Target\Html;
 
+use Hoa\File\Write;
 use Kitab\Compiler\IntermediateRepresentation;
 use Kitab\Compiler\Target\Target;
+use Kitab\Compiler\Target\Templater;
+use Kitab\Exception;
+use StdClass;
 
 class Html implements Target
 {
-    public function compile(IntermediateRepresentation\File $file): mixed
+    protected $_view = null;
+
+    public function __construct()
     {
+        $this->_view = new Templater(new Write(1));
+
+        return;
+    }
+
+    public function compile(IntermediateRepresentation\File $file)
+    {
+        foreach ($file as $representation) {
+            if ($representation instanceof Intermediaterepresentation\Class_) {
+                $this->compileClass($representation);
+            } else {
+                throw new Exception\TargetUnknownIntermediateRepresentation(
+                    'Intermediate representation `%s` has not been handled.',
+                    0,
+                    get_class($representation)
+                );
+            }
+        }
+    }
+
+    protected function compileClass(Intermediaterepresentation\Class_ $class)
+    {
+        $data        = new StdClass();
+        $data->class = $class;
+
+        $this->_view->render(
+            __DIR__ . DS . 'Template' . DS . 'Class.html',
+            $data
+        );
+
+        return;
     }
 }
