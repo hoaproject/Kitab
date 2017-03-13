@@ -34,36 +34,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Visitor;
+namespace Kitab\Compiler\Tree;
 
-use Kitab\Compiler\Tree;
-use PhpParser\Node;
-use PhpParser\NodeVisitorAbstract;
-
-class DataCollector extends NodeVisitorAbstract
+class Class_
 {
-    protected $_data = [];
+    public $final         = false;
+    public $name;
+    public $parent        = null;
+    public $interfaces    = [];
+    public $attributes    = [];
+    public $methods       = [];
+    public $documentation = null;
 
-    public function enterNode(Node $node)
+    public function __construct(string $name)
     {
-        if ($node instanceof Node\Stmt\Class_) {
-            $classNode = $node;
-            $class     = new Tree\Class_($classNode->namespacedName->toString());
-
-            foreach ($node->getMethods() as $methodNode) {
-                $method = new Tree\Method($methodNode->name);
-
-                $class->methods[] = $method;
-            }
-
-            $this->_data[] = $class;
-        }
-
-        return;
-    }
-
-    public function getCollection(): array
-    {
-        return $this->_data;
+        $this->name = $name;
     }
 }

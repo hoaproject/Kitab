@@ -40,6 +40,7 @@ use Hoa\File;
 use Kitab\Exception;
 use PhpParser\Error;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 use PhpParser\ParserFactory;
 
 class Parser
@@ -55,6 +56,7 @@ class Parser
 
         if (null === self::$_phpTraverser) {
             self::$_phpTraverser = new NodeTraverser();
+            self::$_phpTraverser->addVisitor(new NodeVisitor\NameResolver());
         }
     }
 
