@@ -38,8 +38,14 @@ namespace Kitab;
 
 use Hoa\File;
 
+/**
+ * Custom finder that scans only PHP files.
+ */
 class Finder extends File\Finder
 {
+    /**
+     * Configure the finder.
+     */
     public function __construct()
     {
         parent::__construct();

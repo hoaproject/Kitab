@@ -34,38 +34,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler;
+namespace Kitab\Compiler\Target\Html;
 
-use Kitab\Finder;
-use PhpParser\ParserFactory;
+use Kitab\Compiler\IntermediateRepresentation;
+use Kitab\Compiler\Target\Target;
 
-class Compiler
+class Html implements Target
 {
-    protected static $_parser = null;
-
-    public function __construct()
+    public function compile(IntermediateRepresentation\File $file): mixed
     {
-        if (null === self::$_parser) {
-            self::$_parser = new Parser();
-        }
-
-        return;
-    }
-
-    public function compile(Finder $finder)
-    {
-        $parser = self::getParser();
-
-        foreach ($finder as $file) {
-            $ir = $parser->parse($file);
-            print_r($ir);
-        }
-
-        return;
-    }
-
-    protected function getParser(): Parser
-    {
-        return self::$_parser;
     }
 }

@@ -41,7 +41,12 @@ use PhpParser\NodeVisitorAbstract;
 
 class Into extends NodeVisitorAbstract
 {
-    protected $_data = [];
+    protected $_file = null;
+
+    public function __construct()
+    {
+        $this->_file = new File();
+    }
 
     public function enterNode(Node $node)
     {
@@ -56,14 +61,14 @@ class Into extends NodeVisitorAbstract
                 $class->methods[] = $method;
             }
 
-            $this->_data[] = $class;
+            $this->_file[] = $class;
         }
 
         return;
     }
 
-    public function collect(): array
+    public function collect(): File
     {
-        return $this->_data;
+        return $this->_file;
     }
 }

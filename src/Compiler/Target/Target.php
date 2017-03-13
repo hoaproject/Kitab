@@ -34,38 +34,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler;
+namespace Kitab\Compiler\Target;
 
-use Kitab\Finder;
-use PhpParser\ParserFactory;
-
-class Compiler
+interface Target
 {
-    protected static $_parser = null;
-
-    public function __construct()
-    {
-        if (null === self::$_parser) {
-            self::$_parser = new Parser();
-        }
-
-        return;
-    }
-
-    public function compile(Finder $finder)
-    {
-        $parser = self::getParser();
-
-        foreach ($finder as $file) {
-            $ir = $parser->parse($file);
-            print_r($ir);
-        }
-
-        return;
-    }
-
-    protected function getParser(): Parser
-    {
-        return self::$_parser;
-    }
+    public function compile(): mixed;
 }

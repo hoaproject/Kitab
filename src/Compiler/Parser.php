@@ -61,7 +61,7 @@ class Parser
         }
     }
 
-    public function parse(File\SplFileInfo $file): array
+    public function parse(File\SplFileInfo $file): IntermediateRepresentation\File
     {
         $phpParser = self::getPhpParser();
         $fileName  = $file->getPathName();
@@ -81,7 +81,7 @@ class Parser
         return $this->collectTokens($statements);
     }
 
-    protected function collectTokens(array $statements): array
+    protected function collectTokens(array $statements): IntermediateRepresentation\File
     {
         $intoIR = new IntermediateRepresentation\Into();
 
