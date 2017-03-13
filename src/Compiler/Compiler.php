@@ -57,7 +57,8 @@ class Compiler
         $parser = self::getParser();
 
         foreach ($finder as $file) {
-            $parser->parse($file);
+            $tree = $parser->parse($file);
+            print_r($tree);
         }
 
         return;

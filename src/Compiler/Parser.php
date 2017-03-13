@@ -42,6 +42,7 @@ use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\ParserFactory;
+use PhpParser\Parser\Multiple as ParserMultiple;
 
 class Parser
 {
@@ -60,7 +61,7 @@ class Parser
         }
     }
 
-    public function parse(File\SplFileInfo $file)
+    public function parse(File\SplFileInfo $file): array
     {
         $phpParser = self::getPhpParser();
         $fileName  = $file->getPathName();
@@ -77,31 +78,29 @@ class Parser
             );
         }
 
-        print_r($this->collectTokens($statements));
-
-        return;
+        return $this->collectTokens($statements);
     }
 
     protected function collectTokens(array $statements): array
     {
-        $dataCollector = new Visitor\DataCollector();
+        $intoIR = new IntermediateRepresentation\Into();
 
         $traverser = self::getTraverser();
-        $traverser->addVisitor($dataCollector);
+        $traverser->addVisitor($intoIR);
 
         $traverser->traverse($statements);
 
-        $traverser->removeVisitor($dataCollector);
+        $traverser->removeVisitor($intoIR);
 
-        return $dataCollector->getCollection();
+        return $intoIR->collect();
     }
 
-    protected static function getPhpParser()
+    protected static function getPhpParser(): ParserMultiple
     {
         return self::$_phpParser;
     }
 
-    protected static function getTraverser()
+    protected static function getTraverser(): NodeTraverser
     {
         return self::$_phpTraverser;
     }

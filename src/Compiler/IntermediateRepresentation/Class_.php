@@ -34,20 +34,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Tree;
+namespace Kitab\Compiler\IntermediateRepresentation;
 
-class Method
+class Class_
 {
-    const VISIBILITY_PUBLIC    = 0;
-    const VISIBILITY_PROTECTED = 1;
-    const VISIBILITY_PRIVATE   = 2;
-
-    public $visibility    = self::VISIBILITY_PUBLIC;
-    public $static        = false;
-    public $abstract      = false;
+    public $final         = false;
     public $name;
-    public $arguments     = [];
-    public $output        = null;
+    public $parent        = null;
+    public $interfaces    = [];
+    public $attributes    = [];
+    public $methods       = [];
     public $documentation = null;
 
     public function __construct(string $name)

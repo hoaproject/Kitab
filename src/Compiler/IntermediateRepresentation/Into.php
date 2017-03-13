@@ -34,20 +34,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Tree;
+namespace Kitab\Compiler\IntermediateRepresentation;
 
-class Class_
+use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
+
+class Into extends NodeVisitorAbstract
 {
-    public $final         = false;
-    public $name;
-    public $parent        = null;
-    public $interfaces    = [];
-    public $attributes    = [];
-    public $methods       = [];
-    public $documentation = null;
+    protected $_data = [];
 
-    public function __construct(string $name)
+    public function enterNode(Node $node)
     {
-        $this->name = $name;
+        if ($node instanceof Node\Stmt\Class_) {
+            $classNode = $node;
+            $class     = new Class_($classNode->namespacedName->toString());
+
+            foreach ($node->getMethods() as $methodNode) {
+                $method                = new Method($methodNode->name);
+                $method->documentation = $methodNode->getDocComment();
+
+                $class->methods[] = $method;
+            }
+
+            $this->_data[] = $class;
+        }
+
+        return;
+    }
+
+    public function collect(): array
+    {
+        return $this->_data;
     }
 }
