@@ -104,7 +104,6 @@ class Html implements Target
 
     public function assemble(array $symbols)
     {
-        print_r($symbols);
         return $this->_assemble($symbols, '');
     }
 
@@ -126,6 +125,26 @@ class Html implements Target
                 $data = new StdClass();
                 $data->namespace       = new StdClass();
                 $data->namespace->name = rtrim($nextAccumulator, '\\');
+
+                $data->namespace->namespaces = [];
+                $data->namespace->classes    = [];
+
+                foreach ($subSymbols as $subSymbolPrefix => $subSymbol) {
+                    if ('@' !== $subSymbolPrefix[0]) {
+                        $data->namespace->namespaces[] = $subSymbolPrefix;
+
+                        continue;
+                    }
+
+                    list($subSymbolType, $subSymbolName) = explode(':', $subSymbolPrefix);
+
+                    switch ($subSymbolType) {
+                        case '@class':
+                            $data->namespace->classes[] = $subSymbolName;
+
+                            break;
+                    }
+                }
 
                 $this->_view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
                 $this->_view->render(

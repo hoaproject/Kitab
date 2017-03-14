@@ -80,7 +80,7 @@ class Compiler
         foreach ($file as $item) {
             if ($item instanceof IntermediateRepresentation\Class_) {
                 $symbolParts      = explode('\\', $item->name);
-                $lastSymbolPart   = '@' . array_pop($symbolParts);
+                $lastSymbolPart   = '@class:' . array_pop($symbolParts);
                 $currentDimension = &$symbols;
 
                 foreach($symbolParts as $symbolPart) {

@@ -1,1 +1,27 @@
-<h1><?php echo $data->namespace->name ?></h1>
+<h1>Namespace <code><?php echo $data->namespace->name ?></code></h1>
+
+<?php if (0 < count($data->namespace->classes)): ?>
+    <h2 id="classes">Classes</h2>
+
+    <ul>
+        <?php foreach ($data->namespace->classes as $class): ?>
+            <li><code><?php echo $class ?></code></li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>
+
+<h2 id="interfaces">Interfaces</h2>
+
+<h2 id="traits">Traits</h2>
+
+<h2 id="functions">Functions</h2>
+
+<?php if (0 < count($data->namespace->namespaces)): ?>
+    <h2 id="namespaces">Namespaces</h2>
+
+    <ul>
+        <?php foreach ($data->namespace->namespaces as $namespace): ?>
+            <li><code><?php echo $namespace ?></code></li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>
