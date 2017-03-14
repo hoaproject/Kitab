@@ -112,13 +112,14 @@ class Html implements Target
         foreach ($symbols as $symbolPrefix => $subSymbols) {
             if ('@' !== $symbolPrefix[0]) {
                 $nextAccumulator = $accumulator . $symbolPrefix . '\\';
+                $namespaceName   = mb_strtolower(str_replace('\\', '/', $nextAccumulator));
 
                 $output =
                     'hoa://Kitab/Output/' .
                     $this->_router->unroute(
                         'namespace',
                         [
-                            'namespaceName' => mb_strtolower(str_replace('\\', '/', $nextAccumulator))
+                            'namespaceName' => $namespaceName
                         ]
                     );
 
@@ -131,7 +132,18 @@ class Html implements Target
 
                 foreach ($subSymbols as $subSymbolPrefix => $subSymbol) {
                     if ('@' !== $subSymbolPrefix[0]) {
-                        $data->namespace->namespaces[] = $subSymbolPrefix;
+                        $_namespace       = new StdClass();
+                        $_namespace->name = $subSymbolPrefix;
+                        $_namespace->url  =
+                            '.' .
+                            $this->_router->unroute(
+                                'namespace',
+                                [
+                                    'namespaceName' => $namespaceName . $subSymbolPrefix
+                                ]
+                            );
+
+                        $data->namespace->namespaces[] = $_namespace;
 
                         continue;
                     }
@@ -140,15 +152,32 @@ class Html implements Target
 
                     switch ($subSymbolType) {
                         case '@class':
-                            $data->namespace->classes[] = $subSymbolName;
+                            $_class       = new StdClass();
+                            $_class->name = $subSymbolName;
+                            $_class->url  =
+                                '.' .
+                                $this->_router->unroute(
+                                    'class',
+                                    [
+                                        'namespaceName' => rtrim($namespaceName, '/'),
+                                        'shortName'     => $subSymbolName
+                                    ]
+                                );
+
+                            $data->namespace->classes[] = $_class;
 
                             break;
                     }
                 }
 
+                $data->layout = new StdClass();
+                $data->layout->base   = './' . str_repeat('../', substr_count($nextAccumulator, '\\'));
+                $data->layout->title  = 'Foobar';
+                $data->layout->import = __DIR__ . DS . 'Template' . DS . 'Namespace.html';
+
                 $this->_view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
                 $this->_view->render(
-                    __DIR__ . DS . 'Template' . DS . 'Namespace.html',
+                    __DIR__ . DS . 'Template' . DS . 'Layout.html',
                     $data
                 );
 

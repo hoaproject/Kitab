@@ -5,7 +5,7 @@
 
     <ul>
         <?php foreach ($data->namespace->classes as $class): ?>
-            <li><code><?php echo $class ?></code></li>
+            <li><a href="<?php echo $class->url ?>"><code><?php echo $class->name ?></code></a></li>
         <?php endforeach ?>
     </ul>
 <?php endif ?>
@@ -21,7 +21,7 @@
 
     <ul>
         <?php foreach ($data->namespace->namespaces as $namespace): ?>
-            <li><code><?php echo $namespace ?></code></li>
+            <li><a href="<?php echo $namespace->url ?>"><code><?php echo $namespace->name ?></code></a></li>
         <?php endforeach ?>
     </ul>
 <?php endif ?>

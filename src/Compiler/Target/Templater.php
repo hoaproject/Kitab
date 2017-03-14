@@ -90,12 +90,9 @@ class Templater implements Viewable
 
     public function import($template, $data = null)
     {
-        $new = new static(
-            $this->getOutputStream(),
-            $this->getRouter(),
-            $data
-        );
-        $new->render($template);
+        $router = $this->getRouter();
+
+        require $template;
 
         return;
     }
