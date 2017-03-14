@@ -34,12 +34,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Target;
+namespace Kitab\Exception;
 
-use Kitab\Compiler\IntermediateRepresentation\File;
-
-interface Target
+class LinkerUnknownIntermediateRepresentation extends Exception
 {
-    public function compile(File $file);
-    public function assemble(array $symbols);
 }

@@ -37,6 +37,7 @@
 namespace Kitab\Compiler;
 
 use Kitab\Finder;
+use Kitab\Exception;
 use PhpParser\ParserFactory;
 
 class Compiler
@@ -54,12 +55,17 @@ class Compiler
 
     public function compile(Finder $finder, Target\Target $target)
     {
-        $parser = self::getParser();
+        $parser  = self::getParser();
+        $symbols = [];
 
         foreach ($finder as $file) {
             $intermediateRepresentation = $parser->parse($file);
             $target->compile($intermediateRepresentation);
+
+            $this->link($intermediateRepresentation, $symbols);
         }
+
+        $target->assemble($symbols);
 
         return;
     }
@@ -67,5 +73,33 @@ class Compiler
     protected function getParser(): Parser
     {
         return self::$_parser;
+    }
+
+    protected function link(IntermediateRepresentation\File $file, array &$symbols)
+    {
+        foreach ($file as $item) {
+            if ($item instanceof IntermediateRepresentation\Class_) {
+                $symbolParts      = explode('\\', $item->name);
+                $lastSymbolPart   = '@' . array_pop($symbolParts);
+                $currentDimension = &$symbols;
+
+                foreach($symbolParts as $symbolPart) {
+                    if (!isset($currentDimension[$symbolPart])) {
+                        $currentDimension[$symbolPart] = [];
+                    }
+
+                    $currentDimension = &$currentDimension[$symbolPart];
+                }
+
+                $currentDimension[$lastSymbolPart] = $item->name;
+            } else {
+                throw new Exception\LinkerUnknownIntermediateRepresentation(
+                    'Linker does not handle the following intermediate ' .
+                    'representation: `%s`.',
+                    0,
+                    get_class($item)
+                );
+            }
+        }
     }
 }

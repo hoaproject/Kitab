@@ -74,9 +74,6 @@ class Html implements Target
 
     protected function compileClass(Intermediaterepresentation\Class_ $class)
     {
-        $data        = new StdClass();
-        $data->class = $class;
-
         $output =
             'hoa://Kitab/Output/' .
             $this->_router->unroute(
@@ -93,6 +90,9 @@ class Html implements Target
             mkdir($outputDirectory, 0755, true);
         }
 
+        $data        = new StdClass();
+        $data->class = $class;
+
         $this->_view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
         $this->_view->render(
             __DIR__ . DS . 'Template' . DS . 'Class.html',
@@ -100,5 +100,44 @@ class Html implements Target
         );
 
         return;
+    }
+
+    public function assemble(array $symbols)
+    {
+        print_r($symbols);
+        return $this->_assemble($symbols, '');
+    }
+
+    protected function _assemble(array $symbols, string $accumulator)
+    {
+        foreach ($symbols as $symbolPrefix => $subSymbols) {
+            if ('@' !== $symbolPrefix[0]) {
+                $nextAccumulator = $accumulator . $symbolPrefix . '\\';
+
+                $output =
+                    'hoa://Kitab/Output/' .
+                    $this->_router->unroute(
+                        'namespace',
+                        [
+                            'namespaceName' => mb_strtolower(str_replace('\\', '/', $nextAccumulator))
+                        ]
+                    );
+
+                $data = new StdClass();
+                $data->namespace       = new StdClass();
+                $data->namespace->name = rtrim($nextAccumulator, '\\');
+
+                $this->_view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
+                $this->_view->render(
+                    __DIR__ . DS . 'Template' . DS . 'Namespace.html',
+                    $data
+                );
+
+                $this->_assemble(
+                    $subSymbols,
+                    $nextAccumulator
+                );
+            }
+        }
     }
 }

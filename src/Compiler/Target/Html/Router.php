@@ -47,6 +47,10 @@ class Router extends Http
 
         $this
             ->get(
+                'namespace',
+                '/(?<namespaceName>([^/]+)/index\.html'
+            )
+            ->get(
                 'class',
                 '/(?<namespaceName>([^/]+)/class\.(?<shortName>[^\.]+)\.html'
             );
