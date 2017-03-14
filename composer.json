@@ -17,6 +17,7 @@
         "hoa/dispatcher"   : "~1.0",
         "hoa/exception"    : "~1.0",
         "hoa/file"         : "~1.0",
+        "hoa/protocol"     : "~1.0",
         "hoa/router"       : "~3.0",
         "hoa/view"         : "~3.0",
         "league/commonmark": "~0.15",
@@ -25,7 +26,8 @@
     "autoload": {
         "psr-4": {
             "Kitab\\": "src/"
-        }
+        },
+        "files": ["src/Bootstrap.php"]
     },
     "bin"  : ["bin/kitab"],
     "extra": {

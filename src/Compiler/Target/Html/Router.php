@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 
 /**
@@ -35,9 +34,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once
-    dirname(__DIR__) . DIRECTORY_SEPARATOR .
-    'src' . DIRECTORY_SEPARATOR .
-    'Bootstrap.php';
+namespace Kitab\Compiler\Target\Html;
 
-Kitab\Bin\Bin::main();
+use Hoa\Protocol\Protocol;
+use Hoa\Router\Http;
+
+class Router extends Http
+{
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this
+            ->get(
+                'class',
+                '/(?<namespaceName>([^/]+)/class\.(?<shortName>[^\.]+)\.html'
+            );
+    }
+}

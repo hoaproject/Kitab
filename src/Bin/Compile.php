@@ -37,6 +37,7 @@
 namespace Kitab\Bin;
 
 use Hoa\Console;
+use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
 use Kitab\Compiler\Target\Html\Html;
 use Kitab\Finder;
@@ -49,8 +50,9 @@ class Compile extends Console\Dispatcher\Kit
      * @var array
      */
     protected $options = [
-        ['help', Console\GetOption::NO_ARGUMENT, 'h'],
-        ['help', Console\GetOption::NO_ARGUMENT, '?']
+        ['output-directory', Console\GetOption::REQUIRED_ARGUMENT, 'o'],
+        ['help',             Console\GetOption::NO_ARGUMENT,       'h'],
+        ['help',             Console\GetOption::NO_ARGUMENT,       '?']
     ];
 
 
@@ -62,10 +64,16 @@ class Compile extends Console\Dispatcher\Kit
      */
     public function run()
     {
+        $outputDirectory = null;
         $directoryToScan = getcwd();
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
+                case 'o':
+                    $outputDirectory = $v;
+
+                    break;
+
                 case 'h':
                 case '?':
                     return $this->usage();
@@ -75,6 +83,10 @@ class Compile extends Console\Dispatcher\Kit
 
                     break;
             }
+        }
+
+        if (null !== $outputDirectory) {
+            Protocol::getInstance()['Kitab']['Output']->setReach("\r" . $outputDirectory . DS);
         }
 
         $this->parser->listInputs($directoryToScan);

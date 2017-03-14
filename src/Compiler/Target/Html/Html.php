@@ -37,6 +37,7 @@
 namespace Kitab\Compiler\Target\Html;
 
 use Hoa\File\Write;
+use Hoa\Protocol\Protocol;
 use Kitab\Compiler\IntermediateRepresentation;
 use Kitab\Compiler\Target\Target;
 use Kitab\Compiler\Target\Templater;
@@ -47,9 +48,11 @@ class Html implements Target
 {
     protected $_view = null;
 
-    public function __construct()
+    public function __construct(Router $router = null)
     {
-        $this->_view = new Templater(new Write(1));
+        if (null === $router) {
+            $this->_router = new Router();
+        }
 
         return;
     }
@@ -74,6 +77,23 @@ class Html implements Target
         $data        = new StdClass();
         $data->class = $class;
 
+        $output =
+            'hoa://Kitab/Output/' .
+            $this->_router->unroute(
+                'class',
+                [
+                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $class->getNamespaceName())),
+                    'shortName'     => $class->getShortName()
+                ]
+            );
+
+        $outputDirectory = dirname($output);
+
+        if (false === is_dir($outputDirectory)) {
+            mkdir($outputDirectory, 0755, true);
+        }
+
+        $this->_view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
         $this->_view->render(
             __DIR__ . DS . 'Template' . DS . 'Class.html',
             $data

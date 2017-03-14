@@ -50,4 +50,27 @@ class Class_
     {
         $this->name = $name;
     }
+
+    public function getNamespaceName()
+    {
+        if (false === $pos = strrpos($this->name, '\\')) {
+            return '';
+        }
+
+        return substr($this->name, 0, $pos);
+    }
+
+    public function getShortName()
+    {
+        if (false === $pos = strrpos($this->name, '\\')) {
+            return '';
+        }
+
+        return substr($this->name, $pos + 1);
+    }
+
+    public function inNamespace()
+    {
+        return false !== strpos($this->name, '\\');
+    }
 }
