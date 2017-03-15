@@ -129,6 +129,25 @@ class Html implements Target
 
     protected function assembleNamespaces(array $symbols, string $accumulator)
     {
+        $siblingNamespaces = [];
+
+        foreach ($symbols as $symbolPrefix => $subSymbols) {
+            if ('@' !== $symbolPrefix[0]) {
+                $siblingNamespace       = new StdClass();
+                $siblingNamespace->name = $symbolPrefix;
+                $siblingNamespace->url  =
+                    '.' .
+                    $this->_router->unroute(
+                        'namespace',
+                        [
+                            'namespaceName' => mb_strtolower($accumulator . $symbolPrefix)
+                        ]
+                    );
+
+                $siblingNamespaces[] = $siblingNamespace;
+            }
+        }
+
         foreach ($symbols as $symbolPrefix => $subSymbols) {
             if ('@' !== $symbolPrefix[0]) {
                 $nextAccumulator = $accumulator . $symbolPrefix . '\\';
@@ -208,10 +227,13 @@ class Html implements Target
                     }
                 }
 
-                $data->layout = new StdClass();
+                $data->layout         = new StdClass();
                 $data->layout->base   = './' . str_repeat('../', substr_count($nextAccumulator, '\\'));
                 $data->layout->title  = 'Foobar';
                 $data->layout->import = __DIR__ . DS . 'Template' . DS . 'Namespace.html';
+
+                $data->navigation             = new StdClass();
+                $data->navigation->namespaces = $siblingNamespaces;
 
                 $this->_view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
                 $this->_view->render(

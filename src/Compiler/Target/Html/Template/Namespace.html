@@ -1,35 +1,55 @@
-<h1>Namespace <code><?php echo $data->namespace->name ?></code></h1>
+<aside>
+    <header>
+        <a href="./">
+            <img src="https://placehold.it/150x150" alt="Home" />
+        </a>
+    </header>
 
-<?php if (0 < count($data->namespace->classes)): ?>
-    <h2 id="classes">Classes</h2>
+    <nav>
+        <h1>Namespaces</h1>
 
-    <ul>
-        <?php foreach ($data->namespace->classes as $class): ?>
-            <li><a href="<?php echo $class->url ?>"><code><?php echo $class->name ?></code></a></li>
-        <?php endforeach ?>
-    </ul>
-<?php endif ?>
+        <ul class="list--flat">
+            <?php foreach ($data->navigation->namespaces as $namespace): ?>
+                <li><a href="<?php echo $namespace->url ?>"><code><?php echo $namespace->name ?></code></a></li>
+            <?php endforeach ?>
+        </ul>
+    </nav>
+</aside>
 
-<?php if (0 < count($data->namespace->interfaces)): ?>
-    <h2 id="interfaces">Interfaces</h2>
+<main>
+    <h1>Namespace <code><?php echo $data->namespace->name ?></code></h1>
 
-    <ul>
-        <?php foreach ($data->namespace->interfaces as $interface): ?>
-            <li><a href="<?php echo $interface->url ?>"><code><?php echo $interface->name ?></code></a></li>
-        <?php endforeach ?>
-    </ul>
-<?php endif ?>
+    <?php if (0 < count($data->namespace->classes)): ?>
+        <h2 id="classes">Classes</h2>
 
-<h2 id="traits">Traits</h2>
+        <ul>
+            <?php foreach ($data->namespace->classes as $class): ?>
+                <li><a href="<?php echo $class->url ?>"><code><?php echo $class->name ?></code></a></li>
+            <?php endforeach ?>
+        </ul>
+    <?php endif ?>
 
-<h2 id="functions">Functions</h2>
+    <?php if (0 < count($data->namespace->interfaces)): ?>
+        <h2 id="interfaces">Interfaces</h2>
 
-<?php if (0 < count($data->namespace->namespaces)): ?>
-    <h2 id="namespaces">Namespaces</h2>
+        <ul>
+            <?php foreach ($data->namespace->interfaces as $interface): ?>
+                <li><a href="<?php echo $interface->url ?>"><code><?php echo $interface->name ?></code></a></li>
+            <?php endforeach ?>
+        </ul>
+    <?php endif ?>
 
-    <ul>
-        <?php foreach ($data->namespace->namespaces as $namespace): ?>
-            <li><a href="<?php echo $namespace->url ?>"><code><?php echo $namespace->name ?></code></a></li>
-        <?php endforeach ?>
-    </ul>
-<?php endif ?>
+    <h2 id="traits">Traits</h2>
+
+    <h2 id="functions">Functions</h2>
+
+    <?php if (0 < count($data->namespace->namespaces)): ?>
+        <h2 id="namespaces">Namespaces</h2>
+
+        <ul>
+            <?php foreach ($data->namespace->namespaces as $namespace): ?>
+                <li><a href="<?php echo $namespace->url ?>"><code><?php echo $namespace->name ?></code></a></li>
+            <?php endforeach ?>
+        </ul>
+    <?php endif ?>
+</main>

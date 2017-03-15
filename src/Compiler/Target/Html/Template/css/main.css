@@ -1,0 +1,100 @@
+@font-face {
+    font-family: Text;
+    src: url('../font/Palladio.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Code;
+    src: url('../font/DroidSansMono.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Header;
+    src: url('../font/FiraSans.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+html {
+    font-size: 100%;
+}
+
+body {
+    color: rgb(0, 0, 0);
+    font: 1em/1.4 Text, URW Palladio L, serif;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: row;
+}
+
+aside {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+    max-width: 180px;
+    margin-right: 2rem;
+}
+
+header {
+    align-self: center;
+}
+
+nav {
+    margin-top: 1rem;
+}
+
+main {
+    flex: 2;
+}
+
+code {
+    font-family: Code, Droid Sans Mono, monospace;
+    padding: .1em .3em;
+    background: rgb(245, 245, 245);
+}
+
+h1, h2, h3, h4 {
+    font-family: Header, Fira Sans, sans-serif;
+    font-weight: 500;
+    margin-bottom: 1em;
+}
+
+h1, h2 {
+    border: rgb(221, 221, 221) solid;
+    border-width: 0 0 1px 0;
+}
+
+h2 {
+    color: rgb(56, 115, 173);
+}
+
+a {
+    color: rgb(56, 115, 173);
+    text-decoration: none;
+}
+
+    a:hover, a:focus {
+        text-decoration: underline;
+    }
+
+ul {
+    margin-bottom: 1.1em;
+    padding-left: 2.5em;
+}
+
+ul.list--flat {
+    list-style-type: none;
+    padding-left: 0;
+}
