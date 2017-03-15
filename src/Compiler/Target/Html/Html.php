@@ -36,7 +36,9 @@
 
 namespace Kitab\Compiler\Target\Html;
 
+use Hoa\File\Directory;
 use Hoa\File\Write;
+use Hoa\Stream\IStream\Touchable;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\IntermediateRepresentation;
 use Kitab\Compiler\Target\Target;
@@ -110,11 +112,7 @@ class Html implements Target
                 ]
             );
 
-        $outputDirectory = dirname($output);
-
-        if (false === is_dir($outputDirectory)) {
-            mkdir($outputDirectory, 0755, true);
-        }
+        Directory::create(dirname($output));
 
         $view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
         $view->render($templateFile, $data);
@@ -124,7 +122,10 @@ class Html implements Target
 
     public function assemble(array $symbols)
     {
-        return $this->assembleNamespaces($symbols, '');
+        $this->assembleNamespaces($symbols, '');
+        $this->assembleResources();
+
+        return;
     }
 
     protected function assembleNamespaces(array $symbols, string $accumulator)
@@ -247,5 +248,20 @@ class Html implements Target
                 );
             }
         }
+    }
+
+    protected function assembleResources()
+    {
+        $from = __DIR__ . DS . 'Template' . DS . 'css';
+        $to   = 'hoa://Kitab/Output/css';
+
+        (new Directory($from))->copy($to, Touchable::OVERWRITE);
+
+        $from = __DIR__ . DS . 'Template' . DS . 'font';
+        $to   = 'hoa://Kitab/Output/font';
+
+        (new Directory($from))->copy($to, Touchable::OVERWRITE);
+
+        return;
     }
 }

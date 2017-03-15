@@ -5,14 +5,13 @@ require_once
     'vendor' . DIRECTORY_SEPARATOR .
     'autoload.php';
 
+use Hoa\File\Directory;
 use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 
 $output = sys_get_temp_dir() . DS . 'Kitab' . DS;
 
-if (false === is_dir($output)) {
-    mkdir($output, 0755, true);
-}
+Directory::create($output);
 
 $protocol = Protocol::getInstance();
 $protocol[] = new Node(
