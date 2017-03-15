@@ -36,53 +36,15 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
-use PhpParser\Node;
-use PhpParser\NodeVisitorAbstract;
-
-class Into extends NodeVisitorAbstract
+class Interface_ extends Entity
 {
-    protected $_file = null;
+    const TYPE = 'interface';
 
-    public function __construct()
+    public $parents = [];
+    public $methods = [];
+
+    public function __construct(string $name)
     {
-        $this->_file = new File();
-    }
-
-    public function enterNode(Node $node)
-    {
-        if ($node instanceof Node\Stmt\Class_) {
-            $classNode      = $node;
-            $class          = new Class_($classNode->namespacedName->toString());
-            $class->methods = $this->intoMethods($node);
-
-            $this->_file[] = $class;
-        } elseif ($node instanceof Node\Stmt\Interface_) {
-            $interfaceNode      = $node;
-            $interface          = new Interface_($interfaceNode->namespacedName->toString());
-            $interface->methods = $this->intoMethods($node);
-
-            $this->_file[] = $interface;
-        }
-
-        return;
-    }
-
-    protected function intoMethods(Node\Stmt\ClassLike $node): array
-    {
-        $methods = [];
-
-        foreach ($node->getMethods() as $methodNode) {
-            $method                = new Method($methodNode->name);
-            $method->documentation = $methodNode->getDocComment();
-
-            $methods[] = $method;
-        }
-
-        return $methods;
-    }
-
-    public function collect(): File
-    {
-        return $this->_file;
+        $this->name = $name;
     }
 }

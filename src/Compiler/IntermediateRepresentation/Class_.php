@@ -36,41 +36,19 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
-class Class_
+class Class_ extends Entity
 {
-    public $final         = false;
-    public $name;
-    public $parent        = null;
-    public $interfaces    = [];
-    public $attributes    = [];
-    public $methods       = [];
-    public $documentation = null;
+    const TYPE = 'class';
+
+    public $final      = false;
+    public $abstract   = false;
+    public $parent     = null;
+    public $interfaces = [];
+    public $attributes = [];
+    public $methods    = [];
 
     public function __construct(string $name)
     {
         $this->name = $name;
-    }
-
-    public function getNamespaceName()
-    {
-        if (false === $pos = strrpos($this->name, '\\')) {
-            return '';
-        }
-
-        return substr($this->name, 0, $pos);
-    }
-
-    public function getShortName()
-    {
-        if (false === $pos = strrpos($this->name, '\\')) {
-            return '';
-        }
-
-        return substr($this->name, $pos + 1);
-    }
-
-    public function inNamespace()
-    {
-        return false !== strpos($this->name, '\\');
     }
 }

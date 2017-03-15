@@ -10,7 +10,15 @@
     </ul>
 <?php endif ?>
 
-<h2 id="interfaces">Interfaces</h2>
+<?php if (0 < count($data->namespace->interfaces)): ?>
+    <h2 id="interfaces">Interfaces</h2>
+
+    <ul>
+        <?php foreach ($data->namespace->interfaces as $interface): ?>
+            <li><a href="<?php echo $interface->url ?>"><code><?php echo $interface->name ?></code></a></li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>
 
 <h2 id="traits">Traits</h2>
 

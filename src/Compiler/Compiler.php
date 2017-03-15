@@ -78,9 +78,9 @@ class Compiler
     protected function link(IntermediateRepresentation\File $file, array &$symbols)
     {
         foreach ($file as $item) {
-            if ($item instanceof IntermediateRepresentation\Class_) {
+            if ($item instanceof IntermediateRepresentation\Entity) {
                 $symbolParts      = explode('\\', $item->name);
-                $lastSymbolPart   = '@class:' . array_pop($symbolParts);
+                $lastSymbolPart   = '@' . $item->getType() . ':' . array_pop($symbolParts);
                 $currentDimension = &$symbols;
 
                 foreach($symbolParts as $symbolPart) {

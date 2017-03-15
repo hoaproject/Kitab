@@ -53,6 +53,10 @@ class Router extends Http
             ->get(
                 'class',
                 '/(?<namespaceName>([^/]+)/class\.(?<shortName>[^\.]+)\.html'
+            )
+            ->get(
+                'interface',
+                '/(?<namespaceName>([^/]+)/interface\.(?<shortName>[^\.]+)\.html'
             );
     }
 }

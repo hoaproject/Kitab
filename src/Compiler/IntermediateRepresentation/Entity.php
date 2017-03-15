@@ -36,53 +36,38 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
-use PhpParser\Node;
-use PhpParser\NodeVisitorAbstract;
-
-class Into extends NodeVisitorAbstract
+abstract class Entity
 {
-    protected $_file = null;
+    const TYPE = '(unknown)';
 
-    public function __construct()
+    public $name;
+    public $documentation = null;
+
+    public function getNamespaceName()
     {
-        $this->_file = new File();
-    }
-
-    public function enterNode(Node $node)
-    {
-        if ($node instanceof Node\Stmt\Class_) {
-            $classNode      = $node;
-            $class          = new Class_($classNode->namespacedName->toString());
-            $class->methods = $this->intoMethods($node);
-
-            $this->_file[] = $class;
-        } elseif ($node instanceof Node\Stmt\Interface_) {
-            $interfaceNode      = $node;
-            $interface          = new Interface_($interfaceNode->namespacedName->toString());
-            $interface->methods = $this->intoMethods($node);
-
-            $this->_file[] = $interface;
+        if (false === $pos = strrpos($this->name, '\\')) {
+            return '';
         }
 
-        return;
+        return substr($this->name, 0, $pos);
     }
 
-    protected function intoMethods(Node\Stmt\ClassLike $node): array
+    public function getShortName()
     {
-        $methods = [];
-
-        foreach ($node->getMethods() as $methodNode) {
-            $method                = new Method($methodNode->name);
-            $method->documentation = $methodNode->getDocComment();
-
-            $methods[] = $method;
+        if (false === $pos = strrpos($this->name, '\\')) {
+            return '';
         }
 
-        return $methods;
+        return substr($this->name, $pos + 1);
     }
 
-    public function collect(): File
+    public function inNamespace()
     {
-        return $this->_file;
+        return false !== strpos($this->name, '\\');
+    }
+
+    public static function getType()
+    {
+        return static::TYPE;
     }
 }

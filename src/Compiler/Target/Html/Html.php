@@ -60,8 +60,10 @@ class Html implements Target
     public function compile(IntermediateRepresentation\File $file)
     {
         foreach ($file as $representation) {
-            if ($representation instanceof Intermediaterepresentation\Class_) {
+            if ($representation instanceof IntermediateRepresentation\Class_) {
                 $this->compileClass($representation);
+            } elseif ($representation instanceof IntermediateRepresentation\Interface_) {
+                $this->compileInterface($representation);
             } else {
                 throw new Exception\TargetUnknownIntermediateRepresentation(
                     'Intermediate representation `%s` has not been handled.',
@@ -74,13 +76,37 @@ class Html implements Target
 
     protected function compileClass(Intermediaterepresentation\Class_ $class)
     {
+        $data        = new StdClass();
+        $data->class = $class;
+
+        return $this->compileEntity(
+            $class,
+            __DIR__ . DS . 'Template' . DS . 'Class.html',
+            $data
+        );
+    }
+
+    protected function compileInterface(Intermediaterepresentation\Interface_ $interface)
+    {
+        $data            = new StdClass();
+        $data->interface = $interface;
+
+        return $this->compileEntity(
+            $interface,
+            __DIR__ . DS . 'Template' . DS . 'Interface.html',
+            $data
+        );
+    }
+
+    protected function compileEntity(Intermediaterepresentation\Entity $entity, string $templateFile, StdClass $data)
+    {
         $output =
             'hoa://Kitab/Output/' .
             $this->_router->unroute(
-                'class',
+                $entity->getType(),
                 [
-                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $class->getNamespaceName())),
-                    'shortName'     => $class->getShortName()
+                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $entity->getNamespaceName())),
+                    'shortName'     => $entity->getShortName()
                 ]
             );
 
@@ -90,24 +116,18 @@ class Html implements Target
             mkdir($outputDirectory, 0755, true);
         }
 
-        $data        = new StdClass();
-        $data->class = $class;
-
-        $this->_view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
-        $this->_view->render(
-            __DIR__ . DS . 'Template' . DS . 'Class.html',
-            $data
-        );
+        $view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
+        $view->render($templateFile, $data);
 
         return;
     }
 
     public function assemble(array $symbols)
     {
-        return $this->_assemble($symbols, '');
+        return $this->assembleNamespaces($symbols, '');
     }
 
-    protected function _assemble(array $symbols, string $accumulator)
+    protected function assembleNamespaces(array $symbols, string $accumulator)
     {
         foreach ($symbols as $symbolPrefix => $subSymbols) {
             if ('@' !== $symbolPrefix[0]) {
@@ -129,6 +149,7 @@ class Html implements Target
 
                 $data->namespace->namespaces = [];
                 $data->namespace->classes    = [];
+                $data->namespace->interfaces = [];
 
                 foreach ($subSymbols as $subSymbolPrefix => $subSymbol) {
                     if ('@' !== $subSymbolPrefix[0]) {
@@ -167,6 +188,23 @@ class Html implements Target
                             $data->namespace->classes[] = $_class;
 
                             break;
+
+                        case '@interface':
+                            $_interface       = new StdClass();
+                            $_interface->name = $subSymbolName;
+                            $_interface->url  =
+                                '.' .
+                                $this->_router->unroute(
+                                    'interface',
+                                    [
+                                        'namespaceName' => rtrim($namespaceName, '/'),
+                                        'shortName'     => $subSymbolName
+                                    ]
+                                );
+
+                            $data->namespace->interfaces[] = $_interface;
+
+                            break;
                     }
                 }
 
@@ -181,7 +219,7 @@ class Html implements Target
                     $data
                 );
 
-                $this->_assemble(
+                $this->assembleNamespaces(
                     $subSymbols,
                     $nextAccumulator
                 );

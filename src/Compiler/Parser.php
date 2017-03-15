@@ -87,9 +87,7 @@ class Parser
 
         $traverser = self::getTraverser();
         $traverser->addVisitor($intoIR);
-
         $traverser->traverse($statements);
-
         $traverser->removeVisitor($intoIR);
 
         return $intoIR->collect();

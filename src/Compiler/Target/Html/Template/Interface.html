@@ -1,0 +1,10 @@
+<h1>Interface <?php echo $data->interface->name ?></h1>
+
+<dl>
+  <?php foreach ($data->interface->methods as $method): ?>
+    <dt>
+      <?php echo $method->name ?>
+    </dt>
+    <dd>...</dd>
+  <?php endforeach ?>
+</dl>
