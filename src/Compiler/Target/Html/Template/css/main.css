@@ -65,6 +65,10 @@ nav {
         background: rgb(245, 245, 245);
     }
 
+        nav h1 a:first-of-type {
+            font-weight: bold;
+        }
+
     nav h2 {
         font-size: 1.2em;
     }
