@@ -54,6 +54,11 @@ nav {
     margin-top: 1rem;
 }
 
+    nav > ul > li {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
 main {
     flex: 2;
 }
