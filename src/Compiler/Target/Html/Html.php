@@ -83,7 +83,7 @@ class Html implements Target
 
         return $this->compileEntity(
             $class,
-            __DIR__ . DS . 'Template' . DS . 'Class.html',
+            __DIR__ . DS . 'Template' . DS . 'Partial' . DS . 'Class.html',
             $data
         );
     }
@@ -122,13 +122,14 @@ class Html implements Target
 
     public function assemble(array $symbols)
     {
-        $this->assembleNamespaces($symbols, '');
+        $this->assembleNamespaces($symbols);
+        $this->assembleEntities($symbols);
         $this->assembleResources();
 
         return;
     }
 
-    protected function assembleNamespaces(array $symbols, string $accumulator)
+    protected function assembleNamespaces(array $symbols, string $accumulator = '')
     {
         $siblingNamespaces = [];
 
@@ -231,7 +232,10 @@ class Html implements Target
                 $data->layout         = new StdClass();
                 $data->layout->base   = './' . str_repeat('../', substr_count($nextAccumulator, '\\'));
                 $data->layout->title  = 'Foobar';
-                $data->layout->import = __DIR__ . DS . 'Template' . DS . 'Namespace.html';
+
+                $data->layout->import       = new StdClass();
+                $data->layout->import->file = __DIR__ . DS . 'Template' . DS . 'Namespace.html';
+                $data->layout->import->data = $data;
 
                 $data->navigation             = new StdClass();
                 $data->navigation->namespaces = $siblingNamespaces;
@@ -245,6 +249,67 @@ class Html implements Target
                 $this->assembleNamespaces(
                     $subSymbols,
                     $nextAccumulator
+                );
+            }
+        }
+    }
+
+    protected function assembleEntities(array $symbols, string $accumulator = '')
+    {
+        foreach ($symbols as $symbolPrefix => $subSymbols) {
+            if ('@' !== $symbolPrefix[0]) {
+                $this->assembleEntities(
+                    $subSymbols,
+                    $accumulator . $symbolPrefix . '\\'
+                );
+            } else {
+                $symbolFullName = $subSymbols;
+
+                list($symbolType, $symbolName) = explode(':', $symbolPrefix);
+
+                switch ($symbolType) {
+                    case '@class':
+                        $output =
+                            'hoa://Kitab/Output/' .
+                            $this->_router->unroute(
+                                'class',
+                                [
+                                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $accumulator)),
+                                    'shortName'     => $symbolName
+                                ]
+                            );
+
+                        break;
+
+                    default:
+                        echo 'UNKNOWN SYMBOL TYPE', "\n";
+                        var_dump($symbolType);
+                        continue 2;
+                        exit;
+                }
+
+                $data = new StdClass();
+
+                $data->layout        = new StdClass();
+                $data->layout->base  = './' . str_repeat('../', substr_count($accumulator, '\\'));
+                $data->layout->title = 'Foobar';
+
+                $data->layout->import       = new StdClass();
+                $data->layout->import->file = __DIR__ . DS . 'Template' . DS . 'Class.html';
+
+                $data->layout->import->data         = new StdClass();
+                $data->layout->import->data->layout = new StdClass();
+
+                $data->layout->import->data->layout->import       = new StdClass();
+                $data->layout->import->data->layout->import->file = __DIR__ . DS . 'Template' . DS . 'Echo.html';
+
+                $data->layout->import->data->layout->import->data       = new StdClass();
+                $data->layout->import->data->layout->import->data->echo = file_get_contents($output);
+
+                $this->view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
+                $this->view->render(
+                    __DIR__ . DS . 'Template' . DS . 'Layout.html',
+                    $data
                 );
             }
         }

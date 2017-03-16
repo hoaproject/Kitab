@@ -1,10 +1,15 @@
-<h1>Class <?php echo $data->class->name ?></h1>
+<aside>
+    <header>
+        <a href="./">
+            <img src="https://placehold.it/150x150" alt="Home" />
+        </a>
+    </header>
 
-<dl>
-  <?php foreach ($data->class->methods as $method): ?>
-    <dt>
-      <?php echo $method->name ?>
-    </dt>
-    <dd>...</dd>
-  <?php endforeach ?>
-</dl>
+    <nav>
+        <h1>Foo</h1>
+    </nav>
+</aside>
+
+<main>
+    <?php $this->import($data->layout->import->file, $data->layout->import->data) ?>
+</main>
