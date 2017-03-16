@@ -461,7 +461,7 @@ class Html implements Target
         foreach ($parts as &$part) {
             $accumulator .= mb_strtolower($part);
 
-            $url  = $this->_router->unroute(
+            $url = $this->_router->unroute(
                 'namespace',
                 [
                     'namespaceName' => $accumulator
