@@ -59,9 +59,28 @@ nav {
         text-overflow: ellipsis;
     }
 
+    nav h1 {
+        font-size: 1.2em;
+        text-align: center;
+        background: rgb(245, 245, 245);
+    }
+
+    nav h2 {
+        font-size: 1.2em;
+    }
+
 main {
     flex: 2;
 }
+
+    main h1, main h2 {
+        border: rgb(221, 221, 221) solid;
+        border-width: 0 0 1px 0;
+    }
+
+    main h2 {
+        color: rgb(56, 115, 173);
+    }
 
 code {
     font-family: Code, Droid Sans Mono, monospace;
@@ -75,14 +94,13 @@ h1, h2, h3, h4 {
     margin-bottom: 1em;
 }
 
-h1, h2 {
-    border: rgb(221, 221, 221) solid;
-    border-width: 0 0 1px 0;
-}
+    h1 {
+        font-size: 2em;
+    }
 
-h2 {
-    color: rgb(56, 115, 173);
-}
+    h2 {
+        font-size: 1.5em;
+    }
 
 a {
     color: rgb(56, 115, 173);

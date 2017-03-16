@@ -6,7 +6,9 @@
     </header>
 
     <nav>
-        <h1>Namespaces</h1>
+        <h1><code><?php echo $data->navigation->heading ?></code></h1>
+
+        <h2>Namespaces</h2>
 
         <ul class="list--flat">
             <?php foreach ($data->navigation->namespaces as $namespace): ?>

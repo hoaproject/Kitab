@@ -6,7 +6,31 @@
     </header>
 
     <nav>
-        <h1>Foo</h1>
+        <h1><code><?php echo $data->navigation->heading ?></code></h1>
+
+        <?php if (0 < count($data->navigation->classes)): ?>
+            <h2>Classes</h2>
+
+            <ul class="list--flat">
+                <?php foreach ($data->navigation->classes as $class): ?>
+                    <li><a href="<?php echo $class->url ?>"><code><?php echo $class->name ?></code></a></li>
+                <?php endforeach ?>
+            </ul>
+        <?php endif ?>
+
+        <?php if (0 < count($data->navigation->interfaces)): ?>
+            <h2>Interfaces</h2>
+
+            <ul class="list--flat">
+                <?php foreach ($data->navigation->interfaces as $interface): ?>
+                    <li><a href="<?php echo $interface->url ?>"><code><?php echo $interface->name ?></code></a></li>
+                <?php endforeach ?>
+            </ul>
+        <?php endif ?>
+
+        <h2>Traits</h2>
+
+        <h2>Functions</h2>
     </nav>
 </aside>
 
