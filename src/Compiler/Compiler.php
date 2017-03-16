@@ -79,8 +79,8 @@ class Compiler
     {
         foreach ($file as $item) {
             if ($item instanceof IntermediateRepresentation\Entity) {
-                $symbolParts      = explode('\\', $item->name);
-                $lastSymbolPart   = '@' . $item->getType() . ':' . array_pop($symbolParts);
+                $symbolParts      = explode('\\', $item->getNamespaceName());
+                $lastSymbolPart   = '@' . $item->getType() . ':' . $item->getShortName();
                 $currentDimension = &$symbols;
 
                 foreach($symbolParts as $symbolPart) {

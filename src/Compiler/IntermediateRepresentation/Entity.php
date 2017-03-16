@@ -46,7 +46,7 @@ abstract class Entity
     public function getNamespaceName()
     {
         if (false === $pos = strrpos($this->name, '\\')) {
-            return '';
+            return '__root__';
         }
 
         return substr($this->name, 0, $pos);
