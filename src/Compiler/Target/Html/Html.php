@@ -95,7 +95,7 @@ class Html implements Target
 
         return $this->compileEntity(
             $interface,
-            __DIR__ . DS . 'Template' . DS . 'Interface.html',
+            __DIR__ . DS . 'Template' . DS . 'Partial' . DS . 'Interface.html',
             $data
         );
     }
@@ -308,7 +308,7 @@ class Html implements Target
                 $data->layout->title = 'Foobar';
 
                 $data->layout->import       = new StdClass();
-                $data->layout->import->file = __DIR__ . DS . 'Template' . DS . 'Class.html';
+                $data->layout->import->file = __DIR__ . DS . 'Template' . DS . 'Entity.html';
 
                 $data->layout->import->data         = new StdClass();
                 $data->layout->import->data->layout = new StdClass();
