@@ -281,6 +281,19 @@ class Html implements Target
 
                         break;
 
+                    case '@interface':
+                        $output =
+                            'hoa://Kitab/Output/' .
+                            $this->_router->unroute(
+                                'interface',
+                                [
+                                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $accumulator)),
+                                    'shortName'     => $symbolName
+                                ]
+                            );
+
+                        break;
+
                     default:
                         echo 'UNKNOWN SYMBOL TYPE', "\n";
                         var_dump($symbolType);
