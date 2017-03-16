@@ -66,6 +66,8 @@ class Html implements Target
                 $this->compileClass($representation);
             } elseif ($representation instanceof IntermediateRepresentation\Interface_) {
                 $this->compileInterface($representation);
+            } elseif ($representation instanceof IntermediateRepresentation\Trait_) {
+                $this->compileTrait($representation);
             } else {
                 throw new Exception\TargetUnknownIntermediateRepresentation(
                     'Intermediate representation `%s` has not been handled.',
@@ -96,6 +98,18 @@ class Html implements Target
         return $this->compileEntity(
             $interface,
             __DIR__ . DS . 'Template' . DS . 'Partial' . DS . 'Interface.html',
+            $data
+        );
+    }
+
+    protected function compileTrait(Intermediaterepresentation\Trait_ $trait)
+    {
+        $data        = new StdClass();
+        $data->trait = $trait;
+
+        return $this->compileEntity(
+            $trait,
+            __DIR__ . DS . 'Template' . DS . 'Partial' . DS . 'Trait.html',
             $data
         );
     }
@@ -171,6 +185,7 @@ class Html implements Target
                 $data->namespace->namespaces = [];
                 $data->namespace->classes    = [];
                 $data->namespace->interfaces = [];
+                $data->namespace->traits     = [];
 
                 foreach ($subSymbols as $subSymbolPrefix => $subSymbol) {
                     if ('@' !== $subSymbolPrefix[0]) {
@@ -226,6 +241,23 @@ class Html implements Target
                             $data->namespace->interfaces[] = $_interface;
 
                             break;
+
+                        case '@trait':
+                            $_trait       = new StdClass();
+                            $_trait->name = $subSymbolName;
+                            $_trait->url  =
+                                '.' .
+                                $this->_router->unroute(
+                                    'trait',
+                                    [
+                                        'namespaceName' => rtrim($namespaceName, '/'),
+                                        'shortName'     => $subSymbolName
+                                    ]
+                                );
+
+                            $data->namespace->traits[] = $_trait;
+
+                            break;
                     }
                 }
 
@@ -259,6 +291,7 @@ class Html implements Target
     {
         $siblingClasses    = [];
         $siblingInterfaces = [];
+        $siblingTraits     = [];
 
         foreach ($symbols as $symbolPrefix => $symbol) {
             if ('@' === $symbolPrefix[0]) {
@@ -295,6 +328,21 @@ class Html implements Target
                             );
 
                         $siblingInterfaces[] = $siblingEntity;
+
+                        break;
+
+                    case '@trait':
+                        $siblingEntity->url  =
+                            '.' .
+                            $this->_router->unroute(
+                                'trait',
+                                [
+                                    'namespaceName' => mb_strtolower(str_replace('\\', '/', rtrim($accumulator, '\\'))),
+                                    'shortName'     => $symbolName
+                                ]
+                            );
+
+                        $siblingTraits[] = $siblingEntity;
 
                         break;
                 }
@@ -339,11 +387,21 @@ class Html implements Target
 
                         break;
 
+                    case '@trait':
+                        $output =
+                            'hoa://Kitab/Output/' .
+                            $this->_router->unroute(
+                                'trait',
+                                [
+                                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $accumulator)),
+                                    'shortName'     => $symbolName
+                                ]
+                            );
+
+                        break;
+
                     default:
-                        echo 'UNKNOWN SYMBOL TYPE', "\n";
-                        var_dump($symbolType);
                         continue 2;
-                        exit;
                 }
 
                 $data = new StdClass();
@@ -361,6 +419,7 @@ class Html implements Target
                 $data->layout->import->data->navigation->heading    = $this->namespaceToURLs($accumulator);
                 $data->layout->import->data->navigation->classes    = $siblingClasses;
                 $data->layout->import->data->navigation->interfaces = $siblingInterfaces;
+                $data->layout->import->data->navigation->traits     = $siblingTraits;
 
                 $data->layout->import->data->layout = new StdClass();
 

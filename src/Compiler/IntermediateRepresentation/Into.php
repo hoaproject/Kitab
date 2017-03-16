@@ -62,6 +62,12 @@ class Into extends NodeVisitorAbstract
             $interface->methods = $this->intoMethods($node);
 
             $this->_file[] = $interface;
+        } elseif ($node instanceof Node\Stmt\Trait_) {
+            $traitNode      = $node;
+            $trait          = new Trait_($traitNode->namespacedName->toString());
+            $trait->methods = $this->intoMethods($node);
+
+            $this->_file[] = $trait;
         }
 
         return;

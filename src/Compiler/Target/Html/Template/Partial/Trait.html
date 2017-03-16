@@ -1,0 +1,8 @@
+<h1>Trait <?php echo $data->trait->name ?></h1>
+
+<dl>
+    <?php foreach ($data->trait->methods as $method): ?>
+        <dt><?php echo $method->name ?></dt>
+        <dd>...</dd>
+    <?php endforeach ?>
+</dl>

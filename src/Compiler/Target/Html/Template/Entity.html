@@ -28,7 +28,15 @@
             </ul>
         <?php endif ?>
 
-        <h2>Traits</h2>
+        <?php if (0 < count($data->navigation->traits)): ?>
+            <h2>Traits</h2>
+
+            <ul class="list--flat">
+                <?php foreach ($data->navigation->traits as $trait): ?>
+                    <li><a href="<?php echo $trait->url ?>"><code><?php echo $trait->name ?></code></a></li>
+                <?php endforeach ?>
+            </ul>
+        <?php endif ?>
 
         <h2>Functions</h2>
     </nav>

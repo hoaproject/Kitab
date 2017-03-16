@@ -41,7 +41,15 @@
         </ul>
     <?php endif ?>
 
-    <h2 id="traits">Traits</h2>
+    <?php if (0 < count($data->namespace->traits)): ?>
+        <h2 id="traits">Traits</h2>
+
+        <ul>
+            <?php foreach ($data->namespace->traits as $trait): ?>
+                <li><a href="<?php echo $trait->url ?>"><code><?php echo $trait->name ?></code></a></li>
+            <?php endforeach ?>
+        </ul>
+    <?php endif ?>
 
     <h2 id="functions">Functions</h2>
 
