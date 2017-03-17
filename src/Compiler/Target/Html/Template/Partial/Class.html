@@ -1,6 +1,11 @@
 <h1>Class <code><?php echo $data->class->name ?></code></h1>
 
-<pre><code class="language-php">class <?php echo $data->class->getShortName() ?>
+<pre><code class="language-php"><?php if ($data->class->final): ?>final <?php endif ?>
+<?php if ($data->class->abstract): ?>abstract <?php endif ?>
+class <?php echo $data->class->getShortName() ?>
+<?php if (!empty($data->class->parent)): ?>
+ extends <?php echo $data->class->parent ?>
+<?php endif ?>
 
 {
 <?php foreach ($data->class->methods as $method): ?>
@@ -8,15 +13,15 @@
 <?php endforeach ?>
 }</code></pre>
 
-<?php if (0 < count($data->class->constants)): ?>
+<?php if (!empty($data->class->constants)): ?>
     <h2 id="constants">Constants</h2>
 <?php endif ?>
 
-<?php if (0 < count($data->class->attributes)): ?>
+<?php if (!empty($data->class->attributes)): ?>
     <h2 id="attributes">Attributes</h2>
 <?php endif ?>
 
-<?php if (0 < count($data->class->methods)): ?>
+<?php if (!empty($data->class->methods)): ?>
     <h2 id="methods">Methods</h2>
 
     <dl>
@@ -25,6 +30,17 @@
             <dd>
                 <section><?php echo $this->markdownToHtml($method->documentation) ?></section>
             </dd>
+        <?php endforeach ?>
+    </dl>
+<?php endif ?>
+
+<?php if (!empty($data->class->interfaces)): ?>
+    <h2 id="interfaces">Interfaces</h2>
+
+    <dl class="list--flat">
+        <?php foreach ($data->class->interfaces as $interfaceName): ?>
+            <dt><code class="language-php">interface <?php echo $interfaceName ?></code></dt>
+            <dd>…</dd>
         <?php endforeach ?>
     </dl>
 <?php endif ?>

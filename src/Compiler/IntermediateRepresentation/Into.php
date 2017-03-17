@@ -56,6 +56,22 @@ class Into extends NodeVisitorAbstract
             $class          = new Class_($classNode->namespacedName->toString());
             $class->methods = $this->intoMethods($node);
 
+            if ($classNode->flags & Node\Stmt\Class_::MODIFIER_ABSTRACT) {
+                $class->abstract = true;
+            }
+
+            if ($classNode->flags & Node\Stmt\Class_::MODIFIER_FINAL) {
+                $class->final = true;
+            }
+
+            if (null !== $classNode->extends) {
+                $class->parent = $classNode->extends->toString();
+            }
+
+            foreach ($classNode->implements as $interfaceNameNode) {
+                $class->interfaces[] = $interfaceNameNode->toString();
+            }
+
             $this->_file[] = $class;
         } elseif ($node instanceof Node\Stmt\Interface_) {
             $interfaceNode      = $node;
