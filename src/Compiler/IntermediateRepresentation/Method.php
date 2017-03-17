@@ -45,6 +45,7 @@ class Method
     public $visibility    = self::VISIBILITY_PUBLIC;
     public $static        = false;
     public $abstract      = false;
+    public $final         = false;
     public $name;
     public $inputs        = [];
     public $output        = null;
@@ -73,7 +74,8 @@ class Method
         }
 
         return sprintf(
-            '%s%s%s function %s%s()%s',
+            '%s%s%s%s function %s%s()%s',
+            $this->final ? 'final ' : '',
             $this->abstract ? 'abstract ' : '',
             $this->static   ? 'static ' : '',
             $visibility,

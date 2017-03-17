@@ -84,10 +84,34 @@ class Into extends NodeVisitorAbstract
         $methods = [];
 
         foreach ($node->getMethods() as $methodNode) {
-            $method                = new Method($methodNode->name);
+            $method = new Method($methodNode->name);
+
+            // Documentation.
             $method->documentation = Parser::extractFromComment($methodNode->getDocComment());
 
-            $method->output        = new Type();
+            // Visibility, scope, and abstract.
+            if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_PUBLIC) {
+                $method->visibility = $method::VISIBILITY_PUBLIC;
+            } else if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_PROTECTED) {
+                $method->visibility = $method::VISIBILITY_PROTECTED;
+            } else if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_PRIVATE) {
+                $method->visibility = $method::VISIBILITY_PRIVATE;
+            }
+
+            if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_STATIC) {
+                $method->static = true;
+            }
+
+            if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_ABSTRACT) {
+                $method->abstract = true;
+            }
+
+            if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_FINAL) {
+                $method->final = true;
+            }
+
+            // Output.
+            $method->output            = new Type();
             $method->output->reference = $methodNode->byRef;
 
             $returnTypeNode = $methodNode->returnType;
