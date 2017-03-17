@@ -42,7 +42,6 @@ use Hoa\Stream\IStream\Touchable;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\IntermediateRepresentation;
 use Kitab\Compiler\Target\Target;
-use Kitab\Compiler\Target\Templater;
 use Kitab\Exception;
 use StdClass;
 
@@ -504,6 +503,11 @@ class Html implements Target
     {
         $from = __DIR__ . DS . 'Template' . DS . 'css';
         $to   = 'hoa://Kitab/Output/css';
+
+        (new Directory($from))->copy($to, Touchable::OVERWRITE);
+
+        $from = __DIR__ . DS . 'Template' . DS . 'javascript';
+        $to   = 'hoa://Kitab/Output/javascript';
 
         (new Directory($from))->copy($to, Touchable::OVERWRITE);
 

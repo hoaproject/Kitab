@@ -36,6 +36,7 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+use Kitab\Compiler\Parser;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
@@ -84,7 +85,7 @@ class Into extends NodeVisitorAbstract
 
         foreach ($node->getMethods() as $methodNode) {
             $method                = new Method($methodNode->name);
-            $method->documentation = $methodNode->getDocComment();
+            $method->documentation = Parser::extractFromComment($methodNode->getDocComment());
 
             $methods[] = $method;
         }

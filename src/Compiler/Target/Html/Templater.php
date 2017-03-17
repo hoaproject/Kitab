@@ -34,50 +34,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\IntermediateRepresentation;
+namespace Kitab\Compiler\Target\Html;
 
-class Method
+use Kitab\Compiler\Target;
+use League\CommonMark\CommonMarkConverter;
+
+class Templater extends Target\Templater
 {
-    const VISIBILITY_PUBLIC    = 0;
-    const VISIBILITY_PROTECTED = 1;
-    const VISIBILITY_PRIVATE   = 2;
+    private static $markdownConverter = null;
 
-    public $visibility    = self::VISIBILITY_PUBLIC;
-    public $static        = false;
-    public $abstract      = false;
-    public $name;
-    public $arguments     = [];
-    public $output        = null;
-    public $documentation = null;
-
-    public function __construct(string $name)
+    public function markdownToHtml(string $markdown): string
     {
-        $this->name = $name;
-    }
-
-    public function __toString()
-    {
-        switch ($this->visibility) {
-            case self::VISIBILITY_PROTECTED:
-                $visibility = 'protected';
-
-                break;
-
-            case self::VISIBILITY_PRIVATE:
-                $visibility = 'private';
-
-                break;
-
-            default:
-                $visibility = 'public';
+        if (null === self::$markdownConverter) {
+            self::$markdownConverter = new CommonMarkConverter();
         }
 
-        return sprintf(
-            '%s%s%s function %s()',
-            $this->abstract ? 'abstract ' : '',
-            $this->static   ? 'static ' : '',
-            $visibility,
-            $this->name
-        );
+        return self::$markdownConverter->convertToHtml($markdown);
     }
 }

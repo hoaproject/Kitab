@@ -40,10 +40,21 @@ use Kitab\Finder;
 use Kitab\Exception;
 use PhpParser\ParserFactory;
 
+/**
+ * The compiler.
+ *
+ * It is responsible to orchestrate the whole compilation process.
+ */
 class Compiler
 {
     protected static $_parser = null;
 
+    /**
+     * When constructing the compiler, a new instance of the parser
+     * `Kitab\Compiler\Parser` is created and stored statically. This is a way
+     * to cache the parser. This is not necessary to allocate a new parser
+     * each time.
+     */
     public function __construct()
     {
         if (null === self::$_parser) {
@@ -53,6 +64,30 @@ class Compiler
         return;
     }
 
+    /**
+     * Compile all files provided by the finder into the specified target.
+     * The compilation process is very classical. It works as follows:
+     *
+     *   1. For each file provided by the finder,
+     *   2. Parser the file, and get an intermediate representation,
+     *   3. Compile the intermediate representation based on the given target,
+     *   4. Update the linker with new symbols,
+     *   5. Go to 1 if the finder is not empty,
+     *   6. Ask the target to assemble all the generated objects.
+     *
+     * With this approach, only one intermediate representation of a file is
+     * allocated in the memory at a time. Not all the representations for all
+     * the files are in memory. It avoids having huge allocations, and big
+     * peaks, with all the complications.
+     *
+     * # Examples
+     *
+     * Bla bla foo bar:
+     *
+     * ```php
+     * assert(3 === 2 + 1);
+     * ```
+     */
     public function compile(Finder $finder, Target\Target $target)
     {
         $parser  = self::getParser();
@@ -70,11 +105,26 @@ class Compiler
         return;
     }
 
+    /**
+     * Return the parser stored in the cache.
+     */
     protected function getParser(): Parser
     {
         return self::$_parser;
     }
 
+    /**
+     * Extract new symbols from an intermediate representation and update the linker.
+     *
+     * The linker is a tree structure. Bla bla.
+     *
+     * # Exceptions
+     *
+     * If the link handles an intermediate representation that is unexpected,
+     * a `Kitab\Exception\LinkerUnknownIntermediateRepresentation` exception
+     * will be thrown. This is not likely to happen, except during a
+     * development phase.
+     */
     protected function link(IntermediateRepresentation\File $file, array &$symbols)
     {
         foreach ($file as $item) {

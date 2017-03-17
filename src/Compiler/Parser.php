@@ -102,4 +102,13 @@ class Parser
     {
         return self::$_phpTraverser;
     }
+
+    public static function extractFromComment($comment)
+    {
+        return preg_replace(
+            ',^(/\*\*|\h*\*/?\h*),m',
+            '',
+            $comment
+        );
+    }
 }

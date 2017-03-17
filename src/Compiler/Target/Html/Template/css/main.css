@@ -88,11 +88,39 @@ main {
         color: rgb(56, 115, 173);
     }
 
-code {
+pre, code {
     font-family: Code, Droid Sans Mono, monospace;
-    padding: .1em .3em;
     background: rgb(245, 245, 245);
 }
+    
+    code {
+        padding: .1em .3em;
+    }
+
+    pre code {
+        padding: 0;
+    }
+
+    pre {
+        white-space: pre;
+        word-spacing: normal;
+        word-break: normal;
+        word-wrap: normal;
+        line-height: 1.5;
+
+        tab-size: 4;
+        -moz-tab-size: 4;
+        -o-tab-size: 4;
+
+        hyphens: none;
+        -ms-hyphens: none;
+        -webkit-hyphens: none;
+
+        overflow: auto;
+
+        margin: 1em 0;
+        padding: 1em 1.5em;
+    }
 
 h1, h2, h3, h4 {
     font-family: Header, Fira Sans, sans-serif;
@@ -117,12 +145,51 @@ a {
         text-decoration: underline;
     }
 
-ul {
+p {
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+}
+
+    p > code {
+        font-size: .92em;
+    }
+
+ul, ol {
     margin-bottom: 1.1em;
     padding-left: 2.5em;
 }
 
-ul.list--flat {
+.list--flat,
+.list--flat {
     list-style-type: none;
     padding-left: 0;
 }
+
+dl {}
+
+    dt {
+        font-weight: bold;
+    }
+
+    dt > code {
+        background: transparent;
+    }
+
+    dt:not(:first-of-type) {
+        margin-top: 2.5rem;
+    }
+
+    dd {
+        margin-top: .5em;
+        margin-left: 2em;
+    }
+
+    dd h1 {
+        color: rgb(56, 115, 173);
+        font-size: 1.3em;
+        margin-top: .5em;
+        border: rgb(221, 221, 221) solid;
+        border-width: 0 0 1px 0;
+    }

@@ -44,6 +44,7 @@ class Class_ extends Entity
     public $abstract   = false;
     public $parent     = null;
     public $interfaces = [];
+    public $constants  = [];
     public $attributes = [];
     public $methods    = [];
 
