@@ -48,7 +48,7 @@ class Type
             '%s%s%s',
             $this->nullable ? '?' : '',
             $this->name,
-            $this->reference ? ' &' : ' '
+            $this->reference ? ' &' : ($this->name ? ' ' : '')
         );
     }
 }
