@@ -34,37 +34,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Target\Html;
+namespace Kitab\Compiler\IntermediateRepresentation;
 
-use Hoa\Protocol\Protocol;
-use Hoa\Router\Http;
-
-class Router extends Http
+class Function_ extends Entity
 {
-    public function __construct()
-    {
-        parent::__construct();
+    const TYPE = 'function';
 
-        $this
-            ->get(
-                'namespace',
-                '/(?<namespaceName>([^/]+)/index\.html'
-            )
-            ->get(
-                'class',
-                '/(?<namespaceName>([^/]+)/class\.(?<shortName>[^\.]+)\.html'
-            )
-            ->get(
-                'interface',
-                '/(?<namespaceName>([^/]+)/interface\.(?<shortName>[^\.]+)\.html'
-            )
-            ->get(
-                'trait',
-                '/(?<namespaceName>([^/]+)/trait\.(?<shortName>[^\.]+)\.html'
-            )
-            ->get(
-                'function',
-                '/(?<namespaceName>([^/]+)/function\.(?<shortName>[^\.]+)\.html'
-            );
+    public function __construct(string $name)
+    {
+        $this->name = $name;
     }
 }

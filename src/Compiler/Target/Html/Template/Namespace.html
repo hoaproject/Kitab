@@ -51,7 +51,15 @@
         </ul>
     <?php endif ?>
 
-    <h2 id="functions">Functions</h2>
+    <?php if (0 < count($data->namespace->functions)): ?>
+        <h2 id="functions">Functions</h2>
+
+        <ul>
+            <?php foreach ($data->namespace->functions as $function): ?>
+                <li><a href="<?php echo $function->url ?>"><code><?php echo $function->name ?></code></a></li>
+            <?php endforeach ?>
+        </ul>
+    <?php endif ?>
 
     <?php if (0 < count($data->namespace->namespaces)): ?>
         <h2 id="namespaces">Namespaces</h2>

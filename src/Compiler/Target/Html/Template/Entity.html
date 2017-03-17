@@ -38,7 +38,15 @@
             </ul>
         <?php endif ?>
 
-        <h2>Functions</h2>
+        <?php if (0 < count($data->navigation->functions)): ?>
+            <h2>Functions</h2>
+
+            <ul class="list--flat">
+                <?php foreach ($data->navigation->functions as $function): ?>
+                    <li><a href="<?php echo $function->url ?>"><code><?php echo $function->name ?></code></a></li>
+                <?php endforeach ?>
+            </ul>
+        <?php endif ?>
     </nav>
 </aside>
 

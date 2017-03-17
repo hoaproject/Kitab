@@ -68,6 +68,11 @@ class Into extends NodeVisitorAbstract
             $trait->methods = $this->intoMethods($node);
 
             $this->_file[] = $trait;
+        } elseif ($node instanceof Node\Stmt\Function_) {
+            $functionNode      = $node;
+            $function          = new Function_($functionNode->namespacedName->toString());
+
+            $this->_file[] = $function;
         }
 
         return;
