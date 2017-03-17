@@ -87,6 +87,27 @@ class Into extends NodeVisitorAbstract
             $method                = new Method($methodNode->name);
             $method->documentation = Parser::extractFromComment($methodNode->getDocComment());
 
+            $method->output        = new Type();
+            $method->output->reference = $methodNode->byRef;
+
+            $returnTypeNode = $methodNode->returnType;
+
+            if ($returnTypeNode instanceof Node\Name) {
+                $method->output->name = $returnTypeNode->toString();
+            } else if ($returnTypeNode instanceof Node\NullableType) {
+                $method->output->nullable = true;
+
+                $nullableReturnTypeNode = $returnTypeNode->type;
+
+                if ($nullableReturnTypeNode instanceof Node\Name) {
+                    $method->output->name = $nullableReturnTypeNode->toString();
+                } else {
+                    $method->output->name = $nullableReturnTypeNode;
+                }
+            } else {
+                $method->output->name = $returnTypeNode;
+            }
+
             $methods[] = $method;
         }
 

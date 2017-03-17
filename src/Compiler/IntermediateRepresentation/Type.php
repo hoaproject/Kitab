@@ -36,52 +36,19 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
-class Method
+class Type
 {
-    const VISIBILITY_PUBLIC    = 0;
-    const VISIBILITY_PROTECTED = 1;
-    const VISIBILITY_PRIVATE   = 2;
-
-    public $visibility    = self::VISIBILITY_PUBLIC;
-    public $static        = false;
-    public $abstract      = false;
-    public $name;
-    public $inputs        = [];
-    public $output        = null;
-    public $documentation = null;
-
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
+    public $reference = false;
+    public $nullable  = false;
+    public $name      = null;
 
     public function __toString(): string
     {
-        switch ($this->visibility) {
-            case self::VISIBILITY_PROTECTED:
-                $visibility = 'protected';
-
-                break;
-
-            case self::VISIBILITY_PRIVATE:
-                $visibility = 'private';
-
-                break;
-
-            default:
-                $visibility = 'public';
-        }
-
         return sprintf(
-            '%s%s%s function %s%s()%s',
-            $this->abstract ? 'abstract ' : '',
-            $this->static   ? 'static ' : '',
-            $visibility,
-            $this->output->reference ? '&' : '',
+            '%s%s%s',
             $this->name,
-            $this->output->name
-                ? ': ' . ($this->output->nullable ? '?' : '') . $this->output->name
-                : ''
+            $this->nullable ? '? ' : '',
+            $this->reference ? '&' : ''
         );
     }
 }
