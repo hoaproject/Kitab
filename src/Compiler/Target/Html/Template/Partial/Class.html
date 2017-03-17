@@ -13,6 +13,8 @@ class <?php echo $data->class->getShortName() ?>
 <?php endforeach ?>
 }</code></pre>
 
+<section><?php echo $this->markdownToHtml($data->class->documentation) ?></section>
+
 <?php if (!empty($data->class->constants)): ?>
     <h2 id="constants">Constants</h2>
 <?php endif ?>

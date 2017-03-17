@@ -52,9 +52,10 @@ class Into extends NodeVisitorAbstract
     public function enterNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Class_) {
-            $classNode      = $node;
-            $class          = new Class_($classNode->namespacedName->toString());
-            $class->methods = $this->intoMethods($node);
+            $classNode            = $node;
+            $class                = new Class_($classNode->namespacedName->toString());
+            $class->documentation = Parser::extractFromComment($classNode->getDocComment());
+            $class->methods       = $this->intoMethods($node);
 
             if ($classNode->flags & Node\Stmt\Class_::MODIFIER_ABSTRACT) {
                 $class->abstract = true;

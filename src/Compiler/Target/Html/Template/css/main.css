@@ -153,6 +153,10 @@ p {
     -ms-hyphens: auto;
 }
 
+    p:not(:last-of-type) {
+        margin-bottom: .6em;
+    }
+
     p > code {
         font-size: .92em;
     }
