@@ -46,9 +46,9 @@ class Type
     {
         return sprintf(
             '%s%s%s',
+            $this->nullable ? '?' : '',
             $this->name,
-            $this->nullable ? '? ' : '',
-            $this->reference ? '&' : ''
+            $this->reference ? ' &' : ' '
         );
     }
 }

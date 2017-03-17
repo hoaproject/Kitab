@@ -110,32 +110,50 @@ class Into extends NodeVisitorAbstract
                 $method->final = true;
             }
 
-            // Output.
-            $method->output            = new Type();
-            $method->output->reference = $methodNode->byRef;
+            // Inputs.
+            $paramsNode = $methodNode->params;
 
-            $returnTypeNode = $methodNode->returnType;
+            foreach ($paramsNode as $paramNode) {
+                $parameter                  = new Parameter($paramNode->name);
+                $parameter->type            = $this->intoType($paramNode->type);
+                $parameter->type->reference = $paramNode->byRef;
+                $parameter->type->variadic  = $paramNode->variadic;
 
-            if ($returnTypeNode instanceof Node\Name) {
-                $method->output->name = $returnTypeNode->toString();
-            } else if ($returnTypeNode instanceof Node\NullableType) {
-                $method->output->nullable = true;
-
-                $nullableReturnTypeNode = $returnTypeNode->type;
-
-                if ($nullableReturnTypeNode instanceof Node\Name) {
-                    $method->output->name = $nullableReturnTypeNode->toString();
-                } else {
-                    $method->output->name = $nullableReturnTypeNode;
-                }
-            } else {
-                $method->output->name = $returnTypeNode;
+                $method->inputs[] = $parameter;
             }
+
+            // Output.
+            $output            = $this->intoType($methodNode->returnType);
+            $output->reference = $methodNode->byRef;
+            $method->output    = $output;
 
             $methods[] = $method;
         }
 
         return $methods;
+    }
+
+    protected function intoType($node): Type
+    {
+        $type = new Type();
+
+        if ($node instanceof Node\Name) {
+            $type->name = $node->toString();
+        } else if ($node instanceof Node\NullableType) {
+            $type->nullable = true;
+
+            $nullableNode = $node->type;
+
+            if ($nullableNode instanceof Node\Name) {
+                $type->name = $nullableNode->toString();
+            } else {
+                $type->name = $nullableNode;
+            }
+        } else {
+            $type->name = $node;
+        }
+
+        return $type;
     }
 
     public function collect(): File
