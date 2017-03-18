@@ -157,7 +157,7 @@ p {
         margin-bottom: .6em;
     }
 
-    p > code {
+    p code {
         font-size: .92em;
     }
 
