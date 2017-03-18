@@ -415,44 +415,8 @@ class Html implements Target
 
                 switch ($symbolType) {
                     case '@class':
-                        $output =
-                            'hoa://Kitab/Output/' .
-                            $this->_router->unroute(
-                                'entity',
-                                [
-                                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $accumulator)),
-                                    'shortName'     => $symbolName
-                                ]
-                            );
-
-                        break;
-
                     case '@interface':
-                        $output =
-                            'hoa://Kitab/Output/' .
-                            $this->_router->unroute(
-                                'entity',
-                                [
-                                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $accumulator)),
-                                    'shortName'     => $symbolName
-                                ]
-                            );
-
-                        break;
-
                     case '@trait':
-                        $output =
-                            'hoa://Kitab/Output/' .
-                            $this->_router->unroute(
-                                'entity',
-                                [
-                                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $accumulator)),
-                                    'shortName'     => $symbolName
-                                ]
-                            );
-
-                        break;
-
                     case '@function':
                         $output =
                             'hoa://Kitab/Output/' .
