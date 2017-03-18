@@ -132,7 +132,7 @@ class Html implements Target
         $output =
             'hoa://Kitab/Output/' .
             $this->_router->unroute(
-                $entity->getType(),
+                'entity',
                 [
                     'namespaceName' => mb_strtolower(str_replace('\\', '/', $entity->getNamespaceName())),
                     'shortName'     => $entity->getShortName()
@@ -141,7 +141,10 @@ class Html implements Target
 
         Directory::create(dirname($output));
 
-        $view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
+        $view = new Templater(
+            new Write($output, Write::MODE_TRUNCATE_WRITE),
+            $this->_router
+        );
         $view->render($templateFile, $data);
 
         return;
@@ -228,7 +231,7 @@ class Html implements Target
                             $_class->url  =
                                 '.' .
                                 $this->_router->unroute(
-                                    'class',
+                                    'entity',
                                     [
                                         'namespaceName' => rtrim($namespaceName, '/'),
                                         'shortName'     => $subSymbolName
@@ -245,7 +248,7 @@ class Html implements Target
                             $_interface->url  =
                                 '.' .
                                 $this->_router->unroute(
-                                    'interface',
+                                    'entity',
                                     [
                                         'namespaceName' => rtrim($namespaceName, '/'),
                                         'shortName'     => $subSymbolName
@@ -262,7 +265,7 @@ class Html implements Target
                             $_trait->url  =
                                 '.' .
                                 $this->_router->unroute(
-                                    'trait',
+                                    'entity',
                                     [
                                         'namespaceName' => rtrim($namespaceName, '/'),
                                         'shortName'     => $subSymbolName
@@ -279,7 +282,7 @@ class Html implements Target
                             $_function->url  =
                                 '.' .
                                 $this->_router->unroute(
-                                    'function',
+                                    'entity',
                                     [
                                         'namespaceName' => rtrim($namespaceName, '/'),
                                         'shortName'     => $subSymbolName
@@ -304,7 +307,10 @@ class Html implements Target
                 $data->navigation->heading    = $this->namespaceToURLs($accumulator);
                 $data->navigation->namespaces = $siblingNamespaces;
 
-                $this->_view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
+                $this->_view = new Templater(
+                    new Write($output, Write::MODE_TRUNCATE_WRITE),
+                    $this->_router
+                );
                 $this->_view->render(
                     __DIR__ . DS . 'Template' . DS . 'Layout.html',
                     $data
@@ -337,7 +343,7 @@ class Html implements Target
                         $siblingEntity->url  =
                             '.' .
                             $this->_router->unroute(
-                                'class',
+                                'entity',
                                 [
                                     'namespaceName' => mb_strtolower(str_replace('\\', '/', rtrim($accumulator, '\\'))),
                                     'shortName'     => $symbolName
@@ -352,7 +358,7 @@ class Html implements Target
                         $siblingEntity->url  =
                             '.' .
                             $this->_router->unroute(
-                                'interface',
+                                'entity',
                                 [
                                     'namespaceName' => mb_strtolower(str_replace('\\', '/', rtrim($accumulator, '\\'))),
                                     'shortName'     => $symbolName
@@ -367,7 +373,7 @@ class Html implements Target
                         $siblingEntity->url  =
                             '.' .
                             $this->_router->unroute(
-                                'trait',
+                                'entity',
                                 [
                                     'namespaceName' => mb_strtolower(str_replace('\\', '/', rtrim($accumulator, '\\'))),
                                     'shortName'     => $symbolName
@@ -382,7 +388,7 @@ class Html implements Target
                         $siblingEntity->url  =
                             '.' .
                             $this->_router->unroute(
-                                'function',
+                                'entity',
                                 [
                                     'namespaceName' => mb_strtolower(str_replace('\\', '/', rtrim($accumulator, '\\'))),
                                     'shortName'     => $symbolName
@@ -412,7 +418,7 @@ class Html implements Target
                         $output =
                             'hoa://Kitab/Output/' .
                             $this->_router->unroute(
-                                'class',
+                                'entity',
                                 [
                                     'namespaceName' => mb_strtolower(str_replace('\\', '/', $accumulator)),
                                     'shortName'     => $symbolName
@@ -425,7 +431,7 @@ class Html implements Target
                         $output =
                             'hoa://Kitab/Output/' .
                             $this->_router->unroute(
-                                'interface',
+                                'entity',
                                 [
                                     'namespaceName' => mb_strtolower(str_replace('\\', '/', $accumulator)),
                                     'shortName'     => $symbolName
@@ -438,7 +444,7 @@ class Html implements Target
                         $output =
                             'hoa://Kitab/Output/' .
                             $this->_router->unroute(
-                                'trait',
+                                'entity',
                                 [
                                     'namespaceName' => mb_strtolower(str_replace('\\', '/', $accumulator)),
                                     'shortName'     => $symbolName
@@ -451,7 +457,7 @@ class Html implements Target
                         $output =
                             'hoa://Kitab/Output/' .
                             $this->_router->unroute(
-                                'function',
+                                'entity',
                                 [
                                     'namespaceName' => mb_strtolower(str_replace('\\', '/', $accumulator)),
                                     'shortName'     => $symbolName
@@ -490,7 +496,10 @@ class Html implements Target
                 $data->layout->import->data->layout->import->data       = new StdClass();
                 $data->layout->import->data->layout->import->data->echo = file_get_contents($output);
 
-                $this->view = new Templater(new Write($output, Write::MODE_TRUNCATE_WRITE));
+                $this->view = new Templater(
+                    new Write($output, Write::MODE_TRUNCATE_WRITE),
+                    $this->_router
+                );
                 $this->view->render(
                     __DIR__ . DS . 'Template' . DS . 'Layout.html',
                     $data

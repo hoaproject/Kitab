@@ -34,48 +34,63 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Target\Html;
+namespace Kitab\Compiler\Target\Html\Markdown\Renderer;
 
-use Hoa\Protocol\Protocol;
-use Hoa\Router\Http;
+use Kitab\Compiler\Target\Html\Router;
+use League\CommonMark\ElementRendererInterface;
+use League\CommonMark\HtmlElement;
+use League\CommonMark\Inline\Element\AbstractInline;
+use League\CommonMark\Inline\Element\Code as CodeElement;
+use League\CommonMark\Inline\Renderer\InlineRendererInterface;
 
-class Router extends Http
+class Code implements InlineRendererInterface
 {
-    public function __construct()
-    {
-        parent::__construct();
+    protected $_router = null;
 
-        $this
-            ->get(
-                'namespace',
-                '/(?<namespaceName>([^/]+)/index\.html'
-            )
-            ->get(
-                'entity',
-                '/(?<namespaceName>([^/]+)/(?<shortName>[^\.]+)\.html'
-            );
+    public function __construct(Router $router)
+    {
+        $this->_router = $router;
+
+        return;
     }
 
-    public static function splitEntityName(string $entityName): array
+    public function render(AbstractInline $inline, ElementRendererInterface $htmlRenderer)
     {
-        $parts = explode('\\', $entityName);
-
-        if (empty($parts[0]) && 0 < count($parts)) {
-            array_shift($parts);
+        if (!($inline instanceof CodeElement)) {
+            throw new \InvalidArgumentException('Incompatible inline type: ' . get_class($inline));
         }
 
-        if (0 === count($parts)) {
-            return [
-                null,
-                $parts[0]
-            ];
+        $content = $inline->getContent();
+        $url     = '.';
+
+        list($namespaceName, $shortName) = Router::splitEntityName($content);
+        $namespaceName = mb_strtolower(str_replace('\\', '/', $namespaceName));
+
+        if (empty($shortName)) {
+            $url .= $this->_router->unroute(
+                'namespace',
+                [
+                    'namespaceName' => $namespaceName
+                ]
+            );
+        } else {
+            $url .= $this->_router->unroute(
+                'entity',
+                [
+                    'namespaceName' => $namespaceName,
+                    'shortName'     => $shortName
+                ]
+            );
         }
 
-        $last = array_pop($parts);
-
-        return [
-            implode('\\', $parts),
-            $last
-        ];
+        return new HtmlElement(
+            'a',
+            ['href' => $url],
+            new HtmlElement(
+                'code',
+                [],
+                $content
+            )
+        );
     }
 }

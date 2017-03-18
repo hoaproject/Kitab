@@ -47,7 +47,8 @@ class Templater implements Viewable
     protected $_data   = null;
     protected $_router = null;
 
-    public function __construct(Out $out, Router $router = null) {
+    public function __construct(Out $out, Router $router)
+    {
         $this->_out    = $out;
         $this->_router = $router;
 

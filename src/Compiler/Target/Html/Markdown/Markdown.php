@@ -34,48 +34,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Target\Html;
+namespace Kitab\Compiler\Target\Html\Markdown;
 
-use Hoa\Protocol\Protocol;
-use Hoa\Router\Http;
+use Hoa\Router;
+use Kitab\Compiler\Target;
+use League\CommonMark\Environment;
+use League\CommonMark\DocParser;
+use League\CommonMark\HtmlRenderer;
+use League\CommonMark\Inline\Element\Code;
 
-class Router extends Http
+class Markdown
 {
-    public function __construct()
-    {
-        parent::__construct();
+    protected $_router            = null;
+    private static $_htmlParser   = null;
+    private static $_htmlRenderer = null;
 
-        $this
-            ->get(
-                'namespace',
-                '/(?<namespaceName>([^/]+)/index\.html'
-            )
-            ->get(
-                'entity',
-                '/(?<namespaceName>([^/]+)/(?<shortName>[^\.]+)\.html'
-            );
+    public function __construct(Router $router)
+    {
+        $this->_router = $router;
+
+        return;
     }
 
-    public static function splitEntityName(string $entityName): array
+    public function toHtml(string $markdown): string
     {
-        $parts = explode('\\', $entityName);
-
-        if (empty($parts[0]) && 0 < count($parts)) {
-            array_shift($parts);
+        if (null === self::$_htmlRenderer) {
+            $environment = Environment::createCommonMarkEnvironment();
+            $environment->addInlineRenderer(
+                Code::class,
+                new Renderer\Code($this->_router)
+            );
+            self::$_htmlParser   = new DocParser($environment);
+            self::$_htmlRenderer = new HtmlRenderer($environment);
         }
 
-        if (0 === count($parts)) {
-            return [
-                null,
-                $parts[0]
-            ];
-        }
-
-        $last = array_pop($parts);
-
-        return [
-            implode('\\', $parts),
-            $last
-        ];
+        return self::$_htmlRenderer->renderBlock(
+            self::$_htmlParser->parse($markdown)
+        );
     }
 }

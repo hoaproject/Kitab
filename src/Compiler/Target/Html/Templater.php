@@ -37,7 +37,6 @@
 namespace Kitab\Compiler\Target\Html;
 
 use Kitab\Compiler\Target;
-use League\CommonMark\CommonMarkConverter;
 
 class Templater extends Target\Templater
 {
@@ -46,9 +45,9 @@ class Templater extends Target\Templater
     public function markdownToHtml(string $markdown): string
     {
         if (null === self::$markdownConverter) {
-            self::$markdownConverter = new CommonMarkConverter();
+            self::$markdownConverter = new Markdown\Markdown($this->_router);
         }
 
-        return self::$markdownConverter->convertToHtml($markdown);
+        return self::$markdownConverter->toHtml($markdown);
     }
 }
