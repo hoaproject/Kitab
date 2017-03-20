@@ -13,19 +13,13 @@
     </head>
     <body>
         <div id="search" role="search" aria-expanded="false"></div>
-        <!--
-        <input type="search" list="foo" placeholder="Search anythings…" autocomplete="off" autocorrect="off" role="search" />
-        <datalist id="foo">
-            <option value="Finder">Fiiinder</option>
-            <option value="Compiler">Compiiiiler</option>
-        </datalist>
-        -->
 
         <main>
             <?php $this->import($data->layout->import->file, $data->layout->import->data) ?>
         </main>
 
         <script type="text/javascript" src="./javascript/search.js"></script>
+        <script type="text/javascript" src="./javascript/search-database.js"></script>
         <script type="text/javascript" src="./javascript/application.js"></script>
         <script type="text/javascript" src="./javascript/prism.js"></script>
         <script type="text/javascript" src="./javascript/prism-abbreviate.js"></script>
