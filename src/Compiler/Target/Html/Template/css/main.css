@@ -35,6 +35,43 @@ body {
     font: 1em/1.4 Text, URW Palladio L, serif;
     padding: 2rem 1.5rem;
     display: flex;
+    flex-direction: column;
+}
+
+#search {
+    position: relative;
+    flex: 1;
+    margin-left: calc(180px + 2rem);
+    margin-bottom: 1.5rem;
+}
+
+    #search > div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #search input {
+        flex: 1;
+        font: inherit;
+        padding: .5em 1em .3em 1em;
+    }
+
+    #search output {
+        position: absolute;
+        top: 3rem;
+        width: 100%;
+        padding: 1.2rem 0;
+        height: calc(100vh - 5rem);
+        overflow: scroll;
+        background: rgb(255, 255, 255);
+    }
+
+    #search output[aria-hidden="true"] {
+        display: none;
+    }
+
+main {
+    display: flex;
     flex-direction: row;
 }
 
@@ -79,16 +116,17 @@ nav {
         font-size: 1.2em;
     }
 
-main {
+article {
     flex: 2;
 }
 
-    main h1, main h2 {
+    [role="search"] h1,
+    article h1, article h2 {
         border: rgb(221, 221, 221) solid;
         border-width: 0 0 1px 0;
     }
 
-    main h2 {
+    article h2 {
         color: rgb(56, 115, 173);
         margin-top: 1.5em;
     }
