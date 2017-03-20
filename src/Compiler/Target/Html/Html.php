@@ -47,8 +47,6 @@ use StdClass;
 
 class Html implements Target
 {
-    protected $_view = null;
-
     public function __construct(Router $router = null)
     {
         if (null === $router) {
@@ -142,10 +140,12 @@ class Html implements Target
         Directory::create(dirname($output));
 
         $view = new Templater(
+            $templateFile,
             new Write($output, Write::MODE_TRUNCATE_WRITE),
-            $this->_router
+            $this->_router,
+            $data
         );
-        $view->render($templateFile, $data);
+        $view->render();
 
         return;
     }
@@ -307,14 +307,13 @@ class Html implements Target
                 $data->navigation->heading    = $this->namespaceToURLs($accumulator);
                 $data->navigation->namespaces = $siblingNamespaces;
 
-                $this->_view = new Templater(
-                    new Write($output, Write::MODE_TRUNCATE_WRITE),
-                    $this->_router
-                );
-                $this->_view->render(
+                $view = new Templater(
                     __DIR__ . DS . 'Template' . DS . 'Layout.html',
+                    new Write($output, Write::MODE_TRUNCATE_WRITE),
+                    $this->_router,
                     $data
                 );
+                $view->render();
 
                 $this->assembleNamespaces(
                     $subSymbols,
@@ -460,14 +459,13 @@ class Html implements Target
                 $data->layout->import->data->layout->import->data       = new StdClass();
                 $data->layout->import->data->layout->import->data->echo = file_get_contents($output);
 
-                $this->view = new Templater(
-                    new Write($output, Write::MODE_TRUNCATE_WRITE),
-                    $this->_router
-                );
-                $this->view->render(
+                $view = new Templater(
                     __DIR__ . DS . 'Template' . DS . 'Layout.html',
+                    new Write($output, Write::MODE_TRUNCATE_WRITE),
+                    $this->_router,
                     $data
                 );
+                $view->render();
             }
         }
     }

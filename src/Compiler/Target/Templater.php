@@ -43,18 +43,28 @@ use StdClass;
 
 class Templater implements Viewable
 {
+    protected $_in     = null;
     protected $_out    = null;
     protected $_data   = null;
     protected $_router = null;
 
-    public function __construct(Out $out, Router $router)
-    {
+    public function __construct(
+        string   $in,
+        Out      $out,
+        Router   $router = null,
+        StdClass $data = null
+    ) {
+        if (null === $data) {
+            $data = new StdClass();
+        }
+
+        $this->_in     = $in;
         $this->_out    = $out;
+        $this->_data   = $data;
         $this->_router = $router;
 
         return;
     }
-
     public function getOutputStream(): Out
     {
         return $this->_out;
@@ -65,17 +75,13 @@ class Templater implements Viewable
         return $this->_data;
     }
 
-    public function render(string $template = null, StdClass $data = null)
+    public function render()
     {
-        if (empty($template)) {
-            return;
-        }
-
-        $this->_data = $data;
-        $router      = $this->getRouter();
+        $data   = $this->getData();
+        $router = $this->getRouter();
 
         ob_start();
-        require $template;
+        require $this->_in;
         $content = ob_get_contents();
         ob_end_clean();
 
@@ -89,7 +95,7 @@ class Templater implements Viewable
         return $this->_router;
     }
 
-    public function import($template, $data = null)
+    public function import(string $template, StdClass $data = null)
     {
         $router = $this->getRouter();
 
