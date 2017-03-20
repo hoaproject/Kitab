@@ -61,6 +61,15 @@ class Code implements InlineRendererInterface
         }
 
         $content = $inline->getContent();
+
+        if (0 == preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x80-\xff]*(\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x80-\xff]*)+$/', $content)) {
+            return new HtmlElement(
+                'code',
+                [],
+                $content
+            );
+        }
+
         $url     = '.';
 
         list($namespaceName, $shortName) = Router::splitEntityName($content);
