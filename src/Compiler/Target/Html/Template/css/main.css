@@ -50,6 +50,10 @@ header {
     align-self: center;
 }
 
+    header img {
+        max-width: 150px;
+    }
+
 nav {
     margin-top: 1rem;
 }
