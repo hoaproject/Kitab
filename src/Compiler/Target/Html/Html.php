@@ -304,7 +304,7 @@ class Html implements Target
                 $data->layout->import->data = $data;
 
                 $data->navigation             = new StdClass();
-                $data->navigation->heading    = $this->namespaceToURLs($accumulator);
+                $data->navigation->heading    = $accumulator;
                 $data->navigation->namespaces = $siblingNamespaces;
 
                 $view = new Templater(
@@ -445,7 +445,7 @@ class Html implements Target
                 $data->layout->import->data = new StdClass();
 
                 $data->layout->import->data->navigation             = new StdClass();
-                $data->layout->import->data->navigation->heading    = $this->namespaceToURLs($accumulator);
+                $data->layout->import->data->navigation->heading    = $accumulator;
                 $data->layout->import->data->navigation->classes    = $siblingClasses;
                 $data->layout->import->data->navigation->interfaces = $siblingInterfaces;
                 $data->layout->import->data->navigation->traits     = $siblingTraits;
@@ -488,31 +488,5 @@ class Html implements Target
         (new Directory($from))->copy($to, Touchable::OVERWRITE);
 
         return;
-    }
-
-    protected function namespaceToURLs(string $name): string
-    {
-        $parts       = explode('\\', rtrim($name, '\\'));
-        $accumulator = '';
-
-        foreach ($parts as &$part) {
-            $accumulator .= mb_strtolower($part);
-
-            $url = $this->_router->unroute(
-                'namespace',
-                [
-                    'namespaceName' => $accumulator
-                ]
-            );
-
-            $accumulator .= '/';
-
-            $part = '<a href=".' . $url . '">' . $part . '</a>';
-        }
-
-        return implode(
-            '\<wbr />',
-            $parts
-        );
     }
 }

@@ -50,4 +50,30 @@ class Templater extends Target\Templater
 
         return self::$markdownConverter->toHtml($markdown);
     }
+
+    public function namespaceToURLs(string $name): string
+    {
+        $parts       = explode('\\', rtrim($name, '\\'));
+        $accumulator = '';
+
+        foreach ($parts as &$part) {
+            $accumulator .= mb_strtolower($part);
+
+            $url = $this->_router->unroute(
+                'namespace',
+                [
+                    'namespaceName' => $accumulator
+                ]
+            );
+
+            $accumulator .= '/';
+
+            $part = '<a href=".' . $url . '">' . $part . '</a>';
+        }
+
+        return implode(
+            '\<wbr />',
+            $parts
+        );
+    }
 }
