@@ -12,8 +12,6 @@
             return;
         }
 
-        console.log(env);
-
         switch (env.content) {
             case 'public':
             case 'protected':
