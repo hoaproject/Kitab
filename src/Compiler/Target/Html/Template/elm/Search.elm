@@ -1,7 +1,6 @@
 module Search exposing (..)
 
 import Platform.Cmd exposing (..)
---import Html exposing (Html, div, input, output, section, h1, text)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Attributes.Aria exposing (..)
@@ -22,7 +21,7 @@ searchIndex =
     ElmTextSearch.new
         { ref = .id
         , fields =
-            [ (.name, 5.0)
+            [ (.normalizedName, 5.0)
             , (.description, 2.0)
             , (.url, 0.5)
             ]
@@ -72,7 +71,7 @@ view model =
             [ section [] [ h1 [] [ text ("Search results for “" ++ model.content ++ "”") ] ]
             , case searchResults of
                   Ok searchResults ->
-                      ul []
+                      ol [ class "list--flat" ]
                           (List.map
                                (\searchResult ->
                                     let
@@ -107,6 +106,7 @@ subscriptions model =
 type alias SearchDocument =
     { id: String
     , name: String
+    , normalizedName: String
     , description: String
     , url: String
     }
@@ -114,6 +114,7 @@ type alias SearchDocument =
 emptySearchDocument =
     { description = "(unknown)"
     , name = "(unknown)"
+    , normalizedName = "(unknown)"
     , url = ""
     , id = ""
     }

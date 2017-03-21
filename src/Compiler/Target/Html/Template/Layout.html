@@ -12,7 +12,11 @@
         <link rel="stylesheet" href="./css/prism.css" media="all" />
     </head>
     <body>
-        <div id="search" role="search" aria-expanded="false"></div>
+        <div id="search" role="search" aria-expanded="false">
+            <div>
+                <input type="search" placeholder="Initializing search…" disabled />
+            </div>
+        </div>
 
         <main>
             <?php $this->import($data->layout->import->file, $data->layout->import->data) ?>
@@ -22,6 +26,6 @@
         <script type="text/javascript" src="./javascript/search-database.js"></script>
         <script type="text/javascript" src="./javascript/application.js"></script>
         <script type="text/javascript" src="./javascript/prism.js"></script>
-        <script type="text/javascript" src="./javascript/prism-abbreviate.js"></script>
+        <script type="text/javascript" src="./javascript/prism-abbreviate.js" async defer></script>
     </body>
 </html>

@@ -43,11 +43,13 @@ body {
     flex: 1;
     margin-left: calc(180px + 2rem);
     margin-bottom: 1.5rem;
+    min-height: 2.5rem
 }
 
     #search > div {
         display: flex;
         flex-direction: column;
+        height: 2.5rem
     }
 
     #search input {
@@ -68,6 +70,32 @@ body {
 
     #search output[aria-hidden="true"] {
         display: none;
+    }
+
+    #search output ul {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #search output li {
+        display: flex;
+        flex: 1;
+    }
+
+    #search output li > * {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #search output li > *:first-child {
+        direction: rtl;
+        margin-right: 2rem;
+    }
+
+    #search output li > span {
+        flex: 2.5;
     }
 
 main {

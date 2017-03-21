@@ -147,10 +147,11 @@ class Html implements Target
         $view->render();
 
         Search::insert([
-            'id'          => null,
-            'name'        => str_replace('\\', ' ', $entity->name),
-            'description' => $entity->documentation,
-            'url'         => '.' . $url
+            'id'             => null,
+            'name'           => $entity->name,
+            'normalizedName' => str_replace('\\', ' ', $entity->name),
+            'description'    => $entity->documentation,
+            'url'            => '.' . $url
         ]);
 
         return;
