@@ -4,7 +4,7 @@ import Platform.Cmd exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Attributes.Aria exposing (..)
-import Html.Events exposing (onInput)
+import Html.Events exposing (..)
 import ElmTextSearch
 
 main =
@@ -53,6 +53,7 @@ model =
 
 type Message =
     Search String
+  | Escape
 
 update: Message -> Model -> (Model, Cmd Message)
 update message model =
@@ -60,13 +61,16 @@ update message model =
         Search newContent ->
             ({ model | content = newContent }, Cmd.none)
 
+        Escape ->
+            ({ model | content = "" }, Cmd.none)
+
 view: Model -> Html Message
 view model =
     let
         searchResults = Result.map (\x -> List.map Tuple.first (Tuple.second x) ) (ElmTextSearch.search model.content model.searchIndex)
     in
     div []
-        [ input [ type_ "search" , id "searchInput", placeholder "Search anything…" , autocomplete False, onInput Search ] []
+        [ input [ type_ "search" , id "searchInput", value model.content, placeholder "Search anything…" , autocomplete False, onInput Search, onBlur Escape ] []
         , output [ ariaHidden (String.isEmpty model.content) ]
             [ section [] [ h1 [] [ text ("Search results for “" ++ model.content ++ "”") ] ]
             , case searchResults of
