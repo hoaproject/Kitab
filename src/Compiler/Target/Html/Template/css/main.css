@@ -40,6 +40,7 @@ body {
 
 #search {
     position: relative;
+    z-index: 0;
     flex: 1;
     margin-left: calc(180px + 2rem);
     margin-bottom: 1.5rem;
@@ -63,16 +64,28 @@ body {
         top: 3rem;
         width: 100%;
         padding: 1.2rem 0;
-        height: calc(100vh - 5rem);
-        overflow: scroll;
-        background: rgb(255, 255, 255);
+    }
+
+    #search output::before {
+        content: '';
+        position: fixed;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, .95);
     }
 
     #search output[aria-hidden="true"] {
         display: none;
     }
 
-    #search output ul {
+    #search output h1 {
+        background: rgb(255, 255, 255);
+    }
+
+    #search output ol {
         display: flex;
         flex-direction: column;
     }
