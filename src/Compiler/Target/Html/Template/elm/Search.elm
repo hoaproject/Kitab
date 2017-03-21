@@ -24,29 +24,31 @@ searchIndex =
         , fields =
             [ (.name, 5.0)
             , (.description, 2.0)
-            , (.related, 1.0)
             , (.url, 0.5)
             ]
         , listFields = []
         }
 
 init: List SearchDocument -> (Model, Cmd Message)
-init searchItems =
+init searchDatabase =
     (
         { content = ""
-        , searchIndex = Tuple.first (ElmTextSearch.addDocs searchItems searchIndex)
+        , searchDatabase = searchDatabase
+        , searchIndex = Tuple.first (ElmTextSearch.addDocs searchDatabase searchIndex)
         },
         Cmd.none
     )
 
 type alias Model =
     { content: String
+    , searchDatabase: List SearchDocument
     , searchIndex: ElmTextSearch.Index SearchDocument
     }
 
 model: Model
 model =
     { content = ""
+    , searchDatabase = []
     , searchIndex = searchIndex
     }
 
@@ -62,17 +64,43 @@ update message model =
 view: Model -> Html Message
 view model =
     let
-        searchResults = Result.map Tuple.second (ElmTextSearch.search model.content model.searchIndex)
+        searchResults = Result.map (\x -> List.map Tuple.first (Tuple.second x) ) (ElmTextSearch.search model.content model.searchIndex)
     in
     div []
         [ input [ type_ "search" , id "searchInput", placeholder "Search anything…" , autocomplete False, onInput Search ] []
         , output [ ariaHidden (String.isEmpty model.content) ]
             [ section [] [ h1 [] [ text ("Search results for “" ++ model.content ++ "”") ] ]
-            , div [] [ text ( "Result of searching for \"explanations\" is " ++ (toString searchResults)) ]
+            , case searchResults of
+                  Ok searchResults ->
+                      ul []
+                          (List.map
+                               (\searchResult ->
+                                    let
+                                        document = Maybe.withDefault emptySearchDocument (find (\l -> .id l == searchResult) model.searchDatabase) 
+                                    in
+                                        li []
+                                            [ a [ href ( .url document ) ]
+                                                [ code [] [ text ( .name document ) ] ]
+                                            , span [] [ text ( .description document ) ] ] )
+                               searchResults)
+                  _ ->
+                      p [] [ text "No result found, sorry!" ]
             ]
         ]
 
-subscriptions : Model -> Sub Message
+find: (a -> Bool) -> List a -> Maybe a
+find predicate list =
+    case list of
+        [] ->
+            Nothing
+
+        first::rest ->
+            if predicate first then
+                Just first
+            else
+                find predicate rest
+
+subscriptions: Model -> Sub Message
 subscriptions model =
     Sub.none
 
@@ -80,6 +108,12 @@ type alias SearchDocument =
     { id: String
     , name: String
     , description: String
-    , related: String
     , url: String
+    }
+
+emptySearchDocument =
+    { description = "(unknown)"
+    , name = "(unknown)"
+    , url = ""
+    , id = ""
     }

@@ -34,40 +34,52 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\IntermediateRepresentation;
+namespace Kitab\Compiler\Target\Html;
 
-abstract class Entity
+use Hoa\File\Directory;
+use Hoa\File\Write;
+
+class Search
 {
-    const TYPE = '(unknown)';
+    private static $_database = null;
 
-    public $name;
-    public $documentation = '';
-
-    public function getNamespaceName()
+    public static function insert(array $data)
     {
-        if (false === $pos = strrpos($this->name, '\\')) {
-            return '__root__';
+        static $_id = 0;
+
+        $serializedData = '';
+
+        if (0 < $_id) {
+            $serializedData .= ",\n";
         }
 
-        return substr($this->name, 0, $pos);
+        $data['id']      = $_id++ . '';
+        $serializedData .= json_encode($data);
+
+        self::getDatabase()->writeAll($serializedData);
+
+        return;
     }
 
-    public function getShortName()
+    public static function pack()
     {
-        if (false === $pos = strrpos($this->name, '\\')) {
-            return '';
+        self::getDatabase()->writeAll("\n" . '];');
+
+        return;
+    }
+
+    protected static function getDatabase(): Write
+    {
+        if (null === self::$_database) {
+            Directory::create('hoa://Kitab/Output/javascript');
+
+            self::$_database = new Write(
+                'hoa://Kitab/Output/javascript/search-database.js',
+                Write::MODE_TRUNCATE_WRITE
+            );
+            self::$_database->writeAll('window.searchItems = [' . "\n");
         }
 
-        return substr($this->name, $pos + 1);
-    }
-
-    public function inNamespace()
-    {
-        return false !== strpos($this->name, '\\');
-    }
-
-    public static function getType()
-    {
-        return static::TYPE;
+        return self::$_database;
     }
 }

@@ -127,15 +127,14 @@ class Html implements Target
 
     protected function compileEntity(Intermediaterepresentation\Entity $entity, string $templateFile, StdClass $data)
     {
-        $output =
-            'hoa://Kitab/Output/' .
-            $this->_router->unroute(
-                'entity',
-                [
-                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $entity->getNamespaceName())),
-                    'shortName'     => $entity->getShortName()
-                ]
-            );
+        $url = $this->_router->unroute(
+            'entity',
+            [
+                'namespaceName' => mb_strtolower(str_replace('\\', '/', $entity->getNamespaceName())),
+                'shortName'     => $entity->getShortName()
+            ]
+        );
+        $output = 'hoa://Kitab/Output/' . $url;
 
         Directory::create(dirname($output));
 
@@ -147,11 +146,20 @@ class Html implements Target
         );
         $view->render();
 
+        Search::insert([
+            'id'          => null,
+            'name'        => str_replace('\\', ' ', $entity->name),
+            'description' => $entity->documentation,
+            'url'         => '.' . $url
+        ]);
+
         return;
     }
 
     public function assemble(array $symbols)
     {
+        Search::pack();
+
         $this->assembleNamespaces($symbols);
         $this->assembleEntities($symbols);
         $this->assembleResources();
