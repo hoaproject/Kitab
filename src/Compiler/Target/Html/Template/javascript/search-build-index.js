@@ -4,7 +4,7 @@ var Elm     = require('./search-index-builder.elm');
 
 var options = process.argv.slice(2);
 
-if (0 === process.argv.slice(2).length) {
+if (0 === options.length) {
     console.error('One argument is missing: Search database file.');
     process.exit(1);
 }
@@ -26,8 +26,5 @@ try {
 
 var app = Elm.SearchIndexBuilder.worker();
 
-app.ports.output.subscribe(function (list) {
-    console.log(list);
-});
-
+app.ports.output.subscribe(list => console.log(list));
 app.ports.input.send(searchDatabaseDecoded);
