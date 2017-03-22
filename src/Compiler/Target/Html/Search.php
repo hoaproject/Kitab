@@ -63,7 +63,7 @@ class Search
 
     public static function pack()
     {
-        self::getDatabase()->writeAll("\n" . '];');
+        self::getDatabase()->writeAll("\n" . ']');
 
         return;
     }
@@ -74,10 +74,10 @@ class Search
             Directory::create('hoa://Kitab/Output/javascript');
 
             self::$_database = new Write(
-                'hoa://Kitab/Output/javascript/search-database.js',
+                'hoa://Kitab/Output/javascript/search-database.json',
                 Write::MODE_TRUNCATE_WRITE
             );
-            self::$_database->writeAll('window.searchItems = [' . "\n");
+            self::$_database->writeAll('[' . "\n");
         }
 
         return self::$_database;
