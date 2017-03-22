@@ -481,17 +481,17 @@ class Html implements Target
 
     protected function assembleResources()
     {
-        $from = __DIR__ . DS . 'Template' . DS . 'css';
+        $from = __DIR__ . DS . 'Template' . DS . 'Public' . DS . 'css';
         $to   = 'hoa://Kitab/Output/css';
 
         (new Directory($from))->copy($to, Touchable::OVERWRITE);
 
-        $from = __DIR__ . DS . 'Template' . DS . 'javascript';
+        $from = __DIR__ . DS . 'Template' . DS . 'Public' . DS . 'javascript';
         $to   = 'hoa://Kitab/Output/javascript';
 
         (new Directory($from))->copy($to, Touchable::OVERWRITE);
 
-        $from = __DIR__ . DS . 'Template' . DS . 'font';
+        $from = __DIR__ . DS . 'Template' . DS . 'Public' . DS . 'font';
         $to   = 'hoa://Kitab/Output/font';
 
         (new Directory($from))->copy($to, Touchable::OVERWRITE);
