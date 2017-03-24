@@ -497,22 +497,22 @@ class Html implements Target
 
         Search::pack();
 
-        $searchDatabaseOriginalItems = json_decode(file_get_contents(Search::DATABASE_FILE));
-        $searchDatabaseFinalItems = [];
+        $searchDatabase      = json_decode(file_get_contents(Search::DATABASE_FILE));
+        $searchMetadataItems = [];
 
-        foreach ($searchDatabaseOriginalItems as $searchDatabaseOriginalItem) {
-            $searchDatabaseFinalItems[] = [
-                'id'          => $searchDatabaseOriginalItem->id,
-                'name'        => $searchDatabaseOriginalItem->name,
-                'description' => $searchDatabaseOriginalItem->description,
-                'url'         => $searchDatabaseOriginalItem->url
+        foreach ($searchDatabase as $searchDatabaseItem) {
+            $searchMetadataItems[] = [
+                'id'          => $searchDatabaseItem->id,
+                'name'        => $searchDatabaseItem->name,
+                'description' => $searchDatabaseItem->description,
+                'url'         => $searchDatabaseItem->url
             ];
         }
 
-        $searchDatabase = new Write('hoa://Kitab/Output/javascript/search-database.js', Write::MODE_TRUNCATE_WRITE);
-        $searchDatabase->writeAll('window.searchDatabase = ');
-        $searchDatabase->writeAll(json_encode($searchDatabaseFinalItems));
-        $searchDatabase->writeAll(';');
+        $searchMetadata = new Write('hoa://Kitab/Output/javascript/search-metadata.js', Write::MODE_TRUNCATE_WRITE);
+        $searchMetadata->writeAll('window.searchMetadata = ');
+        $searchMetadata->writeAll(json_encode($searchMetadataItems));
+        $searchMetadata->writeAll(';');
 
         $protocol = Protocol::getInstance();
         $output   = 'hoa://Kitab/Output/javascript/search-index.js';

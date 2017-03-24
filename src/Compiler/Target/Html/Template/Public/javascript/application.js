@@ -6,7 +6,7 @@ document.addEventListener(
             searchNode,
             {
                 serializedSearchIndex: window.searchIndex || "",
-                searchDatabase: window.searchDatabase || []
+                searchDatabase: window.searchMetadata || []
             }
         );
     }

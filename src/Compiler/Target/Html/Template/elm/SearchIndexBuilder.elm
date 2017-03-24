@@ -3,23 +3,19 @@ port module SearchIndexBuilder exposing (..)
 import Platform
 import ElmTextSearch exposing (..)
 
-port input: (List SearchIndexDocument -> msg) -> Sub msg
-port output: String -> Cmd msg
-
-main =
-    Platform.program { init = ((), Cmd.none), subscriptions = \model -> input Export, update = update }
-
-type alias Model = ()
-type alias SearchIndexDocuments = List SearchIndexDocument
-
-type alias SearchIndexDocument =
+type alias SearchIndex =
     { id: String
     , normalizedName: String
     , description: String
     }
 
+port input: (List SearchIndex -> msg) -> Sub msg
+port output: String -> Cmd msg
+
+type alias Model = ()
+
 type Message =
-    Export SearchIndexDocuments
+    Export (List SearchIndex)
         
 update: Message -> Model -> (Model, Cmd Message)
 update message model =
@@ -27,7 +23,7 @@ update message model =
         Export database ->
             (model, output (exportIndex database))
 
-index: ElmTextSearch.Index SearchIndexDocument
+index: ElmTextSearch.Index SearchIndex
 index =
     ElmTextSearch.new
         { ref = .id
@@ -38,6 +34,9 @@ index =
         , listFields = []
         }
 
-exportIndex: SearchIndexDocuments -> String
+exportIndex: List SearchIndex -> String
 exportIndex database =
     ElmTextSearch.storeToString (Tuple.first (ElmTextSearch.addDocs database index))
+
+main =
+    Platform.program { init = ((), Cmd.none), subscriptions = \model -> input Export, update = update }

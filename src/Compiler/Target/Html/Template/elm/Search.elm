@@ -7,13 +7,13 @@ import Html.Attributes.Aria exposing (..)
 import Html.Events exposing (..)
 import ElmTextSearch exposing (..)
 
-type alias SearchIndexDocument =
+type alias SearchIndex =
     { id: String
     , normalizedName: String
     , description: String
     }
 
-type alias SearchDatabaseDocument =
+type alias SearchMetadata =
     { id: String
     , name: String
     , description: String
@@ -29,12 +29,12 @@ searchConfiguration =
     , listFields = []
     }
         
-searchIndex: ElmTextSearch.Index SearchIndexDocument
+searchIndex: ElmTextSearch.Index SearchIndex
 searchIndex =
     ElmTextSearch.new searchConfiguration
 
-emptySearchDatabaseDocument: SearchDatabaseDocument
-emptySearchDatabaseDocument =
+emptySearchMetadata: SearchMetadata
+emptySearchMetadata =
     { id = ""
     , name = "(unknown)"
     , description = "(unknown)"
@@ -43,7 +43,7 @@ emptySearchDatabaseDocument =
 
 type alias InitInput =
     { serializedSearchIndex:  String
-    , searchDatabase: List SearchDatabaseDocument
+    , searchDatabase: List SearchMetadata
     }
 
 init: InitInput -> (Model, Cmd Message)
@@ -58,8 +58,8 @@ init input =
 
 type alias Model =
     { content: String
-    , searchDatabase: List SearchDatabaseDocument
-    , searchIndex: ElmTextSearch.Index SearchIndexDocument
+    , searchDatabase: List SearchMetadata
+    , searchIndex: ElmTextSearch.Index SearchIndex
     }
 
 model: Model
@@ -93,12 +93,12 @@ view model =
                           (List.map
                                (\searchResult ->
                                     let
-                                        document = Maybe.withDefault emptySearchDatabaseDocument (find (\l -> .id l == searchResult) model.searchDatabase) 
+                                        metadata = Maybe.withDefault emptySearchMetadata (find (\l -> .id l == searchResult) model.searchDatabase)
                                     in
                                         li []
-                                            [ a [ href ( .url document ) ]
-                                                [ code [] [ text ( .name document ) ] ]
-                                            , span [] [ text ( .description document ) ] ] )
+                                            [ a [ href ( .url metadata ) ]
+                                                [ code [] [ text ( .name metadata ) ] ]
+                                            , span [] [ text ( .description metadata ) ] ] )
                                searchResults)
                   _ ->
                       p [] [ text "No result found, sorry!" ]
