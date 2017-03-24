@@ -518,19 +518,14 @@ class Html implements Target
         $output   = 'hoa://Kitab/Output/javascript/search-index.js';
         touch($output);
 
-        $searchIndexProcess = new Processus(
-            'node',
-            [
+        Processus::execute(
+            sprintf(
+                'node %s %s %s',
                 __DIR__ . DS . 'Javascript' . DS . 'search-build-index.js',
-                $protocol->resolve(Search::DATABASE_FILE)
-            ],
-            [
-                0 => ['pipe', 'r'],
-                1 => ['file', $protocol->resolve('hoa://Kitab/Output/javascript/search-index.js'), 'w'],
-                2 => ['pipe', 'w']
-            ]
+                $protocol->resolve(Search::DATABASE_FILE),
+                $protocol->resolve($output)
+            )
         );
-        $searchIndexProcess->run();
 
         return;
     }

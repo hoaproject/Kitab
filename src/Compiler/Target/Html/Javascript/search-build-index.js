@@ -9,7 +9,13 @@ if (0 === options.length) {
     process.exit(1);
 }
 
+if (1 === options.length) {
+    console.error('One argument is missing: Output file.');
+    process.exit(1);
+}
+
 var searchDatabase = options[0];
+var output         = options[1];
 
 if (false === fs.existsSync(searchDatabase)) {
     console.error('Provided search database file does not exist: `' + searchDatabase + '`.');
@@ -27,8 +33,9 @@ try {
 var app = Elm.SearchIndexBuilder.worker();
 
 app.ports.output.subscribe(list => {
-    process.stdout.write('window.searchIndex = \'');
-    process.stdout.write(list);
-    process.stdout.write('\';');
+    fs.writeFileSync(
+        output,
+        'window.searchIndex = \'' + list.replace(/\\\\/g, '\\\\\\\\').replace(/'/g, "\\'") + '\''
+    );
 });
 app.ports.input.send(searchDatabaseDecoded);
