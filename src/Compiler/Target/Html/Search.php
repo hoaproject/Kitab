@@ -41,6 +41,8 @@ use Hoa\File\Write;
 
 class Search
 {
+    const DATABASE_FILE = 'hoa://Kitab/Output/javascript/search-database.json';
+
     private static $_database = null;
 
     public static function insert(array $data)
@@ -74,7 +76,7 @@ class Search
             Directory::create('hoa://Kitab/Output/javascript');
 
             self::$_database = new Write(
-                'hoa://Kitab/Output/javascript/search-database.json',
+                self::DATABASE_FILE,
                 Write::MODE_TRUNCATE_WRITE
             );
             self::$_database->writeAll('[' . "\n");

@@ -36,10 +36,11 @@
 
 namespace Kitab\Compiler\Target\Html;
 
+use Hoa\Console\Processus;
 use Hoa\File\Directory;
 use Hoa\File\Write;
-use Hoa\Stream\IStream\Touchable;
 use Hoa\Protocol\Protocol;
+use Hoa\Stream\IStream\Touchable;
 use Kitab\Compiler\IntermediateRepresentation;
 use Kitab\Compiler\Target\Target;
 use Kitab\Exception;
@@ -159,8 +160,6 @@ class Html implements Target
 
     public function assemble(array $symbols)
     {
-        Search::pack();
-
         $this->assembleNamespaces($symbols);
         $this->assembleEntities($symbols);
         $this->assembleResources();
@@ -495,6 +494,31 @@ class Html implements Target
         $to   = 'hoa://Kitab/Output/font';
 
         (new Directory($from))->copy($to, Touchable::OVERWRITE);
+
+        Search::pack();
+
+        $searchDatabase = new Write('hoa://Kitab/Output/javascript/search-database.js', Write::MODE_TRUNCATE_WRITE);
+        $searchDatabase->writeAll('window.searchDatabase = ');
+        $searchDatabase->writeAll(file_get_contents(Search::DATABASE_FILE));
+        $searchDatabase->writeAll(';');
+
+        $protocol = Protocol::getInstance();
+        $output   = 'hoa://Kitab/Output/javascript/search-index.js';
+        touch($output);
+
+        $searchIndexProcess = new Processus(
+            'node',
+            [
+                __DIR__ . DS . 'Template' . DS . 'javascript' . DS . 'search-build-index.js',
+                $protocol->resolve(Search::DATABASE_FILE)
+            ],
+            [
+                0 => ['pipe', 'r'],
+                1 => ['file', $protocol->resolve('hoa://Kitab/Output/javascript/search-index.js'), 'w'],
+                2 => ['pipe', 'w']
+            ]
+        );
+        $searchIndexProcess->run();
 
         return;
     }

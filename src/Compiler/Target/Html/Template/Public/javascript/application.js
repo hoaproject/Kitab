@@ -2,6 +2,12 @@ document.addEventListener(
     'DOMContentLoaded',
     function () {
         var searchNode = document.getElementById('search');
-        Elm.Search.embed(searchNode, window.searchItems);
+        Elm.Search.embed(
+            searchNode,
+            {
+                serializedSearchIndex: window.searchIndex || "",
+                searchDatabase: window.searchDatabase || []
+            }
+        );
     }
 );

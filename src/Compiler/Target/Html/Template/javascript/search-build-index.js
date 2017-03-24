@@ -26,5 +26,9 @@ try {
 
 var app = Elm.SearchIndexBuilder.worker();
 
-app.ports.output.subscribe(list => console.log(list));
+app.ports.output.subscribe(list => {
+    process.stdout.write('window.searchIndex = \'');
+    process.stdout.write(list);
+    process.stdout.write('\';');
+});
 app.ports.input.send(searchDatabaseDecoded);
