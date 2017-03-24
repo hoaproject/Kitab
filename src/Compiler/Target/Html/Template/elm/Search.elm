@@ -5,34 +5,45 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Attributes.Aria exposing (..)
 import Html.Events exposing (..)
-import ElmTextSearch
+import ElmTextSearch exposing (..)
 
-main =
-    Html.programWithFlags
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
+type alias SearchIndexDocument =
+    { id: String
+    , normalizedName: String
+    , description: String
+    }
 
+type alias SearchDatabaseDocument =
+    { id: String
+    , name: String
+    , description: String
+    , url: String
+    }
 
 searchConfiguration =
     { ref = .id
     , fields =
-        [ (.normalizedName, 5.0)
-        , (.description, 2.0)
-        , (.url, 0.5)
+        [ (.normalizedName, 3.0)
+        , (.description, 1.0)
         ]
     , listFields = []
     }
         
-searchIndex: ElmTextSearch.Index SearchDocument
+searchIndex: ElmTextSearch.Index SearchIndexDocument
 searchIndex =
     ElmTextSearch.new searchConfiguration
 
+emptySearchDatabaseDocument: SearchDatabaseDocument
+emptySearchDatabaseDocument =
+    { id = ""
+    , name = "(unknown)"
+    , description = "(unknown)"
+    , url = ""
+    }
+
 type alias InitInput =
     { serializedSearchIndex:  String
-    , searchDatabase: List SearchDocument
+    , searchDatabase: List SearchDatabaseDocument
     }
 
 init: InitInput -> (Model, Cmd Message)
@@ -47,8 +58,8 @@ init input =
 
 type alias Model =
     { content: String
-    , searchDatabase: List SearchDocument
-    , searchIndex: ElmTextSearch.Index SearchDocument
+    , searchDatabase: List SearchDatabaseDocument
+    , searchIndex: ElmTextSearch.Index SearchIndexDocument
     }
 
 model: Model
@@ -67,9 +78,6 @@ update message model =
         Search newContent ->
             ({ model | content = newContent }, Cmd.none)
 
-        Escape ->
-            ({ model | content = "" }, Cmd.none)
-
 view: Model -> Html Message
 view model =
     let
@@ -85,7 +93,7 @@ view model =
                           (List.map
                                (\searchResult ->
                                     let
-                                        document = Maybe.withDefault emptySearchDocument (find (\l -> .id l == searchResult) model.searchDatabase) 
+                                        document = Maybe.withDefault emptySearchDatabaseDocument (find (\l -> .id l == searchResult) model.searchDatabase) 
                                     in
                                         li []
                                             [ a [ href ( .url document ) ]
@@ -113,18 +121,10 @@ subscriptions: Model -> Sub Message
 subscriptions model =
     Sub.none
 
-type alias SearchDocument =
-    { id: String
-    , name: String
-    , normalizedName: String
-    , description: String
-    , url: String
-    }
-
-emptySearchDocument =
-    { description = "(unknown)"
-    , name = "(unknown)"
-    , normalizedName = "(unknown)"
-    , url = ""
-    , id = ""
-    }
+main =
+    Html.programWithFlags
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }

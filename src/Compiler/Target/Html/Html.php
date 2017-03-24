@@ -497,9 +497,21 @@ class Html implements Target
 
         Search::pack();
 
+        $searchDatabaseOriginalItems = json_decode(file_get_contents(Search::DATABASE_FILE));
+        $searchDatabaseFinalItems = [];
+
+        foreach ($searchDatabaseOriginalItems as $searchDatabaseOriginalItem) {
+            $searchDatabaseFinalItems[] = [
+                'id'          => $searchDatabaseOriginalItem->id,
+                'name'        => $searchDatabaseOriginalItem->name,
+                'description' => $searchDatabaseOriginalItem->description,
+                'url'         => $searchDatabaseOriginalItem->url
+            ];
+        }
+
         $searchDatabase = new Write('hoa://Kitab/Output/javascript/search-database.js', Write::MODE_TRUNCATE_WRITE);
         $searchDatabase->writeAll('window.searchDatabase = ');
-        $searchDatabase->writeAll(file_get_contents(Search::DATABASE_FILE));
+        $searchDatabase->writeAll(json_encode($searchDatabaseFinalItems));
         $searchDatabase->writeAll(';');
 
         $protocol = Protocol::getInstance();
