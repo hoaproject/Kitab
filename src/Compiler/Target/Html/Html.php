@@ -521,7 +521,7 @@ class Html implements Target
         $searchIndexProcess = new Processus(
             'node',
             [
-                __DIR__ . DS . 'Template' . DS . 'javascript' . DS . 'search-build-index.js',
+                __DIR__ . DS . 'Javascript' . DS . 'search-build-index.js',
                 $protocol->resolve(Search::DATABASE_FILE)
             ],
             [
