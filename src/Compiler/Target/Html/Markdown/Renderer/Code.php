@@ -70,7 +70,7 @@ class Code implements InlineRendererInterface
             );
         }
 
-        $url     = '.';
+        $url = '.';
 
         list($namespaceName, $shortName) = Router::splitEntityName($content);
         $namespaceName = mb_strtolower(str_replace('\\', '/', $namespaceName));
