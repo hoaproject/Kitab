@@ -15,6 +15,15 @@
 
 <?php if (!empty($data->interface->constants)): ?>
     <h2 id="constants">Constants</h2>
+
+    <dl>
+        <?php foreach ($data->interface->constants as $constant): ?>
+            <dt aria-label="<?php echo $constant->name ?>"><code class="language-php"><?php echo $constant ?></code></dt>
+            <dd>
+                <section><?php echo $this->markdownToHtml($constant->documentation) ?></section>
+            </dd>
+        <?php endforeach ?>
+    </dl>
 <?php endif ?>
 
 <?php if (!empty($data->interface->methods)): ?>

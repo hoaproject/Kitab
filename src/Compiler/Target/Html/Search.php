@@ -41,6 +41,9 @@ use Hoa\File\Write;
 
 class Search
 {
+    /**
+     * Represent the path to the database file.
+     */
     const DATABASE_FILE = 'hoa://Kitab/Output/javascript/search-database.json';
 
     private static $_database = null;

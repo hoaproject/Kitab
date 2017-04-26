@@ -17,6 +17,15 @@ class <?php echo $data->class->getShortName() ?>
 
 <?php if (!empty($data->class->constants)): ?>
     <h2 id="constants">Constants</h2>
+
+    <dl>
+        <?php foreach ($data->class->constants as $constant): ?>
+            <dt aria-label="<?php echo $constant->name ?>"><code class="language-php"><?php echo $constant ?></code></dt>
+            <dd>
+                <section><?php echo $this->markdownToHtml($constant->documentation) ?></section>
+            </dd>
+        <?php endforeach ?>
+    </dl>
 <?php endif ?>
 
 <?php if (!empty($data->class->attributes)): ?>

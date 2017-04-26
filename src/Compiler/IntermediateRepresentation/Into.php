@@ -39,14 +39,17 @@ namespace Kitab\Compiler\IntermediateRepresentation;
 use Kitab\Compiler\Parser;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
+use PhpParser\PrettyPrinter;
 
 class Into extends NodeVisitorAbstract
 {
-    protected $_file = null;
+    protected $_file        = null;
+    private $_prettyPrinter = null;
 
     public function __construct()
     {
-        $this->_file = new File();
+        $this->_file          = new File();
+        $this->_prettyPrinter = new PrettyPrinter\Standard();
     }
 
     public function enterNode(Node $node)
@@ -55,6 +58,7 @@ class Into extends NodeVisitorAbstract
             $classNode            = $node;
             $class                = new Class_($classNode->namespacedName->toString());
             $class->documentation = Parser::extractFromComment($classNode->getDocComment());
+            $class->constants     = $this->intoConstants($classNode);
             $class->methods       = $this->intoMethods($classNode);
 
             if ($classNode->flags & Node\Stmt\Class_::MODIFIER_ABSTRACT) {
@@ -78,6 +82,7 @@ class Into extends NodeVisitorAbstract
             $interfaceNode            = $node;
             $interface                = new Interface_($interfaceNode->namespacedName->toString());
             $interface->documentation = Parser::extractFromComment($interfaceNode->getDocComment());
+            $interface->constants     = $this->intoConstants($interfaceNode);
             $interface->methods       = $this->intoMethods($interfaceNode);
 
             if (!empty($interfaceNode->extends)) {
@@ -104,6 +109,45 @@ class Into extends NodeVisitorAbstract
         }
 
         return;
+    }
+
+    protected function intoConstants(Node\Stmt\ClassLike $node): array
+    {
+        $constants = [];
+
+        foreach ($node->stmts as $statement) {
+            if (!($statement instanceof Node\Stmt\ClassConst)) {
+                continue;
+            }
+
+            $defaultDocumentation = Parser::extractFromComment($statement->getDocComment());
+
+            if (true === $statement->isPublic()) {
+                $visibility = Constant::VISIBILITY_PUBLIC;
+            } else if (true === $statement->isProtected()) {
+                $visibility = Constant::VISIBILITY_PROTECTED;
+            } else {
+                $visibility = Constant::VISIBILITY_PRIVATE;
+            }
+
+            foreach ($statement->consts as $constantNode) {
+                $constant             = new Constant($constantNode->name);
+                $constant->visibility = $visibility;
+                $constant->value      = $this->_prettyPrinter->prettyPrint([$constantNode->value]);
+
+                $documentation = Parser::extractFromComment($constantNode->getDocComment());
+
+                if (empty($documentation)) {
+                    $constant->documentation = $defaultDocumentation;
+                } else {
+                    $constant->documentation = $documentation;
+                }
+
+                $constants[] = $constant;
+            }
+        }
+
+        return $constants;
     }
 
     protected function intoMethods(Node\Stmt\ClassLike $node): array

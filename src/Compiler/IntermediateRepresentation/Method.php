@@ -38,8 +38,19 @@ namespace Kitab\Compiler\IntermediateRepresentation;
 
 class Method
 {
+    /**
+     * Represent a public constant.
+     */
     const VISIBILITY_PUBLIC    = 0;
+
+    /**
+     * Represent a protected constant.
+     */
     const VISIBILITY_PROTECTED = 1;
+
+    /**
+     * Represent a private constant.
+     */
     const VISIBILITY_PRIVATE   = 2;
 
     public $visibility    = self::VISIBILITY_PUBLIC;
