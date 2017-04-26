@@ -55,7 +55,7 @@ class Into extends NodeVisitorAbstract
             $classNode            = $node;
             $class                = new Class_($classNode->namespacedName->toString());
             $class->documentation = Parser::extractFromComment($classNode->getDocComment());
-            $class->methods       = $this->intoMethods($node);
+            $class->methods       = $this->intoMethods($classNode);
 
             if ($classNode->flags & Node\Stmt\Class_::MODIFIER_ABSTRACT) {
                 $class->abstract = true;
@@ -75,15 +75,25 @@ class Into extends NodeVisitorAbstract
 
             $this->_file[] = $class;
         } elseif ($node instanceof Node\Stmt\Interface_) {
-            $interfaceNode      = $node;
-            $interface          = new Interface_($interfaceNode->namespacedName->toString());
-            $interface->methods = $this->intoMethods($node);
+            $interfaceNode            = $node;
+            $interface                = new Interface_($interfaceNode->namespacedName->toString());
+            $interface->documentation = Parser::extractFromComment($interfaceNode->getDocComment());
+            $interface->methods       = $this->intoMethods($interfaceNode);
+
+            if (!empty($interfaceNode->extends)) {
+                $interface->parents = array_map(
+                    function ($nodeName) {
+                        return $nodeName->toString();
+                    },
+                    $interfaceNode->extends
+                );
+            }
 
             $this->_file[] = $interface;
         } elseif ($node instanceof Node\Stmt\Trait_) {
             $traitNode      = $node;
             $trait          = new Trait_($traitNode->namespacedName->toString());
-            $trait->methods = $this->intoMethods($node);
+            $trait->methods = $this->intoMethods($traitNode);
 
             $this->_file[] = $trait;
         } elseif ($node instanceof Node\Stmt\Function_) {

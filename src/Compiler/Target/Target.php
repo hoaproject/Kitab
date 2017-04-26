@@ -38,8 +38,32 @@ namespace Kitab\Compiler\Target;
 
 use Kitab\Compiler\IntermediateRepresentation\File;
 
+/**
+ * Define a compilation target.
+ *
+ * A compilation target works in two steps:
+ *
+ *   1. `compile` to compile an intermediate representation of a file into the target,
+ *   2. `assemble` to assemble of the compiled files.
+ */
 interface Target
 {
+    /**
+     * Compile an intermediate representation of a file into a specific target.
+     */
     public function compile(File $file);
+
+    /**
+     * Assemble the compiled files.
+     *
+     * This step is important, it can enhance the result based on
+     * symbols. When compiling one intermediate representation of a file at a
+     * time, not all symbols are present due to the nature of the
+     * algorithm. Indeed, each time a file is opened, it is compiled and
+     * dropped. Only symbols are kept in a store.
+     *
+     * The assemble step is here to complete, or enhance compiled file with
+     * the store of symbols.
+     */
     public function assemble(array $symbols);
 }
