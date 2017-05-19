@@ -153,6 +153,9 @@ class Compile extends Console\Dispatcher\Kit
             'Usage   : compile <options>', "\n",
             'Options :', "\n",
             $this->makeUsageOptionsList([
+                'c'    => 'Use a specific Composer file to get PSR-4 mappings ' .
+                          '(default: `./composer.json` if enabled)',
+                'o'    => 'Directory that will receive the generated documentation.',
                 'help' => 'This help.'
             ]);
 
