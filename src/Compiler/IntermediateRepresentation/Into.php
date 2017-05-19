@@ -106,22 +106,8 @@ class Into extends NodeVisitorAbstract
             $functionNode            = $node;
             $function                = new Function_($functionNode->namespacedName->toString());
             $function->documentation = Parser::extractFromComment($functionNode->getDocComment());
-
-            $parametersNode = $functionNode->params;
-
-            foreach ($parametersNode as $parameterNode) {
-                $parameter                  = new Parameter($parameterNode->name);
-                $parameter->type            = $this->intoType($parameterNode->type);
-                $parameter->type->reference = $parameterNode->byRef;
-                $parameter->type->variadic  = $parameterNode->variadic;
-
-                $function->inputs[] = $parameter;
-            }
-
-            // Output.
-            $output            = $this->intoType($functionNode->returnType);
-            $output->reference = $functionNode->byRef;
-            $function->output  = $output;
+            $function->inputs        = $this->intoInputs($functionNode);
+            $function->output        = $this->intoOutput($functionNode);
 
             $this->_file[] = $function;
         }
@@ -243,27 +229,38 @@ class Into extends NodeVisitorAbstract
                 $method->final = true;
             }
 
-            // Inputs.
-            $parametersNode = $methodNode->params;
-
-            foreach ($parametersNode as $parameterNode) {
-                $parameter                  = new Parameter($parameterNode->name);
-                $parameter->type            = $this->intoType($parameterNode->type);
-                $parameter->type->reference = $parameterNode->byRef;
-                $parameter->type->variadic  = $parameterNode->variadic;
-
-                $method->inputs[] = $parameter;
-            }
-
-            // Output.
-            $output            = $this->intoType($methodNode->returnType);
-            $output->reference = $methodNode->byRef;
-            $method->output    = $output;
+            $method->inputs = $this->intoInputs($methodNode);
+            $method->output = $this->intoOutput($methodNode);
 
             $methods[] = $method;
         }
 
         return $methods;
+    }
+
+    protected function intoInputs($node): array
+    {
+        $inputs         = [];
+        $parametersNode = $node->params;
+
+        foreach ($parametersNode as $parameterNode) {
+            $parameter                  = new Parameter($parameterNode->name);
+            $parameter->type            = $this->intoType($parameterNode->type);
+            $parameter->type->reference = $parameterNode->byRef;
+            $parameter->type->variadic  = $parameterNode->variadic;
+
+            $inputs[] = $parameter;
+        }
+
+        return $inputs;
+    }
+
+    protected function intoOutput($node): Type
+    {
+        $output            = $this->intoType($node->returnType);
+        $output->reference = $node->byRef;
+
+        return $output;
     }
 
     protected function intoType($node): Type
