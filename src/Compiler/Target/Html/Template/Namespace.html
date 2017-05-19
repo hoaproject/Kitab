@@ -26,7 +26,7 @@
     <h1>Namespace <code><?php echo $data->namespace->name ?></code></h1>
 
     <?php if (!empty($data->namespace->description)): ?>
-        <?php echo $this->markdownToHtml($data->namespace->description) ?>
+        <section class="entity__description"><?php echo $this->markdownToHtml($data->namespace->description) ?></section>
     <?php endif ?>
 
     <?php if (0 < count($data->namespace->classes)): ?>

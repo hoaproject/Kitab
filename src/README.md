@@ -2,7 +2,7 @@ Kitab is an API documentation generator program. Its role is to scan,
 lex, parse, and compile any PHP programs into a static HTML
 documentation.
 
-## Usage
+# Usage
 
 The simplest way to use Kitab is with a command-line, like:
 
@@ -15,13 +15,13 @@ document, `documentation` is the directory that will receive the
 generated documentation, and the `--with-composer` option to ask Kitab
 to use Composer for PSR-4 mapping definitions.
 
-## Dependencies
+# Dependencies
 
 Kitab requires PHP and NodeJS to be installed: PHP because this is a
 PHP program, and NodeJS to pre-compiled the static search engine
 (which is written in Elm).
 
-## Standards and formats
+# Standards and formats
 
 Kitab expects documentation in your PHP code to be written
 in [CommonMark](http://commonmark.org/) (a standard variant of

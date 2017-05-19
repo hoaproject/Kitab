@@ -11,12 +11,12 @@
 <?php endforeach ?>
 }</code></pre>
 
-<section><?php echo $this->markdownToHtml($data->interface->documentation) ?></section>
+<section class="entity__description"><?php echo $this->markdownToHtml($data->interface->documentation) ?></section>
 
 <?php if (!empty($data->interface->constants)): ?>
     <h2 id="constants">Constants</h2>
 
-    <dl>
+    <dl class="entity__children">
         <?php foreach ($data->interface->constants as $constant): ?>
             <dt aria-label="<?php echo $constant->name ?>"><code class="language-php"><?php echo $constant ?></code></dt>
             <dd>
@@ -29,7 +29,7 @@
 <?php if (!empty($data->interface->methods)): ?>
     <h2 id="methods">Methods</h2>
 
-    <dl>
+    <dl class="entity__children">
         <?php foreach ($data->interface->methods as $method): ?>
             <dt aria-label="<?php echo $method->name ?>"><code class="language-php"><?php echo $method ?></code></dt>
             <dd>
