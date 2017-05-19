@@ -18,6 +18,7 @@ $protocol[] = new Node(
     'Kitab',
     __DIR__ . DS,
     [
+        new Node('Input', "\r" . getcwd() . DS),
         new Node('Output', "\r" . $output)
     ]
 );

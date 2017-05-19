@@ -21,6 +21,10 @@
 <article>
     <h1>Namespace <code><?php echo $data->namespace->name ?></code></h1>
 
+    <?php if (!empty($data->namespace->description)): ?>
+        <?php echo $this->markdownToHtml($data->namespace->description) ?>
+    <?php endif ?>
+
     <?php if (0 < count($data->namespace->classes)): ?>
         <h2 id="classes">Classes</h2>
 

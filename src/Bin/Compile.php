@@ -37,6 +37,7 @@
 namespace Kitab\Bin;
 
 use Hoa\Console;
+use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
 use Kitab\Compiler\Target\Html\Html;
@@ -50,6 +51,7 @@ class Compile extends Console\Dispatcher\Kit
      * @var array
      */
     protected $options = [
+        ['with-composer',    Console\GetOption::OPTIONAL_ARGUMENT, 'c'],
         ['output-directory', Console\GetOption::REQUIRED_ARGUMENT, 'o'],
         ['help',             Console\GetOption::NO_ARGUMENT,       'h'],
         ['help',             Console\GetOption::NO_ARGUMENT,       '?']
@@ -64,11 +66,21 @@ class Compile extends Console\Dispatcher\Kit
      */
     public function run()
     {
+        $composerFile    = null;
         $outputDirectory = null;
         $directoryToScan = getcwd();
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
+                case 'c':
+                    if (false === is_string($v)) {
+                        $composerFile = './composer.json';
+                    } else {
+                        $composerFile = $v;
+                    }
+
+                    break;
+
                 case 'o':
                     $outputDirectory = $v;
 
@@ -82,6 +94,34 @@ class Compile extends Console\Dispatcher\Kit
                     $this->resolveOptionAmbiguity($v);
 
                     break;
+            }
+        }
+
+        if (null !== $composerFile) {
+            if (false === file_exists($composerFile)) {
+                throw new RuntimeException('Composer file `' . $composerFile . '` is not found.');
+            }
+
+            $composerFileContent = json_decode(file_get_contents($composerFile), true);
+
+            if (isset($composerFileContent['autoload']) &&
+                isset($composerFileContent['autoload']['psr-4'])) {
+                $protocolInput     = Protocol::getInstance()['Kitab']['Input'];
+                $composerDirectory = dirname($composerFile);
+
+                foreach ($composerFileContent['autoload']['psr-4'] as $psrNamespaces => $psrDirectory) {
+                    $latestNode = $protocolInput;
+
+                    foreach (explode('\\', trim($psrNamespaces, '\\')) as $psrNamespace) {
+                        if (!isset($latestNode[$psrNamespace])) {
+                            $latestNode[$psrNamespace] = new Node($psrNamespace);
+                        }
+
+                        $latestNode = $latestNode[$psrNamespace];
+                    }
+
+                    $latestNode->setReach("\r" . $composerDirectory . DS . $psrDirectory . DS);
+                }
             }
         }
 

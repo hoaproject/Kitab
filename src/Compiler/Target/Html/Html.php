@@ -206,11 +206,19 @@ class Html implements Target
                 $data->namespace       = new StdClass();
                 $data->namespace->name = rtrim($nextAccumulator, '\\');
 
-                $data->namespace->namespaces = [];
-                $data->namespace->classes    = [];
-                $data->namespace->interfaces = [];
-                $data->namespace->traits     = [];
-                $data->namespace->functions  = [];
+                $data->namespace->description = null;
+                $data->namespace->namespaces  = [];
+                $data->namespace->classes     = [];
+                $data->namespace->interfaces  = [];
+                $data->namespace->traits      = [];
+                $data->namespace->functions   = [];
+
+                $namespaceDirectory       = 'hoa://Kitab/Input/' . str_replace('\\', '/', $nextAccumulator);
+                $namespaceDescriptionFile = $namespaceDirectory . DS . 'Description.md';
+
+                if (true === file_exists($namespaceDescriptionFile)) {
+                    $data->namespace->description = file_get_contents($namespaceDescriptionFile);
+                }
 
                 foreach ($subSymbols as $subSymbolPrefix => $subSymbol) {
                     if ('@' !== $subSymbolPrefix[0]) {

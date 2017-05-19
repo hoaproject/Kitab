@@ -227,13 +227,13 @@ class Into extends NodeVisitorAbstract
             }
 
             // Inputs.
-            $paramsNode = $methodNode->params;
+            $parametersNode = $methodNode->params;
 
-            foreach ($paramsNode as $paramNode) {
-                $parameter                  = new Parameter($paramNode->name);
-                $parameter->type            = $this->intoType($paramNode->type);
-                $parameter->type->reference = $paramNode->byRef;
-                $parameter->type->variadic  = $paramNode->variadic;
+            foreach ($parametersNode as $parameterNode) {
+                $parameter                  = new Parameter($parameterNode->name);
+                $parameter->type            = $this->intoType($parameterNode->type);
+                $parameter->type->reference = $parameterNode->byRef;
+                $parameter->type->variadic  = $parameterNode->variadic;
 
                 $method->inputs[] = $parameter;
             }
