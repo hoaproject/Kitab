@@ -214,7 +214,7 @@ class Html implements Target
                 $data->namespace->functions   = [];
 
                 $namespaceDirectory       = 'hoa://Kitab/Input/' . str_replace('\\', '/', $nextAccumulator);
-                $namespaceDescriptionFile = $namespaceDirectory . DS . 'Description.md';
+                $namespaceDescriptionFile = $namespaceDirectory . DS . 'README.md';
 
                 if (true === file_exists($namespaceDescriptionFile)) {
                     $data->namespace->description = file_get_contents($namespaceDescriptionFile);
