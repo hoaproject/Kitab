@@ -30,7 +30,7 @@ Markdown). It can be mixed with [HTML](w3.org/TR/html5/).
 Each block of documentation can declare sections, and any kind of
 CommonMark elements, like:
 
-```
+```php
 /**
  * This is a block of documentation, attached to a PHP class.
  *
