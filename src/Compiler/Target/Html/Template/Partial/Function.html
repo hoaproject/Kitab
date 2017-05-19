@@ -1,4 +1,9 @@
-<h1>Function <code><?php echo $data->function->name ?></code></h1>
+<h1>
+    Function <code><?php echo $data->function->name ?></code>
+    <aside>
+        <a href="<?php echo $data->url->viewSource ?>#L<?php echo $data->function->lineStart . '-' . $data->function->lineEnd ?>" title="View source">[src]</a>
+    </aside>
+</h1>
 
 <pre><code class="language-php">function <?php echo $data->function->name ?>(<?php if (!empty($data->function->inputs)): ?>
 

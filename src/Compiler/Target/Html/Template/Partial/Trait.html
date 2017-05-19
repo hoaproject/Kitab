@@ -1,4 +1,9 @@
-<h1>Trait <code><?php echo $data->trait->name ?></code></h1>
+<h1>
+    Trait <code><?php echo $data->trait->name ?></code>
+    <aside>
+        <a href="<?php echo $data->url->viewSource ?>#L<?php echo $data->trait->lineStart . '-' . $data->trait->lineEnd ?>" title="View source">[src]</a>
+    </aside>
+</h1>
 
 <dl>
     <?php foreach ($data->trait->methods as $method): ?>

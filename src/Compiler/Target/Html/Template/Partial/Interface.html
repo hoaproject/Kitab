@@ -1,4 +1,9 @@
-<h1>Interface <code><?php echo $data->interface->name ?></code></h1>
+<h1>
+    Interface <code><?php echo $data->interface->name ?></code>
+    <aside>
+        <a href="<?php echo $data->url->viewSource ?>#L<?php echo $data->interface->lineStart . '-' . $data->interface->lineEnd ?>" title="View source">[src]</a>
+    </aside>
+</h1>
 
 <pre><code class="language-php">interface <?php echo $data->interface->getShortName() ?>
 <?php if (!empty($data->interface->parents)): ?>
@@ -31,7 +36,10 @@
 
     <dl class="entity__children">
         <?php foreach ($data->interface->methods as $method): ?>
-            <dt aria-label="<?php echo $method->name ?>"><code class="language-php"><?php echo $method ?></code></dt>
+            <dt aria-label="<?php echo $method->name ?>">
+                <code class="language-php"><?php echo $method ?></code>
+                <aside><a href="<?php echo $data->url->viewSource ?>#L<?php echo $method->lineStart . '-' . $method->lineEnd ?>" title="View source of the `<?php echo $method->name ?>` method">[src]</a></aside>
+            </dt>
             <dd>
                 <section><?php echo $this->markdownToHtml($method->documentation) ?></section>
             </dd>
