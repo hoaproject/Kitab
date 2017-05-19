@@ -53,6 +53,8 @@ class Method
      */
     const VISIBILITY_PRIVATE   = 2;
 
+    public $lineStart     = 0;
+    public $lineEnd       = 0;
     public $visibility    = self::VISIBILITY_PUBLIC;
     public $static        = false;
     public $abstract      = false;

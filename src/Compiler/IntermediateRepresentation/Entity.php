@@ -41,8 +41,8 @@ abstract class Entity
     const TYPE = '(unknown)';
 
     public $file;
-    public $lineStart;
-    public $lineEnd;
+    public $lineStart     = 0;
+    public $lineEnd       = 0;
     public $name;
     public $documentation = '';
 

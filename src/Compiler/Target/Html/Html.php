@@ -144,8 +144,7 @@ class Html implements Target
             'entity',
             [
                 'namespaceName' => $namespaceName,
-                'shortName'     => $shortName . '.source',
-                '_fragment'     => 'L' . $entity->lineStart . '-' . $entity->lineEnd
+                'shortName'     => $shortName . '.source'
             ]
         );
         $outputSource = 'hoa://Kitab/Output/' . $urlSource;

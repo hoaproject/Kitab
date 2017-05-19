@@ -84,6 +84,8 @@ class Into extends NodeVisitorAbstract
         } elseif ($node instanceof Node\Stmt\Interface_) {
             $interfaceNode            = $node;
             $interface                = new Interface_($interfaceNode->namespacedName->toString());
+            $interface->lineStart     = $interfaceNode->getAttribute('startLine');
+            $interface->lineEnd       = $interfaceNode->getAttribute('endLine');
             $interface->documentation = Parser::extractFromComment($interfaceNode->getDocComment());
             $interface->constants     = $this->intoConstants($interfaceNode);
             $interface->methods       = $this->intoMethods($interfaceNode);
@@ -99,14 +101,18 @@ class Into extends NodeVisitorAbstract
 
             $this->_file[] = $interface;
         } elseif ($node instanceof Node\Stmt\Trait_) {
-            $traitNode      = $node;
-            $trait          = new Trait_($traitNode->namespacedName->toString());
-            $trait->methods = $this->intoMethods($traitNode);
+            $traitNode        = $node;
+            $trait            = new Trait_($traitNode->namespacedName->toString());
+            $trait->lineStart = $traitNode->getAttribute('startLine');
+            $trait->lineEnd   = $traitNode->getAttribute('endLine');
+            $trait->methods   = $this->intoMethods($traitNode);
 
             $this->_file[] = $trait;
         } elseif ($node instanceof Node\Stmt\Function_) {
             $functionNode            = $node;
             $function                = new Function_($functionNode->namespacedName->toString());
+            $function->lineStart     = $functionNode->getAttribute('startLine');
+            $function->lineEnd       = $functionNode->getAttribute('endLine');
             $function->documentation = Parser::extractFromComment($functionNode->getDocComment());
             $function->inputs        = $this->intoInputs($functionNode);
             $function->output        = $this->intoOutput($functionNode);
@@ -205,7 +211,9 @@ class Into extends NodeVisitorAbstract
         $methods = [];
 
         foreach ($node->getMethods() as $methodNode) {
-            $method = new Method($methodNode->name);
+            $method            = new Method($methodNode->name);
+            $method->lineStart = $methodNode->getAttribute('startLine');
+            $method->lineEnd   = $methodNode->getAttribute('endLine');
 
             // Documentation.
             $method->documentation = Parser::extractFromComment($methodNode->getDocComment());

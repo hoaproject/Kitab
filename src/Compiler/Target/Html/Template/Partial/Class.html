@@ -1,7 +1,7 @@
 <h1>
   Class <code><?php echo $data->class->name ?></code>
   <aside>
-    <a href="<?php echo $data->url->viewSource ?>" title="View source">[src]</a>
+    <a href="<?php echo $data->url->viewSource ?>#L<?php echo $data->class->lineStart . '-' . $data->class->lineEnd ?>" title="View source">[src]</a>
   </aside>
 </h1>
 
@@ -51,7 +51,10 @@ class <?php echo $data->class->getShortName() ?>
 
     <dl class="entity__children">
         <?php foreach ($data->class->methods as $method): ?>
-            <dt aria-label="<?php echo $method->name ?>"><code class="language-php"><?php echo $method ?></code></dt>
+            <dt aria-label="<?php echo $method->name ?>">
+                <code class="language-php"><?php echo $method ?></code>
+                <aside><a href="<?php echo $data->url->viewSource ?>#L<?php echo $method->lineStart . '-' . $method->lineEnd ?>" title="View source of the `<?php echo $method->name ?>` method">[src]</a></aside>
+            </dt>
             <dd>
                 <section><?php echo $this->markdownToHtml($method->documentation) ?></section>
             </dd>

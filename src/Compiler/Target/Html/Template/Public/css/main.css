@@ -234,11 +234,8 @@ h1, h2, h3, h4 {
         font-size: 1.2em;
     }
 
-    h1 aside {
-        display: block;
-        float: right;
+    h1 > aside {
         font-size: .5em;
-        margin: 0;
     }
 
 a {
@@ -294,6 +291,14 @@ dl {}
         margin-top: .5em;
         margin-left: 2em;
     }
+
+h1 aside,
+dt aside {
+    float: right;
+    font-family: Header, Fira Sans, sans-serif;
+    font-weight: 500;
+    margin: 0;
+}
 
 abbr {
     cursor: help;
