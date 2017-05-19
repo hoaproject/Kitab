@@ -49,7 +49,7 @@ class Into extends NodeVisitorAbstract
     public function __construct()
     {
         $this->_file          = new File();
-        $this->_prettyPrinter = new PrettyPrinter\Standard();
+        $this->_prettyPrinter = new PrettyPrinter\Standard(['shortArraySyntax' => true]);
     }
 
     public function enterNode(Node $node)
@@ -103,8 +103,25 @@ class Into extends NodeVisitorAbstract
 
             $this->_file[] = $trait;
         } elseif ($node instanceof Node\Stmt\Function_) {
-            $functionNode      = $node;
-            $function          = new Function_($functionNode->namespacedName->toString());
+            $functionNode            = $node;
+            $function                = new Function_($functionNode->namespacedName->toString());
+            $function->documentation = Parser::extractFromComment($functionNode->getDocComment());
+
+            $parametersNode = $functionNode->params;
+
+            foreach ($parametersNode as $parameterNode) {
+                $parameter                  = new Parameter($parameterNode->name);
+                $parameter->type            = $this->intoType($parameterNode->type);
+                $parameter->type->reference = $parameterNode->byRef;
+                $parameter->type->variadic  = $parameterNode->variadic;
+
+                $function->inputs[] = $parameter;
+            }
+
+            // Output.
+            $output            = $this->intoType($functionNode->returnType);
+            $output->reference = $functionNode->byRef;
+            $function->output  = $output;
 
             $this->_file[] = $function;
         }

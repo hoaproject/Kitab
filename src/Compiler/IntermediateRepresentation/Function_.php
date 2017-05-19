@@ -40,6 +40,9 @@ class Function_ extends Entity
 {
     const TYPE = 'function';
 
+    public $inputs = [];
+    public $output = null;
+
     public function __construct(string $name)
     {
         $this->name = $name;
