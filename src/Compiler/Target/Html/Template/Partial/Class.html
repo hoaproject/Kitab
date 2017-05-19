@@ -30,6 +30,15 @@ class <?php echo $data->class->getShortName() ?>
 
 <?php if (!empty($data->class->attributes)): ?>
     <h2 id="attributes">Attributes</h2>
+
+    <dl>
+        <?php foreach ($data->class->attributes as $attribute): ?>
+            <dt aria-label="<?php echo $attribute->name ?>"><code class="language-php"><?php echo $attribute ?></code></dt>
+            <dd>
+                <section><?php echo $this->markdownToHtml($attribute->documentation) ?></section>
+            </dd>
+        <?php endforeach ?>
+    </dl>
 <?php endif ?>
 
 <?php if (!empty($data->class->methods)): ?>

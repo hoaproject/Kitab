@@ -59,6 +59,7 @@ class Into extends NodeVisitorAbstract
             $class                = new Class_($classNode->namespacedName->toString());
             $class->documentation = Parser::extractFromComment($classNode->getDocComment());
             $class->constants     = $this->intoConstants($classNode);
+            $class->attributes    = $this->intoAttributes($classNode);
             $class->methods       = $this->intoMethods($classNode);
 
             if ($classNode->flags & Node\Stmt\Class_::MODIFIER_ABSTRACT) {
@@ -148,6 +149,50 @@ class Into extends NodeVisitorAbstract
         }
 
         return $constants;
+    }
+
+    protected function intoAttributes(Node\Stmt\ClassLike $node): array
+    {
+        $attributes = [];
+
+        foreach ($node->stmts as $statement) {
+            if (!($statement instanceof Node\Stmt\Property)) {
+                continue;
+            }
+
+            $defaultDocumentation = Parser::extractFromComment($statement->getDocComment());
+
+            if (true === $statement->isPublic()) {
+                $visibility = Attribute::VISIBILITY_PUBLIC;
+            } else if (true === $statement->isProtected()) {
+                $visibility = Attribute::VISIBILITY_PROTECTED;
+            } else {
+                $visibility = Attribute::VISIBILITY_PRIVATE;
+            }
+
+            $static = $statement->isStatic();
+
+            foreach ($statement->props as $attributeNode) {
+                $attribute             = new Attribute($attributeNode->name);
+                $attribute->visibility = $visibility;
+
+                if (null !== $attributeNode->default) {
+                    $attribute->default = $this->_prettyPrinter->prettyPrint([$attributeNode->default]);
+                }
+
+                $documentation = Parser::extractFromComment($attributeNode->getDocComment());
+
+                if (empty($documentation)) {
+                    $attribute->documentation = $defaultDocumentation;
+                } else {
+                    $attribute->documentation = $documentation;
+                }
+
+                $attributes[] = $attribute;
+            }
+        }
+
+        return $attributes;
     }
 
     protected function intoMethods(Node\Stmt\ClassLike $node): array
