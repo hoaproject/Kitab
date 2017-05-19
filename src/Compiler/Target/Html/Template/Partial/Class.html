@@ -1,4 +1,9 @@
-<h1>Class <code><?php echo $data->class->name ?></code></h1>
+<h1>
+  Class <code><?php echo $data->class->name ?></code>
+  <aside>
+    <a href="<?php echo $data->url->viewSource ?>" title="View source">[src]</a>
+  </aside>
+</h1>
 
 <pre><code class="language-php"><?php if ($data->class->final): ?>final <?php endif ?>
 <?php if ($data->class->abstract): ?>abstract <?php endif ?>

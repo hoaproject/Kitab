@@ -46,9 +46,9 @@ class Into extends NodeVisitorAbstract
     protected $_file        = null;
     private $_prettyPrinter = null;
 
-    public function __construct()
+    public function __construct(string $filename)
     {
-        $this->_file          = new File();
+        $this->_file          = new File($filename);
         $this->_prettyPrinter = new PrettyPrinter\Standard(['shortArraySyntax' => true]);
     }
 
@@ -57,6 +57,8 @@ class Into extends NodeVisitorAbstract
         if ($node instanceof Node\Stmt\Class_) {
             $classNode            = $node;
             $class                = new Class_($classNode->namespacedName->toString());
+            $class->lineStart     = $classNode->getAttribute('startLine');
+            $class->lineEnd       = $classNode->getAttribute('endLine');
             $class->documentation = Parser::extractFromComment($classNode->getDocComment());
             $class->constants     = $this->intoConstants($classNode);
             $class->attributes    = $this->intoAttributes($classNode);

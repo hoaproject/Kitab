@@ -38,4 +38,21 @@ namespace Kitab\Compiler\IntermediateRepresentation;
 
 class File extends \ArrayObject
 {
+    public $name;
+
+    public function __construct(string $name)
+    {
+        parent::__construct();
+
+        $this->name = $name;
+    }
+
+    public function offsetSet($name, $value)
+    {
+        if ($value instanceof Entity) {
+            $value->file = $this;
+        }
+
+        return parent::offsetSet($name, $value);
+    }
 }

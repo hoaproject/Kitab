@@ -128,14 +128,30 @@ class Html implements Target
 
     protected function compileEntity(Intermediaterepresentation\Entity $entity, string $templateFile, StdClass $data)
     {
+        $namespaceName = mb_strtolower(str_replace('\\', '/', $entity->getNamespaceName()));
+        $shortName     = $entity->getShortName();
+
         $url = $this->_router->unroute(
             'entity',
             [
-                'namespaceName' => mb_strtolower(str_replace('\\', '/', $entity->getNamespaceName())),
-                'shortName'     => $entity->getShortName()
+                'namespaceName' => $namespaceName,
+                'shortName'     => $shortName
             ]
         );
         $output = 'hoa://Kitab/Output/' . $url;
+
+        $urlSource = $this->_router->unroute(
+            'entity',
+            [
+                'namespaceName' => $namespaceName,
+                'shortName'     => $shortName . '.source',
+                '_fragment'     => 'L' . $entity->lineStart . '-' . $entity->lineEnd
+            ]
+        );
+        $outputSource = 'hoa://Kitab/Output/' . $urlSource;
+
+        $data->url             = new StdClass();
+        $data->url->viewSource = '.' . $urlSource;
 
         Directory::create(dirname($output));
 
@@ -146,6 +162,26 @@ class Html implements Target
             $data
         );
         $view->render();
+
+        $dataSource = new StdClass();
+
+        $dataSource->layout        = new StdClass();
+        $dataSource->layout->base  = './' . str_repeat('../', substr_count($namespaceName, '/') + 1);
+        $dataSource->layout->title = 'Foobar';
+
+        $dataSource->layout->import       = new StdClass();
+        $dataSource->layout->import->file = __DIR__ . DS . 'Template' . DS . 'Source.html';
+
+        $dataSource->layout->import->data              = new StdClass();
+        $dataSource->layout->import->data->fileContent = file_get_contents($entity->file->name);
+
+        $viewSource = new Templater(
+            __DIR__ . DS . 'Template' . DS . 'Layout.html',
+            new Write($outputSource, Write::MODE_TRUNCATE_WRITE),
+            $this->_router,
+            $dataSource
+        );
+        $viewSource->render();
 
         Search::insert([
             'id'             => null,

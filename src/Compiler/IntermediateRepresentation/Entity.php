@@ -40,6 +40,9 @@ abstract class Entity
 {
     const TYPE = '(unknown)';
 
+    public $file;
+    public $lineStart;
+    public $lineEnd;
     public $name;
     public $documentation = '';
 

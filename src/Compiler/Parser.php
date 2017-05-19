@@ -78,12 +78,14 @@ class Parser
             );
         }
 
-        return $this->intoIntermediateRepresentation($statements);
+        return $this->intoIntermediateRepresentation($statements, $fileName);
     }
 
-    protected function intoIntermediateRepresentation(array $statements): IntermediateRepresentation\File
-    {
-        $intoIR = new IntermediateRepresentation\Into();
+    protected function intoIntermediateRepresentation(
+        array $statements,
+        string $fileName
+    ): IntermediateRepresentation\File {
+        $intoIR = new IntermediateRepresentation\Into($fileName);
 
         $traverser = self::getTraverser();
         $traverser->addVisitor($intoIR);
