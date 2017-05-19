@@ -46,7 +46,7 @@ abstract class Entity
     public function getNamespaceName()
     {
         if (false === $pos = strrpos($this->name, '\\')) {
-            return '__root__';
+            return '__global__';
         }
 
         return substr($this->name, 0, $pos);
@@ -55,7 +55,7 @@ abstract class Entity
     public function getShortName()
     {
         if (false === $pos = strrpos($this->name, '\\')) {
-            return '';
+            return $this->name;
         }
 
         return substr($this->name, $pos + 1);

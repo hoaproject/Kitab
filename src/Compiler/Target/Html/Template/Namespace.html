@@ -6,7 +6,11 @@
     </header>
 
     <nav>
-        <h1><code><?php echo $this->namespaceToURLs($data->navigation->heading) ?></code></h1>
+        <?php if (!empty($data->navigation->heading)): ?>
+            <h1><code><?php echo $this->namespaceToURLs($data->navigation->heading) ?></code></h1>
+        <?php else: ?>
+            <h1>Home</h1>
+        <?php endif ?>
 
         <h2>Namespaces</h2>
 
