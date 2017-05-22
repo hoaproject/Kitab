@@ -66,8 +66,7 @@ body {
         padding: 1.2rem 0;
     }
 
-    #search output::before {
-        content: '';
+    #output-background {
         position: fixed;
         z-index: -1;
         top: 0;

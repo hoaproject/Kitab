@@ -98,7 +98,8 @@ view model =
         div []
             [ input [ type_ "search", id "searchInput", value model.content, placeholder "Search anything…", autocomplete False, onInput Search ] []
             , output [ ariaHidden (String.isEmpty model.content) ]
-                [ section [] [ h1 [] [ text ("Search results for “" ++ model.content ++ "”") ] ]
+                [ div [ id "output-background" ] []
+                , section [] [ h1 [] [ text ("Search results for “" ++ model.content ++ "”") ] ]
                 , case searchResults of
                     Ok searchResults ->
                         ol [ class "list--flat" ]
