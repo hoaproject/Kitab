@@ -57,6 +57,8 @@ body {
         flex: 1;
         font: inherit;
         padding: .5em 1em .3em 1em;
+        border: 1px rgb(204, 204, 204) solid;
+        -webkit-appearance: none;
     }
 
     #search output {
