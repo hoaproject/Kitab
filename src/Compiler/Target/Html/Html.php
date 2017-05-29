@@ -43,16 +43,25 @@ use Hoa\Protocol\Protocol;
 use Hoa\Stream\IStream\Touchable;
 use Kitab\Compiler\IntermediateRepresentation;
 use Kitab\Compiler\Target\Target;
+use Kitab\Configuration;
 use Kitab\Exception;
 use StdClass;
 
 class Html implements Target
 {
-    public function __construct(Router $router = null)
+    protected $_configuration = null;
+
+    public function __construct(Router $router = null, Configuration $configuration = null)
     {
         if (null === $router) {
             $this->_router = new Router();
         }
+
+        if (null === $configuration) {
+            $configuration = new Configuration();
+        }
+
+        $this->_configuration = $configuration;
 
         return;
     }
@@ -166,13 +175,18 @@ class Html implements Target
 
         $dataSource->layout        = new StdClass();
         $dataSource->layout->base  = './' . str_repeat('../', substr_count($namespaceName, '/') + 1);
-        $dataSource->layout->title = 'Foobar';
+        $dataSource->layout->title = sprintf(
+            'Source of %s from %s',
+            $entity->name,
+            $this->_configuration->projectName
+        );
 
         $dataSource->layout->import       = new StdClass();
         $dataSource->layout->import->file = __DIR__ . DS . 'Template' . DS . 'Source.html';
 
-        $dataSource->layout->import->data              = new StdClass();
-        $dataSource->layout->import->data->fileContent = file_get_contents($entity->file->name);
+        $dataSource->layout->import->data                = new StdClass();
+        $dataSource->layout->import->data->configuration = $this->_configuration;
+        $dataSource->layout->import->data->fileContent   = file_get_contents($entity->file->name);
 
         $viewSource = new Templater(
             __DIR__ . DS . 'Template' . DS . 'Layout.html',
@@ -348,11 +362,17 @@ class Html implements Target
 
                 $data->layout         = new StdClass();
                 $data->layout->base   = './' . str_repeat('../', substr_count($nextAccumulator, '\\'));
-                $data->layout->title  = 'Foobar';
+                $data->layout->title  = sprintf(
+                    'Index of %s from %s',
+                    trim($nextAccumulator, '\\'),
+                    $this->_configuration->projectName
+                );
 
                 $data->layout->import       = new StdClass();
                 $data->layout->import->file = __DIR__ . DS . 'Template' . DS . 'Namespace.html';
-                $data->layout->import->data = $data;
+
+                $data->layout->import->data                = $data;
+                $data->layout->import->data->configuration = $this->_configuration;
 
                 $data->navigation             = new StdClass();
                 $data->navigation->heading    = $accumulator;
@@ -488,12 +508,18 @@ class Html implements Target
 
                 $data->layout        = new StdClass();
                 $data->layout->base  = './' . str_repeat('../', substr_count($accumulator, '\\'));
-                $data->layout->title = 'Foobar';
+                $data->layout->title = sprintf(
+                    '%s from %s',
+                    $symbolFullName,
+                    $this->_configuration->projectName
+                );
 
                 $data->layout->import       = new StdClass();
                 $data->layout->import->file = __DIR__ . DS . 'Template' . DS . 'Entity.html';
 
                 $data->layout->import->data = new StdClass();
+
+                $data->layout->import->data->configuration = $this->_configuration;
 
                 $data->layout->import->data->navigation             = new StdClass();
                 $data->layout->import->data->navigation->heading    = $accumulator;

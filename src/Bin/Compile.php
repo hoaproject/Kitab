@@ -41,6 +41,7 @@ use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
 use Kitab\Compiler\Target\Html\Html;
+use Kitab\Configuration;
 use Kitab\Finder;
 
 class Compile extends Console\Dispatcher\Kit
@@ -51,10 +52,12 @@ class Compile extends Console\Dispatcher\Kit
      * @var array
      */
     protected $options = [
-        ['with-composer',    Console\GetOption::OPTIONAL_ARGUMENT, 'c'],
-        ['output-directory', Console\GetOption::REQUIRED_ARGUMENT, 'o'],
-        ['help',             Console\GetOption::NO_ARGUMENT,       'h'],
-        ['help',             Console\GetOption::NO_ARGUMENT,       '?']
+        ['with-composer',     Console\GetOption::OPTIONAL_ARGUMENT, 'c'],
+        ['with-logo-url',     Console\GetOption::REQUIRED_ARGUMENT, 'l'],
+        ['with-project-name', Console\GetOption::REQUIRED_ARGUMENT, 'p'],
+        ['output-directory',  Console\GetOption::REQUIRED_ARGUMENT, 'o'],
+        ['help',              Console\GetOption::NO_ARGUMENT,       'h'],
+        ['help',              Console\GetOption::NO_ARGUMENT,       '?']
     ];
 
 
@@ -69,6 +72,7 @@ class Compile extends Console\Dispatcher\Kit
         $composerFile    = null;
         $outputDirectory = null;
         $directoryToScan = getcwd();
+        $configuration   = new Configuration();
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
@@ -78,6 +82,16 @@ class Compile extends Console\Dispatcher\Kit
                     } else {
                         $composerFile = $v;
                     }
+
+                    break;
+
+                case 'l':
+                    $configuration->logoURL = $v;
+
+                    break;
+
+                case 'p':
+                    $configuration->projectName = $v;
 
                     break;
 
@@ -134,9 +148,9 @@ class Compile extends Console\Dispatcher\Kit
         $finder = new Finder();
         $finder->in($directoryToScan);
 
-        $target = new Html();
+        $target = new Html(null, $configuration);
 
-        $compiler = new Compiler();
+        $compiler = new Compiler($configuration);
         $compiler->compile($finder, $target);
 
         return;
@@ -154,7 +168,9 @@ class Compile extends Console\Dispatcher\Kit
             'Options :', "\n",
             $this->makeUsageOptionsList([
                 'c'    => 'Use a specific Composer file to get PSR-4 mappings ' .
-                          '(default: `./composer.json` if enabled)',
+                          '(default: `./composer.json` if enabled).',
+                'l'    => 'URL of the logo.',
+                'p'    => 'Project name.',
                 'o'    => 'Directory that will receive the generated documentation.',
                 'help' => 'This help.'
             ]);

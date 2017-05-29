@@ -36,8 +36,9 @@
 
 namespace Kitab\Compiler;
 
-use Kitab\Finder;
+use Kitab\Configuration;
 use Kitab\Exception;
+use Kitab\Finder;
 use PhpParser\ParserFactory;
 
 /**
@@ -47,6 +48,7 @@ use PhpParser\ParserFactory;
  */
 class Compiler
 {
+    protected $_configuration = null;
     protected static $_parser = null;
 
     /**
@@ -55,8 +57,14 @@ class Compiler
      * to cache the parser. This is not necessary to allocate a new parser
      * each time.
      */
-    public function __construct()
+    public function __construct(Configuration $configuration = null)
     {
+        if (null === $configuration) {
+            $configuration = new Configuration();
+        }
+
+        $this->_configuration = $configuration;
+
         if (null === self::$_parser) {
             self::$_parser = new Parser();
         }
