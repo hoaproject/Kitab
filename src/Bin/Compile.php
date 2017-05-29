@@ -52,6 +52,7 @@ class Compile extends Console\Dispatcher\Kit
      * @var array
      */
     protected $options = [
+        ['default-namespace', Console\GetOption::REQUIRED_ARGUMENT, 'd'],
         ['with-composer',     Console\GetOption::OPTIONAL_ARGUMENT, 'c'],
         ['with-logo-url',     Console\GetOption::REQUIRED_ARGUMENT, 'l'],
         ['with-project-name', Console\GetOption::REQUIRED_ARGUMENT, 'p'],
@@ -76,6 +77,11 @@ class Compile extends Console\Dispatcher\Kit
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
+                case 'd':
+                    $configuration->defaultNamespace = $v;
+
+                    break;
+
                 case 'c':
                     if (false === is_string($v)) {
                         $composerFile = './composer.json';
@@ -167,6 +173,7 @@ class Compile extends Console\Dispatcher\Kit
             'Usage   : compile <options>', "\n",
             'Options :', "\n",
             $this->makeUsageOptionsList([
+                'd'    => 'Default namespace that must be displayed.',
                 'c'    => 'Use a specific Composer file to get PSR-4 mappings ' .
                           '(default: `./composer.json` if enabled).',
                 'l'    => 'URL of the logo.',

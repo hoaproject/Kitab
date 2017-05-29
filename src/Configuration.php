@@ -41,8 +41,9 @@ namespace Kitab;
  */
 class Configuration
 {
-    public $logoURL     = 'https://placehold.it/150x150';
-    public $projectName = '(unknown)';
+    public $defaultNamespace = null;
+    public $logoURL          = 'https://placehold.it/150x150';
+    public $projectName      = '(unknown)';
 
     public function getOr(string $item, mixed $default)
     {

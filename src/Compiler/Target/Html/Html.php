@@ -549,6 +549,26 @@ class Html implements Target
 
     protected function assembleResources()
     {
+        $defaultNamespace = $this->_configuration->defaultNamespace;
+
+        if (null !== $defaultNamespace) {
+            $data      = new StdClass();
+            $data->url = '.' . $this->_router->unroute(
+                'namespace',
+                [
+                    'namespaceName' => mb_strtolower(str_replace('\\', '/', $defaultNamespace)),
+                ]
+            );
+
+            $view = new Templater(
+                __DIR__ . DS . 'Template' . DS . 'Redirect.html',
+                new Write('hoa://Kitab/Output/index.html', Write::MODE_TRUNCATE_WRITE),
+                $this->_router,
+                $data
+            );
+            $view->render();
+        }
+
         $from = __DIR__ . DS . 'Template' . DS . 'Public' . DS . 'css';
         $to   = 'hoa://Kitab/Output/css';
 
