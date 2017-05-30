@@ -45,6 +45,10 @@ class Finder extends File\Finder
 {
     /**
      * Configure the finder.
+     *
+     * This finder is pre-configured to scan only PHP files. It ignores Git
+     * files and Mercurial files. No dependencies are ignored (for instance
+     * Composer).
      */
     public function __construct()
     {

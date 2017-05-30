@@ -39,23 +39,37 @@ namespace Kitab\Compiler;
 use Kitab\Configuration;
 use Kitab\Exception;
 use Kitab\Finder;
-use PhpParser\ParserFactory;
 
 /**
- * The compiler.
+ * The compiler orchestrates the whole compilation process.
  *
- * It is responsible to orchestrate the whole compilation process.
+ * The compiler, [as explained previously](kitab/compiler/index.html), is a
+ * stream compiler. It receives a finder that is an iterator where each item
+ * is a PHP file to analyse. Each file is parsed by the parser, transformed
+ * into a Intermediate Representation, that is compiled by the target into
+ * partial objects. The target ends the whole process by assembling all the
+ * objects.
  */
 class Compiler
 {
+    /**
+     * Configuration of the Kitab project, represented by the
+     * `Kitab\Configuration` class.
+     */
     protected $_configuration = null;
+
+    /**
+     * The PHP parser, aka [PHP-Parser](https://github.com/nikic/PHP-Parser),
+     * that is used to parse PHP files.
+     *
+     * The PHP parser is allocated once, hence the static declaration.
+     */
     protected static $_parser = null;
 
     /**
-     * When constructing the compiler, a new instance of the parser
-     * `Kitab\Compiler\Parser` is created and stored statically. This is a way
-     * to cache the parser. This is not necessary to allocate a new parser
-     * each time.
+     * When constructing the compiler, a new instance of the
+     * `Kitab\Compiler\Parser` parser is created and stored statically. If no
+     * configuration is provided, a default configuration is allocated.
      */
     public function __construct(Configuration $configuration = null)
     {
@@ -74,26 +88,18 @@ class Compiler
 
     /**
      * Compile all files provided by the finder into the specified target.
-     * The compilation process is very classical. It works as follows:
-     *
-     *   1. For each file provided by the finder,
-     *   2. Parser the file, and get an intermediate representation,
-     *   3. Compile the intermediate representation based on the given target,
-     *   4. Update the linker with new symbols,
-     *   5. Go to 1 if the finder is not empty,
-     *   6. Ask the target to assemble all the generated objects.
-     *
-     * With this approach, only one intermediate representation of a file is
-     * allocated in the memory at a time. Not all the representations for all
-     * the files are in memory. It avoids having huge allocations, and big
-     * peaks, with all the complications.
+     * See [the workflow description](kitab/compiler/index.html) for more details.
      *
      * # Examples
      *
-     * Bla bla foo bar:
+     * ```php,ignore
+     * $finder = new Kitab\Finder();
+     * $finder->in($path);
      *
-     * ```php
-     * assert(3 === 2 + 1);
+     * $target = new Kitab\Compiler\Target\Html\Html();
+     *
+     * $compiler = new Kitab\Compiler\Compiler();
+     * $compiler->compile($finder, $target);
      * ```
      */
     public function compile(Finder $finder, Target\Target $target)
@@ -115,8 +121,16 @@ class Compiler
 
     /**
      * Return the parser stored in the cache.
+     *
+     * # Examples
+     *
+     * ```php,ignore
+     * $compiler = new Kitab\Compiler\Compiler();
+     *
+     * assert($compiler->getParser() instanceof Kitab\Compiler\Parser);
+     * ```
      */
-    protected function getParser(): Parser
+    public function getParser(): Parser
     {
         return self::$_parser;
     }
@@ -124,7 +138,7 @@ class Compiler
     /**
      * Extract new symbols from an intermediate representation and update the linker.
      *
-     * The linker is a tree structure. Bla bla.
+     * The linker is a tree structure.
      *
      * # Exceptions
      *

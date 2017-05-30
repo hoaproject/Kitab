@@ -36,6 +36,13 @@
 
 namespace Kitab\Exception;
 
+/**
+ * Runtime exception when the target is not able to handle an intermediate
+ * representation.
+ *
+ * It should normally happen _only_ when a developer is hacking Kitab, not when
+ * a user is using it.
+ */
 class TargetUnknownIntermediateRepresentation extends Exception
 {
 }

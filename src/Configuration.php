@@ -37,14 +37,60 @@
 namespace Kitab;
 
 /**
- * The configuration structure.
+ * Configuration structure for the Kitab project.
+ *
+ * This structure contains all the configuration items used by Kitab.
+ * All these items are public. Use it as a regular structure.
+ *
+ * # Examples
+ *
+ * ```php,ignore
+ * $configuration = new Configuration();
+ * $configuration->projectName = 'Kitab';
+ * ```
  */
 class Configuration
 {
+    /**
+     * The default namespace of the project currently documented.
+     *
+     * A project can contain several namespaces, either because it hosts many,
+     * or because of the dependencies. The default namespace is the entry
+     * point of the documentation. If a default namespace is provided, when
+     * the user will open the documentation, she will be automatically
+     * redirected to the default namespace.
+     */
     public $defaultNamespace = null;
+
+    /**
+     * URL to the logo of the documentation.
+     *
+     * Each page contains a logo, representing a link to the “home”. It is
+     * possible to customise the logo by using this configuration item. By
+     * default, a placeholder is used.
+     */
     public $logoURL          = 'https://placehold.it/150x150';
+
+    /**
+     * Project name.
+     *
+     * This configuration item represents the name of the project being documented.
+     */
     public $projectName      = '(unknown)';
 
+    /**
+     * Get a configuration item value, or —if `null`— return a default value.
+     * If the configuration item is not set, it will be considered as `null`.
+     *
+     * # Examples
+     *
+     * ```php
+     * $configuration = new Configuration();
+     *
+     * assert($configuration->defaultNamespace === null);
+     * assert($configuration->getOr('defaultNamespace', 'foobar') === 'foobar');
+     * ```
+     */
     public function getOr(string $item, $default)
     {
         if (null === $value = $this->$item) {

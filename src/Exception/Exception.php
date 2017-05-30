@@ -38,6 +38,13 @@ namespace Kitab\Exception;
 
 use Hoa\Exception as HoaException;
 
+/**
+ * Root of all application exceptions.
+ *
+ * Kitab exceptions extend [Hoa
+ * exceptions](https://central.hoa-project.net/Resource/Library/Exception),
+ * with all the same features.
+ */
 class Exception extends HoaException
 {
 }

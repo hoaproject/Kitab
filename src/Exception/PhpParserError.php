@@ -36,6 +36,15 @@
 
 namespace Kitab\Exception;
 
+/**
+ * Runtime exception when Kitab parses a PHP file containing invalid PHP code
+ * (with a syntax error).
+ *
+ * This exception contains [the `Error` exception from the
+ * PHP-Parser](https://github.com/nikic/PHP-Parser/blob/master/lib/PhpParser/Error.php)
+ * project as the previous exception. This `Error` exception holds all the
+ * information about the syntax error.
+ */
 class PhpParserError extends Exception
 {
 }
