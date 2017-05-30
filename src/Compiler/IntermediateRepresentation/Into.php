@@ -52,7 +52,7 @@ class Into extends NodeVisitorAbstract
         $this->_prettyPrinter = new PrettyPrinter\Standard(['shortArraySyntax' => true]);
     }
 
-    public function enterNode(Node $node)
+    public function leaveNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Class_) {
             $classNode            = $node;

@@ -42,6 +42,7 @@
 
 .token.atrule,
 .token.attr-value,
+.token.native-type,
 .token.keyword {
     color: #07a;
 }

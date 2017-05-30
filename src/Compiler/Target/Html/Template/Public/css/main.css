@@ -248,6 +248,10 @@ a {
         text-decoration: underline;
     }
 
+    code a {
+        color: inherit;
+    }
+
 p {
     text-align: justify;
     hyphens: auto;
