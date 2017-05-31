@@ -1,9 +1,17 @@
 <?php
 
-require_once
-    dirname(__DIR__) . DIRECTORY_SEPARATOR .
-    'vendor' . DIRECTORY_SEPARATOR .
-    'autoload.php';
+$autoloaders = ['vendor', '../..'];
+
+foreach ($autoloaders as $autoloader) {
+    $path = dirname(__DIR__) . DIRECTORY_SEPARATOR .
+        $autoloader . DIRECTORY_SEPARATOR . 'autoload.php';
+
+    if (file_exists($path)) {
+        require_once $path;
+
+        break;
+    }
+}
 
 use Hoa\File\Directory;
 use Hoa\Protocol\Node;
