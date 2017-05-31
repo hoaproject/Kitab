@@ -42,10 +42,15 @@ body {
     position: relative;
     z-index: 0;
     flex: 1;
-    margin-left: calc(180px + 2rem);
     margin-bottom: 1.5rem;
     min-height: 2.5rem
 }
+
+    @media all and (min-width: 800px) {
+        #search {
+            margin-left: calc(180px + 2rem);
+        }
+    }
 
     #search > div {
         display: flex;
@@ -106,6 +111,7 @@ body {
     #search output li > *:first-child {
         direction: rtl;
         margin-right: 2rem;
+        min-width: 40%;
     }
 
     #search output li > span {
@@ -114,16 +120,27 @@ body {
 
 main {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
+
+    @media all and (min-width: 800px) {
+        main {
+            flex-direction: row;
+        }
+    }
 
 aside {
     display: flex;
     flex-direction: column;
     flex: 1;
-    max-width: 180px;
-    margin-right: 2rem;
 }
+
+    @media all and (min-width: 800px) {
+        aside {
+            max-width: 180px;
+            margin-right: 2rem;
+        }
+    }
 
 header {
     align-self: center;
