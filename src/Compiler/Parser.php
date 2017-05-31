@@ -51,7 +51,7 @@ use PhpParser\Parser\Multiple as ParserMultiple;
  * and transforms it into an Intermediate Representation.
  *
  * The parser prefers PHP 7 form, it means it will try to parse with PHP 7
- * strategy first. They are small but subtle [difference with previous PHP
+ * strategy first. They are small but subtle [differences with previous PHP
  * versions](http://php.net/manual/en/migration70.incompatible.php#migration70.incompatible.variable-handling).
  *
  * This parser delegates all the work to [PHP-Parser](https://github.com/nikic/PHP-Parser).
