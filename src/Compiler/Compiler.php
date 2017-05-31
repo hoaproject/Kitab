@@ -59,10 +59,9 @@ class Compiler
     protected $_configuration = null;
 
     /**
-     * The PHP parser, aka [PHP-Parser](https://github.com/nikic/PHP-Parser),
-     * that is used to parse PHP files.
+     * The parsed used to parse PHP files.
      *
-     * The PHP parser is allocated once, hence the static declaration.
+     * The parser is allocated once, hence the static declaration.
      */
     protected static $_parser = null;
 
