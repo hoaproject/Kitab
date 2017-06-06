@@ -54,6 +54,7 @@ class Attribute
     const VISIBILITY_PRIVATE   = 2;
 
     public $visibility    = self::VISIBILITY_PUBLIC;
+    public $static        = false;
     public $name;
     public $default       = null;
     public $documentation = '';
@@ -89,8 +90,9 @@ class Attribute
         }
 
         return sprintf(
-            '%s $%s = %s',
+            '%s%s $%s = %s',
             $visibility,
+            $this->static ? ' static' : '',
             $this->name,
             $this->default
         );

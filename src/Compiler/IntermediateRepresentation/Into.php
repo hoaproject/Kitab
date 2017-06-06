@@ -186,6 +186,7 @@ class Into extends NodeVisitorAbstract
             foreach ($statement->props as $attributeNode) {
                 $attribute             = new Attribute($attributeNode->name);
                 $attribute->visibility = $visibility;
+                $attribute->static     = $static;
 
                 if (null !== $attributeNode->default) {
                     $attribute->default = $this->_prettyPrinter->prettyPrint([$attributeNode->default]);
@@ -219,25 +220,17 @@ class Into extends NodeVisitorAbstract
             $method->documentation = Parser::extractFromComment($methodNode->getDocComment());
 
             // Visibility, scope, and abstract.
-            if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_PUBLIC) {
+            if (true === $methodNode->isPublic()) {
                 $method->visibility = $method::VISIBILITY_PUBLIC;
-            } else if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_PROTECTED) {
+            } else if (true === $methodNode->isProtected()) {
                 $method->visibility = $method::VISIBILITY_PROTECTED;
-            } else if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_PRIVATE) {
+            } else {
                 $method->visibility = $method::VISIBILITY_PRIVATE;
             }
 
-            if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_STATIC) {
-                $method->static = true;
-            }
-
-            if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_ABSTRACT) {
-                $method->abstract = true;
-            }
-
-            if ($methodNode->flags & Node\Stmt\Class_::MODIFIER_FINAL) {
-                $method->final = true;
-            }
+            $method->static   = $methodNode->isStatic();
+            $method->abstract = $methodNode->isAbstract();
+            $method->final    = $methodNode->isFinal();
 
             $method->inputs = $this->intoInputs($methodNode);
             $method->output = $this->intoOutput($methodNode);
