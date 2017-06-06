@@ -50,11 +50,12 @@ use PhpParser\Parser\Multiple as ParserMultiple;
  * The parser takes one file, parses it, generates an Abstract Syntax Tree,
  * and transforms it into an Intermediate Representation.
  *
- * The parser prefers PHP 7 form, it means it will try to parse with PHP 7
- * strategy first. They are small but subtle [differences with previous PHP
+ * The PHP 7 form is prefered over PHP 5 and lower forms, it means it will try
+ * to parse with PHP 7 strategy first. They are small but subtle [differences
+ * with previous PHP
  * versions](http://php.net/manual/en/migration70.incompatible.php#migration70.incompatible.variable-handling).
  *
- * This parser delegates all the work to [PHP-Parser](https://github.com/nikic/PHP-Parser).
+ * All the work done by the parser is delegated to [PHP-Parser](https://github.com/nikic/PHP-Parser).
  */
 class Parser
 {

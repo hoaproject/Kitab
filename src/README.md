@@ -62,11 +62,11 @@ Kitab with the `--with-composer` option to specify the location of the
 `composer.json` file of your project in order to allow Kitab to
 automatically find PSR-4 mappings. These mappings are necessary to
 transform a namespace into a path to a directory. For each directory
-representing a namespace, if a `README.md` file exists, then it
-will be used as the documentation of this particular namespace. For
-instance, `Kitab\` maps to `src/`, so the documentation for the
-`Kitab\Compiler` namespace is expected to be find in the
-`src/Compiler/README.md` file, that simple. This is pretty
+representing a namespace, if a `README.md` file exists, then it will
+be used as the documentation of this particular namespace. For
+instance, `Kitab\` maps to `src/`, so the documentation for
+the [`Kitab\Compiler`](kittab/index.html) namespace is expected to be
+find in the `src/Compiler/README.md` file, that simple. This is pretty
 straightforward at usage.
 
 Entity and namespace documentations are inserted at the top of their

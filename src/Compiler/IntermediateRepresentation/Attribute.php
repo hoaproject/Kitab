@@ -36,34 +36,68 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+/**
+ * The attribute intermediate representation.
+ *
+ * An attribute is a property of a class like entity.
+ */
 class Attribute
 {
     /**
-     * Represent a public constant.
+     * Represent a public attribute.
      */
     const VISIBILITY_PUBLIC    = 0;
 
     /**
-     * Represent a protected constant.
+     * Represent a protected attribute.
      */
     const VISIBILITY_PROTECTED = 1;
 
     /**
-     * Represent a private constant.
+     * Represent a private private.
      */
     const VISIBILITY_PRIVATE   = 2;
 
+    /**
+     * The visibility of the attribute, represented by the
+     * `self::VISIBILITY_*` constants.
+     */
     public $visibility    = self::VISIBILITY_PUBLIC;
+
+    /**
+     * Represent whether the attribute is static or not.
+     */
     public $static        = false;
+
+    /**
+     * Represent the name of the attribute, without the leading `$`.
+     */
     public $name;
+
+    /**
+     * A string containing only PHP code representing the default value of the
+     * attribute if any.
+     */
     public $default       = null;
+
+    /**
+     * Associated documentation of the attribute.
+     */
     public $documentation = '';
 
+    /**
+     * Allocate an attribute with a name. This is the only mandatory information.
+     */
     public function __construct(string $name)
     {
         $this->name = $name;
     }
 
+    /**
+     * Transform this intermediate representation into its PHP representation.
+     *
+     * The original formatting is not kept. The applied formatting is designed for Kitab.
+     */
     public function __toString(): string
     {
         switch ($this->visibility) {

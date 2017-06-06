@@ -36,18 +36,65 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+/**
+ * The class intermediate representation.
+ *
+ * A class is one of the major entity in PHP. It exposes constants,
+ * attributes, and methods, in addition to some properties (like `final`,
+ * `abstract` etc.). A class can inherit from one other class, and can
+ * implement one or more interfaces.
+ */
 class Class_ extends Entity
 {
+    /**
+     * Type of the entity. See parent.
+     */
     const TYPE = 'class';
 
+    /**
+     * Represent whether the class is final or not.
+     *
+     * A final class cannot be extended. It is a child of the inheritance hierarchy.
+     */
     public $final      = false;
+
+    /**
+     * Represent whether the class is abstract or not.
+     *
+     * An abstract class cannot be instanciated. In addition, some methods can
+     * be marked as abstract too. Such methods have no implementations
+     * (bodies), they only provide a signature (inputs and outputs).
+     */
     public $abstract   = false;
+
+    /**
+     * Fully-qualified name of the class it extends if any.
+     */
     public $parent     = null;
+
+    /**
+     * Fully-qualified names of the interfaces it implements if any.
+     */
     public $interfaces = [];
+
+    /**
+     * Collection of `Kitab\Compiler\IntermediateRepresentation\Constant` instances.
+     */
     public $constants  = [];
+
+    /**
+     * Collection of `Kitab\Compiler\IntermediateRepresentation\Attribute` instances.
+     */
     public $attributes = [];
+
+    /**
+     * Collection of `Kitab\Compiler\IntermediateRepresentation\Method` instances.
+     */
     public $methods    = [];
 
+    /**
+     * Allocate a class with a name. This is the only mandatory information.
+     */
     public function __construct(string $name)
     {
         $this->name = $name;

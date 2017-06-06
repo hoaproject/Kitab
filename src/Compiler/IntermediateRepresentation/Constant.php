@@ -36,6 +36,11 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+/**
+ * The constant intermediate representation.
+ *
+ * A constant is a property of a class entity.
+ */
 class Constant
 {
     /**
@@ -54,30 +59,39 @@ class Constant
     const VISIBILITY_PRIVATE   = 2;
 
     /**
-     * Visibility of the constant.
+     * The visibility of the attribute, represented by the
+     * `self::VISIBILITY_*` constants.
      */
     public $visibility    = self::VISIBILITY_PUBLIC;
 
     /**
-     * Name of the constant.
+     * Represent the name of the constant.
      */
     public $name;
 
     /**
-     * String of PHP code expressing the value of the constant.
+     * A string containing only PHP code representing the value of the constant.
      */
     public $value         = null;
 
     /**
-     * Documentation of the constant.
+     * Associated documentation of the constant.
      */
     public $documentation = '';
 
+    /**
+     * Allocate a constant with a name. This is the only mandatory information.
+     */
     public function __construct(string $name)
     {
         $this->name = $name;
     }
 
+    /**
+     * Transform this intermediate representation into its PHP representation.
+     *
+     * The original formatting is not kept. The applied formatting is designed for Kitab.
+     */
     public function __toString(): string
     {
         switch ($this->visibility) {
