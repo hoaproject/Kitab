@@ -291,15 +291,11 @@ ul, ol {
 
 ul > li {
     list-style-type: none;
-    position: relative;
-    z-index: -2;
 }
 
     ul > li::before {
         content: '•';
-        position: absolute;
-        top: .2em;
-        left: -1em;
+        margin-left: -1em;
     }
 
 .list--flat {
@@ -308,6 +304,7 @@ ul > li {
 
     .list--flat li::before {
         content: '';
+        margin-left: 0;
     }
 
 
@@ -323,7 +320,8 @@ ul > li {
         }
 
         .list--table > li::before {
-            left: 0;
+            margin-left: 0;
+            margin-right: -1em;
         }
 
         .list--table > li > * {
