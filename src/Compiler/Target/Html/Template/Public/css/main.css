@@ -296,6 +296,7 @@ ul > li {
     ul > li::before {
         content: '•';
         margin-left: -1em;
+        margin-right: .5em;
     }
 
 .list--flat {
@@ -305,6 +306,7 @@ ul > li {
     .list--flat li::before {
         content: '';
         margin-left: 0;
+        margin-right: 0;
     }
 
 
