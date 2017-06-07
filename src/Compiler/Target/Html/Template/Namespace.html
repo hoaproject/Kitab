@@ -32,9 +32,12 @@
     <?php if (0 < count($data->namespace->classes)): ?>
         <h2 id="classes">Classes</h2>
 
-        <ul>
+        <ul class="list--table">
             <?php foreach ($data->namespace->classes as $class): ?>
-                <li><a href="<?php echo $class->url ?>"><code><?php echo $class->name ?></code></a></li>
+                <li>
+                    <a href="<?php echo $class->url ?>"><code><?php echo $class->name ?></code></a>
+                    <?php echo $this->markdownToHtml($class->description->getDescription()) ?>
+                </li>
             <?php endforeach ?>
         </ul>
     <?php endif ?>
@@ -42,9 +45,12 @@
     <?php if (0 < count($data->namespace->interfaces)): ?>
         <h2 id="interfaces">Interfaces</h2>
 
-        <ul>
+        <ul class="list--table">
             <?php foreach ($data->namespace->interfaces as $interface): ?>
-                <li><a href="<?php echo $interface->url ?>"><code><?php echo $interface->name ?></code></a></li>
+                <li>
+                    <a href="<?php echo $interface->url ?>"><code><?php echo $interface->name ?></code></a>
+                    <?php echo $this->markdownToHtml($interface->description->getDescription()) ?>
+                </li>
             <?php endforeach ?>
         </ul>
     <?php endif ?>
@@ -52,9 +58,12 @@
     <?php if (0 < count($data->namespace->traits)): ?>
         <h2 id="traits">Traits</h2>
 
-        <ul>
+        <ul class="list--table">
             <?php foreach ($data->namespace->traits as $trait): ?>
-                <li><a href="<?php echo $trait->url ?>"><code><?php echo $trait->name ?></code></a></li>
+                <li>
+                    <a href="<?php echo $trait->url ?>"><code><?php echo $trait->name ?></code></a>
+                    <?php echo $this->markdownToHtml($trait->description->getDescription()) ?>
+                </li>
             <?php endforeach ?>
         </ul>
     <?php endif ?>
@@ -62,9 +71,12 @@
     <?php if (0 < count($data->namespace->functions)): ?>
         <h2 id="functions">Functions</h2>
 
-        <ul>
+        <ul class="list--table">
             <?php foreach ($data->namespace->functions as $function): ?>
-                <li><a href="<?php echo $function->url ?>"><code><?php echo $function->name ?></code></a></li>
+                <li>
+                    <a href="<?php echo $function->url ?>"><code><?php echo $function->name ?></code></a>
+                    <?php echo $this->markdownToHtml($function->description->getDescription()) ?>
+                </li>
             <?php endforeach ?>
         </ul>
     <?php endif ?>

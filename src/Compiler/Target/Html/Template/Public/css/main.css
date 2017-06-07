@@ -289,10 +289,46 @@ ul, ol {
     padding-left: 2.5em;
 }
 
-.list--flat,
-.list--flat {
+ul > li {
     list-style-type: none;
+    position: relative;
+    z-index: -2;
+}
+
+    ul > li::before {
+        content: '•';
+        position: absolute;
+        top: .2em;
+        left: -1em;
+    }
+
+.list--flat {
     padding-left: 0;
+}
+
+    .list--flat li::before {
+        content: '';
+    }
+
+
+@media all and (min-width: 1000px) {
+    .list--table {
+        display: table;
+        padding-left: .5em;
+        border-spacing: 1em 0;
+    }
+
+        .list--table > li {
+            display: table-row;
+        }
+
+        .list--table > li::before {
+            left: 0;
+        }
+
+        .list--table > li > * {
+            display: table-cell;
+        }
 }
 
 dl {}

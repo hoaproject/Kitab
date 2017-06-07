@@ -200,7 +200,7 @@ class Html implements Target
             'id'             => null,
             'name'           => $entity->name,
             'normalizedName' => str_replace('\\', ' ', $entity->name),
-            'description'    => $entity->documentation,
+            'description'    => (string) $entity->documentation,
             'url'            => '.' . $url
         ]);
 
@@ -291,9 +291,10 @@ class Html implements Target
 
                     switch ($subSymbolType) {
                         case '@class':
-                            $_class       = new StdClass();
-                            $_class->name = $subSymbolName;
-                            $_class->url  =
+                            $_class              = new StdClass();
+                            $_class->name        = $subSymbolName;
+                            $_class->description = $subSymbol->description;
+                            $_class->url         =
                                 '.' .
                                 $this->_router->unroute(
                                     'entity',
@@ -308,9 +309,10 @@ class Html implements Target
                             break;
 
                         case '@interface':
-                            $_interface       = new StdClass();
-                            $_interface->name = $subSymbolName;
-                            $_interface->url  =
+                            $_interface              = new StdClass();
+                            $_interface->name        = $subSymbolName;
+                            $_interface->description = $subSymbol->description;
+                            $_interface->url         =
                                 '.' .
                                 $this->_router->unroute(
                                     'entity',
@@ -325,9 +327,10 @@ class Html implements Target
                             break;
 
                         case '@trait':
-                            $_trait       = new StdClass();
-                            $_trait->name = $subSymbolName;
-                            $_trait->url  =
+                            $_trait              = new StdClass();
+                            $_trait->name        = $subSymbolName;
+                            $_trait->descripiton = $subSymbolName->description;
+                            $_trait->url         =
                                 '.' .
                                 $this->_router->unroute(
                                     'entity',
@@ -342,9 +345,10 @@ class Html implements Target
                             break;
 
                         case '@function':
-                            $_function       = new StdClass();
-                            $_function->name = $subSymbolName;
-                            $_function->url  =
+                            $_function              = new StdClass();
+                            $_function->name        = $subSymbolName;
+                            $_function->descripiton = $subSymbolName->description;
+                            $_function->url         =
                                 '.' .
                                 $this->_router->unroute(
                                     'entity',
@@ -479,7 +483,7 @@ class Html implements Target
                     $accumulator . $symbolPrefix . '\\'
                 );
             } else {
-                $symbolFullName = $subSymbols;
+                $symbolFullName = $subSymbols->name;
 
                 list($symbolType, $symbolName) = explode(':', $symbolPrefix);
 

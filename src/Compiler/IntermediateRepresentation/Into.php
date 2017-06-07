@@ -59,7 +59,7 @@ class Into extends NodeVisitorAbstract
             $class                = new Class_($classNode->namespacedName->toString());
             $class->lineStart     = $classNode->getAttribute('startLine');
             $class->lineEnd       = $classNode->getAttribute('endLine');
-            $class->documentation = Parser::extractFromComment($classNode->getDocComment());
+            $class->documentation = new Documentation(Parser::extractFromComment($classNode->getDocComment()));
             $class->constants     = $this->intoConstants($classNode);
             $class->attributes    = $this->intoAttributes($classNode);
             $class->methods       = $this->intoMethods($classNode);
@@ -86,7 +86,7 @@ class Into extends NodeVisitorAbstract
             $interface                = new Interface_($interfaceNode->namespacedName->toString());
             $interface->lineStart     = $interfaceNode->getAttribute('startLine');
             $interface->lineEnd       = $interfaceNode->getAttribute('endLine');
-            $interface->documentation = Parser::extractFromComment($interfaceNode->getDocComment());
+            $interface->documentation = new Documentation(Parser::extractFromComment($interfaceNode->getDocComment()));
             $interface->constants     = $this->intoConstants($interfaceNode);
             $interface->methods       = $this->intoMethods($interfaceNode);
 
@@ -113,7 +113,7 @@ class Into extends NodeVisitorAbstract
             $function                = new Function_($functionNode->namespacedName->toString());
             $function->lineStart     = $functionNode->getAttribute('startLine');
             $function->lineEnd       = $functionNode->getAttribute('endLine');
-            $function->documentation = Parser::extractFromComment($functionNode->getDocComment());
+            $function->documentation = new Documentation(Parser::extractFromComment($functionNode->getDocComment()));
             $function->inputs        = $this->intoInputs($functionNode);
             $function->output        = $this->intoOutput($functionNode);
 
@@ -150,9 +150,9 @@ class Into extends NodeVisitorAbstract
                 $documentation = Parser::extractFromComment($constantNode->getDocComment());
 
                 if (empty($documentation)) {
-                    $constant->documentation = $defaultDocumentation;
+                    $constant->documentation = new Documentation($defaultDocumentation);
                 } else {
-                    $constant->documentation = $documentation;
+                    $constant->documentation = new Documentation($documentation);
                 }
 
                 $constants[] = $constant;
@@ -195,9 +195,9 @@ class Into extends NodeVisitorAbstract
                 $documentation = Parser::extractFromComment($attributeNode->getDocComment());
 
                 if (empty($documentation)) {
-                    $attribute->documentation = $defaultDocumentation;
+                    $attribute->documentation = new Documentation($defaultDocumentation);
                 } else {
-                    $attribute->documentation = $documentation;
+                    $attribute->documentation = new Documentation($documentation);
                 }
 
                 $attributes[] = $attribute;
@@ -217,7 +217,7 @@ class Into extends NodeVisitorAbstract
             $method->lineEnd   = $methodNode->getAttribute('endLine');
 
             // Documentation.
-            $method->documentation = Parser::extractFromComment($methodNode->getDocComment());
+            $method->documentation = new Documentation(Parser::extractFromComment($methodNode->getDocComment()));
 
             // Visibility, scope, and abstract.
             if (true === $methodNode->isPublic()) {

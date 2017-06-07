@@ -39,6 +39,7 @@ namespace Kitab\Compiler;
 use Kitab\Configuration;
 use Kitab\Exception;
 use Kitab\Finder;
+use StdClass;
 
 /**
  * A compiler that orchestrates the whole compilation process.
@@ -162,7 +163,11 @@ class Compiler
                     $currentDimension = &$currentDimension[$symbolPart];
                 }
 
-                $currentDimension[$lastSymbolPart] = $item->name;
+                $symbol              = new StdClass();
+                $symbol->name        = $item->name;
+                $symbol->description = $item->documentation;
+
+                $currentDimension[$lastSymbolPart] = $symbol;
             } else {
                 throw new Exception\LinkerUnknownIntermediateRepresentation(
                     'Linker does not handle the following intermediate ' .
