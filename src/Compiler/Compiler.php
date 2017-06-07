@@ -41,9 +41,9 @@ use Kitab\Exception;
 use Kitab\Finder;
 
 /**
- * The compiler orchestrates the whole compilation process.
+ * A compiler that orchestrates the whole compilation process.
  *
- * The compiler, [as explained previously](kitab/compiler/index.html), is a
+ * This compiler, [as explained previously](kitab/compiler/index.html), is a
  * stream compiler. It receives a finder that is an iterator where each item
  * is a PHP file to analyse. Each file is parsed by the parser, transformed
  * into a Intermediate Representation, that is compiled by the target into

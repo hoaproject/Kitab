@@ -37,12 +37,24 @@
 namespace Kitab\Compiler\IntermediateRepresentation;
 
 /**
- * The class intermediate representation.
+ * A class intermediate representation.
  *
  * A class is one of the major entity in PHP. It exposes constants,
  * attributes, and methods, in addition to some properties (like `final`,
  * `abstract` etc.). A class can inherit from one other class, and can
  * implement one or more interfaces.
+
+ * # Examples
+ *
+ * In this example, a new final class `C` is built, with 2 attributes: `foo`
+ * and `bar`, and one method: `f`.
+ *
+ * ```php
+ * $class               = new Kitab\Compiler\IntermediateRepresentation\Class_('C');
+ * $class->attributes[] = new Kitab\Compiler\IntermediateRepresentation\Attribute('foo');
+ * $class->attributes[] = new Kitab\Compiler\IntermediateRepresentation\Attribute('bar');
+ * $class->methods[]    = new Kitab\Compiler\IntermediateRepresentation\Method('f');
+ * ```
  */
 class Class_ extends Entity
 {
@@ -93,7 +105,7 @@ class Class_ extends Entity
     public $methods    = [];
 
     /**
-     * Allocate a class with a name. This is the only mandatory information.
+     * Allocate a class with a fully-qualified name. This is the only mandatory information.
      */
     public function __construct(string $name)
     {

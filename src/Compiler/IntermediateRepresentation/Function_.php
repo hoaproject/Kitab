@@ -36,13 +36,56 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+/**
+ * A named function intermediate representation.
+ *
+ * A named function is one of the major entity in PHP. It has zero or many
+ * inputs, and zero or one output. Each input is represented by a
+ * `Kitab\Compiler\IntermediateRepresentation\Parameter` instance, while the
+ * output is represented by a `Kitab\Compiler\IntermediateRepresentation\Type`
+ * instance.
+ *
+ * # Examples
+ *
+ * In this example, a new function `f` is created with 1 input: `int $x`, and 1 output: `int`.
+ *
+ * ```php
+ * $typeInt = new Kitab\Compiler\IntermediateRepresentation\Type();
+ * $typeInt->name = 'int';
+ *
+ * $input1 = new Kitab\Compiler\IntermediateRepresentation\Parameter('x');
+ * $input1->type = $typeInt;
+ *
+ * $output = $typeInt;
+ *
+ * $function = new Kitab\Compiler\IntermediateRepresentation\Function_('f');
+ * $function->inputs[] = $input1;
+ * $function->output   = $output;
+ * ```
+ */
 class Function_ extends Entity
 {
+    /**
+     * Type of the entity. See parent.
+     */
     const TYPE = 'function';
 
+    /**
+     * Collection of `Kitab\Compiler\IntermediateRepresentation\Parameter`
+     * instances.
+     */
     public $inputs = [];
+
+    /**
+     * An output is a `Kitab\Compiler\IntermediateRepresentation\Type`
+     * instance if any.
+     */
     public $output = null;
 
+    /**
+     * Allocate a new named function with a name. This is the only mandatory
+     * information.
+     */
     public function __construct(string $name)
     {
         $this->name = $name;

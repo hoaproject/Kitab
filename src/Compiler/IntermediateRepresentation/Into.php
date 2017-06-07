@@ -250,7 +250,7 @@ class Into extends NodeVisitorAbstract
             $parameter                  = new Parameter($parameterNode->name);
             $parameter->type            = $this->intoType($parameterNode->type);
             $parameter->type->reference = $parameterNode->byRef;
-            $parameter->type->variadic  = $parameterNode->variadic;
+            $parameter->variadic        = $parameterNode->variadic;
 
             $inputs[] = $parameter;
         }

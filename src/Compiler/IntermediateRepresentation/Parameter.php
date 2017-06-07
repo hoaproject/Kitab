@@ -36,23 +36,73 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+/**
+ * A parameter intermediate representation.
+ *
+
+ * A parameter of a function (or method) receives an argument. It takes the
+ * form of a variable with a type and a default value. A parameter can be
+ * variadic if it is in the last position of the list of parameters: It means
+ * it will receive all extra arguments given to the function.
+ *
+ * # Examples
+ *
+ * The following example represent the parameter `int $foo = 42`:
+ *
+ * ```php
+ * $typeInt       = new Kitab\Compiler\IntermediateRepresentation\Type();
+ * $typeInt->name = 'int';
+ *
+ * $parameter        = new Kitab\Compiler\IntermediateRepresentation\Parameter();
+ * $parameter->type  = $typeInt;
+ * $parameter->name  = 'foo';
+ * $parameter->value = '42';
+ * ```
+ */
 class Parameter
 {
+    /**
+     * Type of the parameter. See `Kitab\Compiler\IntermediateRepresentation\Type`.
+     */
     public $type     = null;
+
+    /**
+     * Name of the parameter, without the leading `$`.
+     */
     public $name;
+
+    /**
+     * A variadic parameter receives all the extra arguments given to the
+     * function. It must be the last parameter of the list of parameters. It
+     * is represented by the `...` symbol.
+     */
     public $variadic = false;
+
+    /**
+     * A string containing only PHP code representing the default value of the parameter if any.
+     * A default value for the
+     */
     public $value    = null;
 
+    /**
+     * Allocate a parameter with a name. This is the only mandatory information.
+     */
     public function __construct(string $name)
     {
         $this->name = $name;
     }
 
+    /**
+     * Transform the intermediate representation into its PHP representation.
+     *
+     * The original formatting is not kept. The applied formatting is designed for Kitab.
+     */
     public function __toString(): string
     {
         return sprintf(
-            '%s$%s%s',
+            '%s%s$%s%s',
             $this->type,
+            $this->variadic ? '...' : '',
             $this->name,
             $this->value ? ' = ' . $this->value : ''
         );

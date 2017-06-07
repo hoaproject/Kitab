@@ -37,9 +37,22 @@
 namespace Kitab\Compiler\IntermediateRepresentation;
 
 /**
- * The attribute intermediate representation.
+ * An attribute intermediate representation.
  *
  * An attribute is a property of a class like entity.
+ *
+ * # Examples
+ *
+ * In this example, a new attribute `foo` is built, with a protected
+ * visibility, and a default value sets to 42.
+ *
+ * ```php
+ * $attribute             = new Kitab\Compiler\IntermediateRepresentation\Attribute('foo');
+ * $attribute->visibility = $attribute::VISIBILITY_PROTECTED;
+ * $attribute->default    = '42';
+ *
+ * assert('protected $foo = 42' === (string) $attribute);
+ * ```
  */
 class Attribute
 {

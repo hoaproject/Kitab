@@ -37,9 +37,22 @@
 namespace Kitab\Compiler\IntermediateRepresentation;
 
 /**
- * The constant intermediate representation.
+ * A constant intermediate representation.
  *
  * A constant is a property of a class entity.
+ *
+ * # Examples
+ *
+ * In this example, a new constant `FOO` is built, with a protected
+ * visibility, and a value sets to 42.
+ *
+ * ```php
+ * $constant             = new Kitab\Compiler\IntermediateRepresentation\Constant('FOO');
+ * $constant->visibility = $constant::VISIBILITY_PROTECTED;
+ * $constant->value      = '42';
+ *
+ * assert('protected const FOO = 42' === (string) $attribute);
+ * ```
  */
 class Constant
 {

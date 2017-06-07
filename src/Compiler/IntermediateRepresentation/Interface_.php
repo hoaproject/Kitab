@@ -36,13 +36,42 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+/**
+ * An interface intermediate representation.
+ *
+ * An interface is one of the major entity in PHP. It exposes methods. An
+ * interface can inherit from other interfaces.
+ *
+ * # Examples
+ *
+ * In this example, a new interface `I` is built, with 1 method: `f`.
+ *
+ * ```php
+ * $interface            = new Kitab\Compiler\IntermediateRepresentation\Interface_('I');
+ * $interface->methods[] = new Kitab\Compiler\IntermediateRepresentation\Method('f');
+ * ```
+ */
 class Interface_ extends Entity
 {
+    /**
+     * Type of the entity. See parent.
+     */
     const TYPE = 'interface';
 
+    /**
+     * Collection of fully-qualified names of the interfaces it extends if any.
+     */
     public $parents = [];
+
+    /**
+     * Collection of `Kitab\Compiler\IntermediateRepresentation\Method` instances.
+     */
     public $methods = [];
 
+    /**
+     * Allocate an interface with a fully-qualified name. This is the only
+     * mandatory information.
+     */
     public function __construct(string $name)
     {
         $this->name = $name;

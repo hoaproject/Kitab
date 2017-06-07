@@ -36,17 +36,56 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+/**
+ * An entity intermediate representation.
+ *
+ * This is an abstract class aiming at representing all kind of entity, like
+ * class, interface, trait, function…
+ */
 abstract class Entity
 {
+    /**
+     * The kind of the entity, defined as a simple string.
+     */
     const TYPE = '(unknown)';
 
+    /**
+     * File name containing the entity.
+     */
     public $file;
+
+    /**
+     * Unsigned integer representing where the entity declaration starts in the file.
+     */
     public $lineStart     = 0;
+
+    /**
+     * Unsigned integer representing where the entity declaration ends in the file.
+     */
     public $lineEnd       = 0;
+
+    /**
+     * The fully-qualified name of the entity, i.e. it includes namespaces.
+     */
     public $name;
+
+    /**
+     * Associated documentation of the entity.
+     */
     public $documentation = '';
 
-    public function getNamespaceName()
+    /**
+     * The name of the entity without the short name, i.e. only the namespaces.
+     *
+     * # Examples
+     *
+     * ```php
+     * $class = new Kitab\Compiler\IntermediateRepresentation\Class_('Foo\\Bar\\Baz');
+     *
+     * assert($class->getNamespaceName() === 'Foo\\Bar');
+     * ```
+     */
+    public function getNamespaceName(): string
     {
         if (false === $pos = strrpos($this->name, '\\')) {
             return '__global__';
@@ -55,7 +94,18 @@ abstract class Entity
         return substr($this->name, 0, $pos);
     }
 
-    public function getShortName()
+    /**
+     * The name of the entity without the namespaces, only the short name.
+     *
+     * # Examples
+     *
+     * ```php
+     * $class = new Kitab\Compiler\IntermediateRepresentation\Class_('Foo\\Bar\\Baz');
+     *
+     * assert($class->getShortName() === 'Baz');
+     * ```
+     */
+    public function getShortName(): string
     {
         if (false === $pos = strrpos($this->name, '\\')) {
             return $this->name;
@@ -64,12 +114,31 @@ abstract class Entity
         return substr($this->name, $pos + 1);
     }
 
-    public function inNamespace()
+    /**
+     * An entity is in a namespace if its fully-qualified name contains at
+     * least one namespace separator (aka `\`).
+     *
+     * # Examples
+     *
+     * ```php
+     * $classA = new Kitab\Compiler\IntermediateRepresentation\Class_('Foo\\Bar\\Baz');
+     *
+     * assert(true === $class->inNamespace());
+
+     * $classB = new Kitab\Compiler\IntermediateRepresentation\Class_('Qux');
+     *
+     * assert(false === $class->inNamespace());
+     * ```
+     */
+    public function inNamespace(): bool
     {
         return false !== strpos($this->name, '\\');
     }
 
-    public static function getType()
+    /**
+     * Return the type of the entity defined by the `TYPE` class constant.
+     */
+    public static function getType(): string
     {
         return static::TYPE;
     }

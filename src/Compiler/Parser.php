@@ -45,9 +45,9 @@ use PhpParser\ParserFactory;
 use PhpParser\Parser\Multiple as ParserMultiple;
 
 /**
- * The parser producing an Intermediate Representation.
+ * A parser producing an Intermediate Representation.
  *
- * The parser takes one file, parses it, generates an Abstract Syntax Tree,
+ * This parser takes one file, parses it, generates an Abstract Syntax Tree,
  * and transforms it into an Intermediate Representation.
  *
  * The PHP 7 form is prefered over PHP 5 and lower forms, it means it will try

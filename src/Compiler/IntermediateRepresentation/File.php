@@ -36,10 +36,33 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+/**
+ * A file intermediate representation.
+ *
+ * A file is one root containing all the other intermediate
+ * representations. By design, it extends the `ArrayObject` class, thus this
+ * is a collection of objects.
+ *
+ * # Examples
+ *
+ * This example shows how to create a file and to add intermediate
+ * representations in it, here a class.
+ *
+ * ```php
+ * $file   = new Kitab\Compiler\IntermediateRepresentation\File('example.php');
+ * $file[] = new Kitab\Compiler\IntermediateRepresentation\Class_('C');
+ * ```
+ */
 class File extends \ArrayObject
 {
+    /**
+     * Name of the file.
+     */
     public $name;
 
+    /**
+     * Allocate a file with a name.
+     */
     public function __construct(string $name)
     {
         parent::__construct();
@@ -47,6 +70,12 @@ class File extends \ArrayObject
         $this->name = $name;
     }
 
+    /**
+     * Automatically propagate this instance onto intermediate representations
+     * of kind `Kitab\Compiler\IntermediateRepresentation\Entity` when setting
+     * a new pair into the collection.
+     * This is handy way to ensure all the entities receive this instance.
+     */
     public function offsetSet($name, $value)
     {
         if ($value instanceof Entity) {

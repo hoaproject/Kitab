@@ -36,12 +36,63 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+/**
+ * A type intermediate representation.
+ *
+ * A type has a name. It can represent a value passed by copy or by
+ * reference. It can be nullable, i.e. null value can be considered as valid.
+ *
+ * Because values in PHP are represented by union types (many types), the type
+ * of a value can be undeclared (and decided at runtime). Thus, a type can
+ * have no name in this intermediate representation.
+ *
+ * # Examples
+ *
+ * The following example builds a nullable reference type `T`.
+ *
+ * ```php
+ * $type = new Kitab\Compiler\IntermediateRepresentation\Type();
+ * $type->name      = 'T';
+ * $type->reference = true;
+ * $type->nullable  = true;
+ *
+ * assert('?T &' === (string) $type);
+ * ```
+ */
 class Type
 {
+    /**
+     * If `true`, the type will represent a value passed by reference, else
+     * —`false`—, a value passed by copy.
+     */
     public $reference = false;
+
+    /**
+     * A nullable type accepts the `null` value as valid. For instance the
+     * type `string` does not accept the `null` value, but `?string` will
+     * accept both strings and the `null` value.
+     */
     public $nullable  = false;
+
+    /**
+     * Name of the type.
+     */
     public $name      = null;
 
+    /**
+     * Transform this intermediate representation into its PHP representation.
+     *
+     * The original formatting is not kept. The applied formatting is designed for Kitab.
+     *
+     * # Examples
+     *
+     * ```php
+     * $type = new Kitab\Compiler\IntermediateRepresentation\Type();
+     * $type->name = 'T';
+     *
+     * assert('T' === (string) $type);
+     * ```
+     */
     public function __toString(): string
     {
         return sprintf(
