@@ -3,10 +3,12 @@
 $autoloaders = ['vendor', '../..'];
 
 foreach ($autoloaders as $autoloader) {
-    $path = dirname(__DIR__) . DIRECTORY_SEPARATOR .
-        $autoloader . DIRECTORY_SEPARATOR . 'autoload.php';
+    $path =
+        dirname(__DIR__) . DIRECTORY_SEPARATOR .
+        $autoloader . DIRECTORY_SEPARATOR .
+        'autoload.php';
 
-    if (file_exists($path)) {
+    if (true === file_exists($path)) {
         require_once $path;
 
         break;
