@@ -70,7 +70,8 @@ abstract class Entity
     public $name;
 
     /**
-     * Associated documentation of the entity.
+     * Associated documentation of the entity as an instance of
+     * `Kitab\Compiler\IntermediateRepresentation\Documentation`.
      */
     public $documentation = '';
 

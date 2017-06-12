@@ -55,7 +55,8 @@ use PhpParser\Parser\Multiple as ParserMultiple;
  * with previous PHP
  * versions](http://php.net/manual/en/migration70.incompatible.php#migration70.incompatible.variable-handling).
  *
- * All the work done by the parser is delegated to [PHP-Parser](https://github.com/nikic/PHP-Parser).
+ * All the work done by the parser is delegated to
+ * [PHP-Parser](https://github.com/nikic/PHP-Parser).
  */
 class Parser
 {

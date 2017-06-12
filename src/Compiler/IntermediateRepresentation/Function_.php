@@ -47,7 +47,8 @@ namespace Kitab\Compiler\IntermediateRepresentation;
  *
  * # Examples
  *
- * In this example, a new function `f` is created with 1 input: `int $x`, and 1 output: `int`.
+ * In this example, a new function `f` is created with 1 input: `int $x`, and
+ * 1 output: `int`.
  *
  * ```php
  * $typeInt = new Kitab\Compiler\IntermediateRepresentation\Type();

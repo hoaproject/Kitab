@@ -36,15 +36,43 @@
 
 namespace Kitab\Compiler\IntermediateRepresentation;
 
+/**
+ * A documentation intermediate representation.
+ *
+
+ * A documentation is block comment starting with `/**` and “attached” to a
+ * statement (like a function, a method, a class, an attribute
+ * etc.). “Attached” means that it immediately preceeds a statement, modulo
+ * whitespaces.
+ *
+ * Kitab expects those documentation to contain
+ * [CommonMark](http://commonmark.org/) formatted text.
+ *
+ * The first paragraph of the documentation is called the
+ * description. Paragraphes must be separated by 2 consecutive newlines.
+ */
 class Documentation
 {
+    /**
+     * The raw extracted documentation, with not formatting applied.
+     */
     public $documentation = '';
 
+    /**
+     * Allocate a documentation.
+     */
     public function __construct(string $documentation)
     {
         $this->documentation = $documentation;
     }
 
+    /**
+     * The description is the first paragraph of the documentation.
+     *
+     * It generally gives an overview or the abstract idea of the documented
+     * feature. This is more or less like a summary that highlights important
+     * points.
+     */
     public function getDescription(): string
     {
         if (0 !== preg_match('/\n\n/', $this->documentation, $matches, PREG_OFFSET_CAPTURE)) {
@@ -54,6 +82,11 @@ class Documentation
         return $this->documentation;
     }
 
+    /**
+     * Transform the intermediate representation.
+     *
+     * It basically returns the documentation. No extra allocation is applied.
+     */
     public function __toString(): string
     {
         return $this->documentation;

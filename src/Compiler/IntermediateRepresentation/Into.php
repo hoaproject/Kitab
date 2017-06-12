@@ -41,18 +41,55 @@ use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\PrettyPrinter;
 
+/**
+ * A visitor to transform an Abstract Syntax Tree (AST) into an Intermediate
+ * Representation (IR).
+ *
+ * This visitor implements the API from `PhpParser\NodeVisitorAbstract`. It is
+ * applied when leaving a node of the AST to allow other visitors to transform
+ * the currently visited node and its children. For instance, the name
+ * resolver visitor modifies the AST when entering a node. This visitor needs
+ * the information from the name resolver visitor, so it must executes
+ * after. The best way to get all these information for a node and its
+ * children is to run each node when the visitor leaves a node.
+ *
+ * # Examples
+ *
+ * See [the examples of the current
+ * namespace](kitab/compiler/intermediaterepresentation/index.html).
+ */
 class Into extends NodeVisitorAbstract
 {
+    /**
+     * Name of the file where the AST comes from.
+     */
     protected $_file        = null;
+
+    /**
+     * Pretty print visitor to transform the AST into its PHP representation.
+     *
+     * It is used for example to get the PHP representation of a default value
+     * for an attribute.
+     */
     private $_prettyPrinter = null;
 
+    /**
+     * Allocate a new visitor. The only mandatory information is the name of
+     * the file where the AST comes from.
+     */
     public function __construct(string $filename)
     {
         $this->_file          = new File($filename);
         $this->_prettyPrinter = new PrettyPrinter\Standard(['shortArraySyntax' => true]);
     }
 
-    public function leaveNode(Node $node)
+    /**
+     * Transform a node of the AST into an IR.
+     *
+     * This method returns nothing because it is called several times by the
+     * traverser API. To get the final result, see the `collect` method.
+     */
+    public function leaveNode(Node $node): void
     {
         if ($node instanceof Node\Stmt\Class_) {
             $classNode            = $node;
@@ -119,10 +156,19 @@ class Into extends NodeVisitorAbstract
 
             $this->_file[] = $function;
         }
-
-        return;
     }
 
+    /**
+     * Extract constant nodes and transform them into a collection of
+     * `Kitab\Compiler\IntermediateRepresentation\Constant` objects.
+     *
+     * It supports both declaration forms:
+     *
+     *  * `public const FOO = 42; public const BAR = 153;`, and
+     *  * `public const FOO = 42, BAR = 153;`.
+     *
+     * The resulting IR will be the same and will correspond to the former form.
+     */
     protected function intoConstants(Node\Stmt\ClassLike $node): array
     {
         $constants = [];
@@ -162,6 +208,17 @@ class Into extends NodeVisitorAbstract
         return $constants;
     }
 
+    /**
+     * Extract attribute nodes and transform them into a collection of
+     * `Kitab\Compiler\IntermediateRepresentation\Attribute` objects.
+     *
+     * It supports both declaration forms:
+     *
+     *  * `public $foo = 42; public $bar = 153;`, and
+     *  * `public $foo = 42, $bar = 153;`.
+     *
+     * The resulting IR will be the same and will correspond to the former form.
+     */
     protected function intoAttributes(Node\Stmt\ClassLike $node): array
     {
         $attributes = [];
@@ -207,6 +264,10 @@ class Into extends NodeVisitorAbstract
         return $attributes;
     }
 
+    /**
+     * Extract method nodes and transform them into a collection of
+     * `Kitab\Compiler\IntermediateRepresentation\Method` objects.
+     */
     protected function intoMethods(Node\Stmt\ClassLike $node): array
     {
         $methods = [];
@@ -241,6 +302,11 @@ class Into extends NodeVisitorAbstract
         return $methods;
     }
 
+    /**
+     * Extract nodes representing parameters of a function and transform them
+     * into a collection of
+     * `Kitab\Compiler\IntermediateRepresentation\Parameter` objects.
+     */
     protected function intoInputs($node): array
     {
         $inputs         = [];
@@ -258,6 +324,10 @@ class Into extends NodeVisitorAbstract
         return $inputs;
     }
 
+    /**
+     * Extract node representing the output of a function and transform it
+     * into a `Kitab\Compiler\IntermediateRepresentation\Type` object.
+     */
     protected function intoOutput($node): Type
     {
         $output            = $this->intoType($node->returnType);
@@ -266,6 +336,10 @@ class Into extends NodeVisitorAbstract
         return $output;
     }
 
+    /**
+     * Extract node representing a type and transform it into a
+     * `Kitab\Compiler\IntermediateRepresentation\Type` object.
+     */
     protected function intoType($node): Type
     {
         $type = new Type();
@@ -289,6 +363,13 @@ class Into extends NodeVisitorAbstract
         return $type;
     }
 
+    /**
+     * Because the visitor runs for every node in the AST, the only way to
+     * collect the resulting IR is to call this method.
+     *
+     * This method can be called at any time but it is best to call it when
+     * the traverser returns. It means the transformation will be complete.
+     */
     public function collect(): File
     {
         return $this->_file;

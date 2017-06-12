@@ -95,7 +95,8 @@ class Parameter
     /**
      * Transform the intermediate representation into its PHP representation.
      *
-     * The original formatting is not kept. The applied formatting is designed for Kitab.
+     * The original formatting is not kept. The applied formatting is designed
+     * for Kitab.
      */
     public function __toString(): string
     {

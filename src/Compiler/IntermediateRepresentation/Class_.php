@@ -75,7 +75,7 @@ class Class_ extends Entity
      *
      * An abstract class cannot be instanciated. In addition, some methods can
      * be marked as abstract too. Such methods have no implementations
-     * (bodies), they only provide a signature (inputs and outputs).
+     * (bodies), they only provide a signature (inputs and output).
      */
     public $abstract   = false;
 
