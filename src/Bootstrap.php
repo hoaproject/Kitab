@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 $autoloaders = ['vendor', '../..'];
 
 foreach ($autoloaders as $autoloader) {

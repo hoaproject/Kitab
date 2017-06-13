@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Hoa
  *
@@ -155,7 +157,7 @@ class Compiler
                 $lastSymbolPart   = '@' . $item->getType() . ':' . $item->getShortName();
                 $currentDimension = &$symbols;
 
-                foreach($symbolParts as $symbolPart) {
+                foreach ($symbolParts as $symbolPart) {
                     if (!isset($currentDimension[$symbolPart])) {
                         $currentDimension[$symbolPart] = [];
                     }

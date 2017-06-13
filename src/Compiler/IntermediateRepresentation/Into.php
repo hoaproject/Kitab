@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Hoa
  *
@@ -182,7 +184,7 @@ class Into extends NodeVisitorAbstract
 
             if (true === $statement->isPublic()) {
                 $visibility = Constant::VISIBILITY_PUBLIC;
-            } else if (true === $statement->isProtected()) {
+            } elseif (true === $statement->isProtected()) {
                 $visibility = Constant::VISIBILITY_PROTECTED;
             } else {
                 $visibility = Constant::VISIBILITY_PRIVATE;
@@ -232,7 +234,7 @@ class Into extends NodeVisitorAbstract
 
             if (true === $statement->isPublic()) {
                 $visibility = Attribute::VISIBILITY_PUBLIC;
-            } else if (true === $statement->isProtected()) {
+            } elseif (true === $statement->isProtected()) {
                 $visibility = Attribute::VISIBILITY_PROTECTED;
             } else {
                 $visibility = Attribute::VISIBILITY_PRIVATE;
@@ -283,7 +285,7 @@ class Into extends NodeVisitorAbstract
             // Visibility, scope, and abstract.
             if (true === $methodNode->isPublic()) {
                 $method->visibility = $method::VISIBILITY_PUBLIC;
-            } else if (true === $methodNode->isProtected()) {
+            } elseif (true === $methodNode->isProtected()) {
                 $method->visibility = $method::VISIBILITY_PROTECTED;
             } else {
                 $method->visibility = $method::VISIBILITY_PRIVATE;
@@ -346,7 +348,7 @@ class Into extends NodeVisitorAbstract
 
         if ($node instanceof Node\Name) {
             $type->name = $node->toString();
-        } else if ($node instanceof Node\NullableType) {
+        } elseif ($node instanceof Node\NullableType) {
             $type->nullable = true;
 
             $nullableNode = $node->type;
