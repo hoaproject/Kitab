@@ -331,7 +331,7 @@ class Html implements Target
                         case '@trait':
                             $_trait              = new StdClass();
                             $_trait->name        = $subSymbolName;
-                            $_trait->descripiton = $subSymbol->description;
+                            $_trait->description = $subSymbol->description;
                             $_trait->url         =
                                 '.' .
                                 $this->_router->unroute(
@@ -349,7 +349,7 @@ class Html implements Target
                         case '@function':
                             $_function              = new StdClass();
                             $_function->name        = $subSymbolName;
-                            $_function->descripiton = $subSymbol->description;
+                            $_function->description = $subSymbol->description;
                             $_function->url         =
                                 '.' .
                                 $this->_router->unroute(
