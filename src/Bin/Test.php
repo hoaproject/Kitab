@@ -167,6 +167,8 @@ class Test extends Console\Dispatcher\Kit
         }
 
         $command .=
+            ' --configurations ' .
+                dirname(__DIR__) . DS . 'DocTest' . DS . '.atoum.php' .
             ' --autoloader-file ' .
                 $autoloaderFile .
             ' --force-terminal' .
