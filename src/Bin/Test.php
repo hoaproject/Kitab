@@ -42,11 +42,10 @@ use Hoa\Console;
 use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
-use Kitab\Compiler\Target\Html\Html;
-use Kitab\Configuration;
+use Kitab\Compiler\Target\DocTest\DocTest;
 use Kitab\Finder;
 
-class Compile extends Console\Dispatcher\Kit
+class Test extends Console\Dispatcher\Kit
 {
     /**
      * Options description.
@@ -54,13 +53,10 @@ class Compile extends Console\Dispatcher\Kit
      * @var array
      */
     protected $options = [
-        ['default-namespace', Console\GetOption::REQUIRED_ARGUMENT, 'd'],
-        ['with-composer',     Console\GetOption::OPTIONAL_ARGUMENT, 'c'],
-        ['with-logo-url',     Console\GetOption::REQUIRED_ARGUMENT, 'l'],
-        ['with-project-name', Console\GetOption::REQUIRED_ARGUMENT, 'p'],
-        ['output-directory',  Console\GetOption::REQUIRED_ARGUMENT, 'o'],
-        ['help',              Console\GetOption::NO_ARGUMENT,       'h'],
-        ['help',              Console\GetOption::NO_ARGUMENT,       '?']
+        ['with-composer',    Console\GetOption::OPTIONAL_ARGUMENT, 'c'],
+        ['output-directory', Console\GetOption::REQUIRED_ARGUMENT, 'o'],
+        ['help',             Console\GetOption::NO_ARGUMENT,       'h'],
+        ['help',             Console\GetOption::NO_ARGUMENT,       '?']
     ];
 
 
@@ -75,31 +71,15 @@ class Compile extends Console\Dispatcher\Kit
         $composerFile    = null;
         $outputDirectory = null;
         $directoryToScan = getcwd();
-        $configuration   = new Configuration();
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
-                case 'd':
-                    $configuration->defaultNamespace = $v;
-
-                    break;
-
                 case 'c':
                     if (false === is_string($v)) {
                         $composerFile = './composer.json';
                     } else {
                         $composerFile = $v;
                     }
-
-                    break;
-
-                case 'l':
-                    $configuration->logoURL = $v;
-
-                    break;
-
-                case 'p':
-                    $configuration->projectName = $v;
 
                     break;
 
@@ -156,9 +136,9 @@ class Compile extends Console\Dispatcher\Kit
         $finder = new Finder();
         $finder->in($directoryToScan);
 
-        $target = new Html(null, $configuration);
+        $target = new DocTest();
 
-        $compiler = new Compiler($configuration);
+        $compiler = new Compiler();
         $compiler->compile($finder, $target);
 
         return;
@@ -172,14 +152,11 @@ class Compile extends Console\Dispatcher\Kit
     public function usage()
     {
         echo
-            'Usage   : compile <options> directory-to-scan', "\n",
+            'Usage   : test <options> directory-to-scan', "\n",
             'Options :', "\n",
             $this->makeUsageOptionsList([
-                'd'    => 'Default namespace that must be displayed.',
                 'c'    => 'Use a specific Composer file to get PSR-4 mappings ' .
                           '(default: `./composer.json` if enabled).',
-                'l'    => 'URL of the logo.',
-                'p'    => 'Project name.',
                 'o'    => 'Directory that will receive the generated documentation.',
                 'help' => 'This help.'
             ]);

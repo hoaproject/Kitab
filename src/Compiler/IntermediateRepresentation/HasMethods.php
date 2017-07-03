@@ -39,59 +39,12 @@ declare(strict_types=1);
 namespace Kitab\Compiler\IntermediateRepresentation;
 
 /**
- * A trait intermediate representation.
- *
- * A trait is one of the major entity in PHP. It exposes attributes, and
- * methods. A trait can inherit from one other trait.
- *
- * # Examples
- *
- * In this example, a new trait `T` is built, with 2 attributes: `foo`
- * and `bar`, and one method: `f`.
- *
- * ```php
- * $trait               = new Kitab\Compiler\IntermediateRepresentation\Trait_('T');
- * $trait->attributes[] = new Kitab\Compiler\IntermediateRepresentation\Attribute('foo');
- * $trait->attributes[] = new Kitab\Compiler\IntermediateRepresentation\Attribute('bar');
- * $trait->methods[]    = new Kitab\Compiler\IntermediateRepresentation\Method('f');
- * ```
+ * An interface to represent an entity with methods.
  */
-class Trait_ extends Entity implements HasMethods
+interface HasMethods
 {
-    /**
-     * Type of the entity. See parent.
-     */
-    const TYPE = 'trait';
-
-    /**
-     * Fully-qualified name of the trait it extends if any.
-     */
-    public $parent     = null;
-
-    /**
-     * Collection of `Kitab\Compiler\IntermediateRepresentation\Attribute` instances.
-     */
-    public $attributes = [];
-
-    /**
-     * Collection of `Kitab\Compiler\IntermediateRepresentation\Method` instances.
-     */
-    public $methods    = [];
-
-    /**
-     * Allocate a trait with a fully-qualified name. This is the only
-     * mandatory information.
-     */
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
-
     /**
      * Return all methods declared for this entity.
      */
-    public function getMethods(): iterable
-    {
-        return $this->methods;
-    }
+    public function getMethods(): iterable;
 }

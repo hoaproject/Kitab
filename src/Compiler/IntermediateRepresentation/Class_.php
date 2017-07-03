@@ -58,7 +58,7 @@ namespace Kitab\Compiler\IntermediateRepresentation;
  * $class->methods[]    = new Kitab\Compiler\IntermediateRepresentation\Method('f');
  * ```
  */
-class Class_ extends Entity
+class Class_ extends Entity implements HasMethods
 {
     /**
      * Type of the entity. See parent.
@@ -112,5 +112,13 @@ class Class_ extends Entity
     public function __construct(string $name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * Return all methods declared for this entity.
+     */
+    public function getMethods(): iterable
+    {
+        return $this->methods;
     }
 }

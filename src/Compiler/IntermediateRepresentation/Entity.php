@@ -75,7 +75,7 @@ abstract class Entity
      * Associated documentation of the entity as an instance of
      * `Kitab\Compiler\IntermediateRepresentation\Documentation`.
      */
-    public $documentation = '';
+    public $documentation = null;
 
     /**
      * The name of the entity without the short name, i.e. only the namespaces.

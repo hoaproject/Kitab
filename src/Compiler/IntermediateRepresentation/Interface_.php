@@ -53,7 +53,7 @@ namespace Kitab\Compiler\IntermediateRepresentation;
  * $interface->methods[] = new Kitab\Compiler\IntermediateRepresentation\Method('f');
  * ```
  */
-class Interface_ extends Entity
+class Interface_ extends Entity implements HasMethods
 {
     /**
      * Type of the entity. See parent.
@@ -77,5 +77,13 @@ class Interface_ extends Entity
     public function __construct(string $name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * Return all methods declared for this entity.
+     */
+    public function getMethods(): iterable
+    {
+        return $this->methods;
     }
 }

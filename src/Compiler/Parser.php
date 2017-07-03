@@ -45,6 +45,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\ParserFactory;
 use PhpParser\Parser\Multiple as ParserMultiple;
+use PhpParser\PrettyPrinter;
 
 /**
  * A parser producing an Intermediate Representation.
@@ -68,7 +69,7 @@ class Parser
      *
      * The PHP parser is allocated once, hence the static declaration.
      */
-    protected static $_phpParser    = null;
+    protected static $_phpParser        = null;
 
     /**
      * A traverser, for PHP-Parser, is a set of visitors visiting the Abstract
@@ -78,7 +79,14 @@ class Parser
      *
      * The traverser is allocated once, hence the static declaration.
      */
-    protected static $_phpTraverser = null;
+    protected static $_phpTraverser     = null;
+
+    /**
+     * Pretty print visitor to transform a PHP AST into its PHP representation.
+     *
+     * The pretty printer is allocated once, hence the static declaration.
+     */
+    protected static $_phpPrettyPrinter = null;
 
     /**
      * When allocating a `Parser` instance, a PHP-Parser instance is created
@@ -94,6 +102,10 @@ class Parser
         if (null === self::$_phpTraverser) {
             self::$_phpTraverser = new NodeTraverser();
             self::$_phpTraverser->addVisitor(new NodeVisitor\NameResolver());
+        }
+
+        if (null === self::$_phpPrettyPrinter) {
+            self::$_phpPrettyPrinter = new PrettyPrinter\Standard(['shortArraySyntax' => true]);
         }
     }
 
@@ -167,7 +179,7 @@ class Parser
     /**
      * Get the statically allocated PHP-Parser instance.
      */
-    protected static function getPhpParser(): ParserMultiple
+    public static function getPhpParser(): ParserMultiple
     {
         return self::$_phpParser;
     }
@@ -178,6 +190,14 @@ class Parser
     protected static function getTraverser(): NodeTraverser
     {
         return self::$_phpTraverser;
+    }
+
+    /**
+     * Get the statically allocated pretty printer
+     */
+    public static function getPhpPrettyPrinter(): PrettyPrinter\Standard
+    {
+        return self::$_phpPrettyPrinter;
     }
 
     /**

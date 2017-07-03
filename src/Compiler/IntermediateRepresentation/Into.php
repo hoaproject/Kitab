@@ -72,6 +72,9 @@ class Into extends NodeVisitorAbstract
      *
      * It is used for example to get the PHP representation of a default value
      * for an attribute.
+     *
+     * This is a reference to the PHP pretty printer allocated in the
+     * `Kitab\Compiler\Parser` class.
      */
     private $_prettyPrinter = null;
 
@@ -82,7 +85,7 @@ class Into extends NodeVisitorAbstract
     public function __construct(string $filename)
     {
         $this->_file          = new File($filename);
-        $this->_prettyPrinter = new PrettyPrinter\Standard(['shortArraySyntax' => true]);
+        $this->_prettyPrinter = Parser::getPhpPrettyPrinter();
     }
 
     /**

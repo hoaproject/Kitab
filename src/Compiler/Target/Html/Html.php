@@ -51,6 +51,7 @@ use StdClass;
 
 class Html implements Target
 {
+    protected $_router        = null;
     protected $_configuration = null;
 
     public function __construct(Router $router = null, Configuration $configuration = null)
