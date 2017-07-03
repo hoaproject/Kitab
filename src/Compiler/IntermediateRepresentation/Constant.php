@@ -53,7 +53,7 @@ namespace Kitab\Compiler\IntermediateRepresentation;
  * $constant->visibility = $constant::VISIBILITY_PROTECTED;
  * $constant->value      = '42';
  *
- * assert('protected const FOO = 42' === (string) $attribute);
+ * assert('protected const FOO = 42' === (string) $constant);
  * ```
  */
 class Constant

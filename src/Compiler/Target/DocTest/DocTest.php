@@ -99,7 +99,7 @@ class DocTest implements Target
         // Methods
         if ($entity instanceof IntermediateRepresentation\HasMethods) {
             foreach ($entity->getMethods() as $method) {
-                foreach ($this->getCodeBlocks($entity->documentation) as $i => $codeBlock) {
+                foreach ($this->getCodeBlocks($method->documentation) as $i => $codeBlock) {
                     $testSuite .= $this->compileToTestCase(
                         $method->name . '_' . $i,
                         $codeBlock

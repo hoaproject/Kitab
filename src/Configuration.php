@@ -46,9 +46,11 @@ namespace Kitab;
  *
  * # Examples
  *
- * ```php,ignore
- * $configuration = new Configuration();
+ * ```php
+ * $configuration              = new Kitab\Configuration();
  * $configuration->projectName = 'Kitab';
+ *
+ * assert('Kitab' === $configuration->projectName);
  * ```
  */
 class Configuration
@@ -87,7 +89,7 @@ class Configuration
      * # Examples
      *
      * ```php
-     * $configuration = new Configuration();
+     * $configuration = new Kitab\Configuration();
      *
      * assert($configuration->defaultNamespace === null);
      * assert($configuration->getOr('defaultNamespace', 'foobar') === 'foobar');

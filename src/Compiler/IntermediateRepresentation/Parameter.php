@@ -55,7 +55,7 @@ namespace Kitab\Compiler\IntermediateRepresentation;
  * $typeInt       = new Kitab\Compiler\IntermediateRepresentation\Type();
  * $typeInt->name = 'int';
  *
- * $parameter        = new Kitab\Compiler\IntermediateRepresentation\Parameter();
+ * $parameter        = new Kitab\Compiler\IntermediateRepresentation\Parameter('x');
  * $parameter->type  = $typeInt;
  * $parameter->name  = 'foo';
  * $parameter->value = '42';
