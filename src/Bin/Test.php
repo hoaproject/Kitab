@@ -39,6 +39,8 @@ declare(strict_types=1);
 namespace Kitab\Bin;
 
 use Hoa\Console;
+use Hoa\Console\Processus;
+use Hoa\Event;
 use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
@@ -136,10 +138,66 @@ class Test extends Console\Dispatcher\Kit
         $finder = new Finder();
         $finder->in($directoryToScan);
 
+        if (is_dir($outputDirectory)) {
+            $since = time() - filemtime($outputDirectory);
+            $finder->modified('since ' . $since . ' seconds');
+        }
+
         $target = new DocTest();
 
         $compiler = new Compiler();
         $compiler->compile($finder, $target);
+
+        $command =
+            dirname(dirname(__DIR__)) . DS .
+            'vendor' . DS .
+            'atoum' . DS .
+            'atoum' . DS .
+            'bin' . DS .
+            'atoum';
+        $autoloaderFile =
+            dirname(dirname(__DIR__)) . DS .
+            'vendor' . DS .
+            'autoload.php';
+
+        if (false === file_exists($command)) {
+            throw new \RuntimeException(
+                'Cannot locate `atoum` to execute the generated test suites.'
+            );
+        }
+
+        $command .=
+            ' --autoloader-file ' .
+                $autoloaderFile .
+            ' --force-terminal' .
+            ' --max-children-number 4' .
+            ' --directories ' .
+                $outputDirectory;
+
+        $processus = new Processus($command, null, null, getcwd(), $_SERVER);
+        $processus->on(
+            'input',
+            function (Event\Bucket $bucket) {
+                return false;
+            }
+        );
+        $processus->on(
+            'output',
+            function (Event\Bucket $bucket) {
+                echo $bucket->getData()['line'], "\n";
+
+                return;
+            }
+        );
+        $processus->on(
+            'stop',
+            function (Event\Bucket $bucket) {
+                // Wait on sub-processes to stop.
+                sleep(1);
+                exit($bucket->getSource()->getExitCode());
+            }
+        );
+        $processus->run();
 
         return;
     }
