@@ -48,8 +48,14 @@ class Welcome extends Console\Dispatcher\Kit
      * @var array
      */
     protected $options = [
+        ['list', Console\GetOption::NO_ARGUMENT, 'l'],
         ['help', Console\GetOption::NO_ARGUMENT, 'h'],
         ['help', Console\GetOption::NO_ARGUMENT, '?']
+    ];
+
+    private $_subCommands = [
+        'compile' => 'to compile the documentation into static HTML files',
+        'test'    => 'to test the documentation'
     ];
 
 
@@ -61,8 +67,15 @@ class Welcome extends Console\Dispatcher\Kit
      */
     public function run()
     {
+        $printList = false;
+
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
+                case 'l':
+                    $printList = $v;
+
+                break;
+
                 case 'h':
                 case '?':
                     return $this->usage();
@@ -74,7 +87,27 @@ class Welcome extends Console\Dispatcher\Kit
             }
         }
 
-        echo 'Welcome :-)', "\n";
+        if (true === $printList) {
+            echo implode("\t", array_keys($this->_subCommands));
+
+            return;
+        }
+
+        echo
+            'Welcome :-)!', "\n\n",
+            'List of subcommands:', "\n\n",
+            implode(
+                ",\n",
+                array_map(
+                    function ($key, $value) {
+                        return '  * `' . $key . '`, ' . $value;
+                    },
+                    array_keys($this->_subCommands),
+                    array_values($this->_subCommands)
+                )
+            ), ".\n\n",
+            'Example:', "\n\n",
+            '    $ ', $_SERVER['argv'][0], ' compile src', "\n";
 
         return;
     }
@@ -90,6 +123,7 @@ class Welcome extends Console\Dispatcher\Kit
             'Usage   : welcome <options>', "\n",
             'Options :', "\n",
             $this->makeUsageOptionsList([
+                'l'    => 'List available sub-commands.',
                 'help' => 'This help.'
             ]);
 
