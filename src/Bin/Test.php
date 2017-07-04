@@ -41,6 +41,7 @@ namespace Kitab\Bin;
 use Hoa\Console;
 use Hoa\Console\Processus;
 use Hoa\Event;
+use Hoa\File;
 use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
@@ -57,6 +58,7 @@ class Test extends Console\Dispatcher\Kit
     protected $options = [
         ['with-composer',    Console\GetOption::OPTIONAL_ARGUMENT, 'c'],
         ['output-directory', Console\GetOption::REQUIRED_ARGUMENT, 'o'],
+        ['verbose',          Console\GetOption::NO_ARGUMENT,       'v'],
         ['help',             Console\GetOption::NO_ARGUMENT,       'h'],
         ['help',             Console\GetOption::NO_ARGUMENT,       '?']
     ];
@@ -71,8 +73,9 @@ class Test extends Console\Dispatcher\Kit
     public function run()
     {
         $composerFile    = null;
-        $outputDirectory = null;
-        $directoryToScan = getcwd();
+        $outputDirectory = File\Temporary\Temporary::getTemporaryDirectory() . DS . 'Kitab.output';
+        $directoryToScan = null;
+        $verbose         = false;
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
@@ -87,6 +90,11 @@ class Test extends Console\Dispatcher\Kit
 
                 case 'o':
                     $outputDirectory = $v;
+
+                    break;
+
+                case 'v':
+                    $verbose = $v;
 
                     break;
 
@@ -129,11 +137,19 @@ class Test extends Console\Dispatcher\Kit
             }
         }
 
-        if (null !== $outputDirectory) {
-            Protocol::getInstance()['Kitab']['Output']->setReach("\r" . $outputDirectory . DS);
-        }
+        Protocol::getInstance()['Kitab']['Output']->setReach("\r" . $outputDirectory . DS);
 
         $this->parser->listInputs($directoryToScan);
+
+        if (empty($directoryToScan)) {
+            throw new \RuntimeException('Directory to scan must not be empty.');
+        }
+
+        if (true === $verbose) {
+            echo
+                'Directory to scan: ', $directoryToScan, "\n",
+                'Output directory : ', $outputDirectory, "\n";
+        }
 
         $finder = new Finder();
         $finder->in($directoryToScan);
@@ -218,6 +234,7 @@ class Test extends Console\Dispatcher\Kit
                 'c'    => 'Use a specific Composer file to get PSR-4 mappings ' .
                           '(default: `./composer.json` if enabled).',
                 'o'    => 'Directory that will receive the generated documentation.',
+                'v'    => 'Be verbose.',
                 'help' => 'This help.'
             ]);
 
