@@ -134,6 +134,8 @@ class Test extends Console\Dispatcher\Kit
         if (is_dir($outputDirectory)) {
             $since = time() - filemtime($outputDirectory);
             $finder->modified('since ' . $since . ' seconds');
+        } else {
+            File\Directory::create($outputDirectory);
         }
 
         $target = new DocTest();
@@ -144,7 +146,10 @@ class Test extends Console\Dispatcher\Kit
         if (defined('KITAB_PHAR_NAME')) {
             $command = PHP_BINARY . ' ' . KITAB_PHAR_PATH . ' atoum';
 
-            $temporaryAutoloader = new File\Write(Temporary::create());
+            $temporaryAutoloaderPath = $outputDirectory . '.kitab.phar.autoloader.php';
+            touch($temporaryAutoloaderPath);
+
+            $temporaryAutoloader = new File\Write($temporaryAutoloaderPath, File::MODE_TRUNCATE_WRITE);
             $temporaryAutoloader->writeAll(
                 '<?php' . "\n\n" .
                 'Phar::loadPhar(\'' . KITAB_PHAR_PATH . '\', \'' . KITAB_PHAR_NAME . '\');' . "\n\n" .
@@ -172,7 +177,10 @@ class Test extends Console\Dispatcher\Kit
                 ' --configurations ' .
                     dirname(__DIR__) . DS . 'DocTest' . DS . '.atoum.php';
 
-            $temporaryAutoloader = new File\Write(Temporary::create());
+            $temporaryAutoloaderPath = $outputDirectory . '.kitab.autoloader.php';
+            touch($temporaryAutoloaderPath);
+
+            $temporaryAutoloader = new File\Write($temporaryAutoloaderPath, File\File::MODE_TRUNCATE_WRITE);
             $temporaryAutoloader->writeAll(
                 '<?php' . "\n\n" .
                 'require_once \'' . str_replace("'", "\\'", realpath(dirname(__DIR__, 2) . DS . 'vendor' . DS . 'autoload.php')) . '\';' . "\n" .
