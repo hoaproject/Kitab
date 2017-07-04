@@ -88,6 +88,10 @@ class Test extends Console\Dispatcher\Kit
                 case 'l':
                     $autoloader = $v;
 
+                    if (false === file_exists($autoloader)) {
+                        throw new \RuntimeException('Autoloader file `' . $autoloader . '` does not exist.');
+                    }
+
                     break;
 
                 case 'v':
@@ -154,7 +158,7 @@ class Test extends Console\Dispatcher\Kit
                 '<?php' . "\n\n" .
                 'Phar::loadPhar(\'' . KITAB_PHAR_PATH . '\', \'' . KITAB_PHAR_NAME . '\');' . "\n\n" .
                 'require_once \'phar://'. KITAB_PHAR_NAME .'/vendor/autoload.php\';' . "\n" .
-                'require_once \'' . str_replace("'", "\\'", realpath($autoloader)) . '\';'
+                (!empty($autoloader) ? 'require_once \'' . str_replace("'", "\\'", realpath($autoloader)) . '\';' : '')
             );
 
             $autoloader = $temporaryAutoloader->getStreamName();
@@ -184,7 +188,7 @@ class Test extends Console\Dispatcher\Kit
             $temporaryAutoloader->writeAll(
                 '<?php' . "\n\n" .
                 'require_once \'' . str_replace("'", "\\'", realpath(dirname(__DIR__, 2) . DS . 'vendor' . DS . 'autoload.php')) . '\';' . "\n" .
-                'require_once \'' . str_replace("'", "\\'", realpath($autoloader)) . '\';'
+                (!empty($autoloader) ? 'require_once \'' . str_replace("'", "\\'", realpath($autoloader)) . '\';' : '')
             );
 
             $autoloader = $temporaryAutoloader->getStreamName();
