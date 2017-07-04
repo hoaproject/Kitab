@@ -217,7 +217,7 @@ class Parser
     public static function extractFromComment($comment)
     {
         return preg_replace(
-            ',^(/\*\*|\h*\*/?\h*),m',
+            ',(^(/\*\*|\h*\*/?\h*)|\*/$),m',
             '',
             $comment
         );

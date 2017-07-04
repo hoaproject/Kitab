@@ -92,7 +92,7 @@ class Type
      * $type = new Kitab\Compiler\IntermediateRepresentation\Type();
      * $type->name = 'T';
      *
-     * assert('T' === (string) $type);
+     * assert('T ' === (string) $type);
      * ```
      */
     public function __toString(): string
