@@ -96,7 +96,7 @@ class Cli extends atoum\reports\realtime
         $failurePrompt = clone $secondLevelPrompt;
         $failurePrompt->setColorizer($failureColorizer);
 
-        $runnerFailuresField = new runner\failures\cli();
+        $runnerFailuresField = new Fields\Failures();
         $runnerFailuresField
             ->setTitlePrompt($failureTitlePrompt)
             ->setTitleColorizer($failureColorizer)
