@@ -126,11 +126,11 @@ abstract class Entity
      * ```php
      * $classA = new Kitab\Compiler\IntermediateRepresentation\Class_('Foo\\Bar\\Baz');
      *
-     * assert(true === $class->inNamespace());
+     * assert(true === $classA->inNamespace());
 
      * $classB = new Kitab\Compiler\IntermediateRepresentation\Class_('Qux');
      *
-     * assert(false === $class->inNamespace());
+     * assert(false === $classB->inNamespace());
      * ```
      */
     public function inNamespace(): bool
