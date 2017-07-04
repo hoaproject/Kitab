@@ -56,7 +56,6 @@ class Test extends Console\Dispatcher\Kit
      * @var array
      */
     protected $options = [
-        ['with-composer',    Console\GetOption::OPTIONAL_ARGUMENT, 'c'],
         ['output-directory', Console\GetOption::REQUIRED_ARGUMENT, 'o'],
         ['verbose',          Console\GetOption::NO_ARGUMENT,       'v'],
         ['help',             Console\GetOption::NO_ARGUMENT,       'h'],
@@ -72,22 +71,12 @@ class Test extends Console\Dispatcher\Kit
      */
     public function run()
     {
-        $composerFile    = null;
         $outputDirectory = Temporary::getTemporaryDirectory() . DS . 'Kitab.test.output';
         $directoryToScan = null;
         $verbose         = false;
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
-                case 'c':
-                    if (false === is_string($v)) {
-                        $composerFile = './composer.json';
-                    } else {
-                        $composerFile = $v;
-                    }
-
-                    break;
-
                 case 'o':
                     $outputDirectory = $v;
 
@@ -109,40 +98,16 @@ class Test extends Console\Dispatcher\Kit
             }
         }
 
-        if (null !== $composerFile) {
-            if (false === file_exists($composerFile)) {
-                throw new RuntimeException('Composer file `' . $composerFile . '` is not found.');
-            }
-
-            $composerFileContent = json_decode(file_get_contents($composerFile), true);
-
-            if (isset($composerFileContent['autoload']) &&
-                isset($composerFileContent['autoload']['psr-4'])) {
-                $protocolInput     = Protocol::getInstance()['Kitab']['Input'];
-                $composerDirectory = dirname($composerFile);
-
-                foreach ($composerFileContent['autoload']['psr-4'] as $psrNamespaces => $psrDirectory) {
-                    $latestNode = $protocolInput;
-
-                    foreach (explode('\\', trim($psrNamespaces, '\\')) as $psrNamespace) {
-                        if (!isset($latestNode[$psrNamespace])) {
-                            $latestNode[$psrNamespace] = new Node($psrNamespace);
-                        }
-
-                        $latestNode = $latestNode[$psrNamespace];
-                    }
-
-                    $latestNode->setReach("\r" . $composerDirectory . DS . $psrDirectory . DS);
-                }
-            }
-        }
-
         Protocol::getInstance()['Kitab']['Output']->setReach("\r" . $outputDirectory . DS);
 
         $this->parser->listInputs($directoryToScan);
 
         if (empty($directoryToScan)) {
-            throw new \RuntimeException('Directory to scan must not be empty.');
+            throw new \RuntimeException(
+                'Directory to scan must not be empty.' . "\n" .
+                'Retry with ' . '`' . implode(' ', $_SERVER['argv']) . ' src` ' .
+                'to test the documentation inside the `src` directory.'
+            );
         }
 
         if (true === $verbose) {
@@ -231,10 +196,8 @@ class Test extends Console\Dispatcher\Kit
             'Usage   : test <options> directory-to-scan', "\n",
             'Options :', "\n",
             $this->makeUsageOptionsList([
-                'c'    => 'Use a specific Composer file to get PSR-4 mappings ' .
-                          '(default: `./composer.json` if enabled).',
                 'o'    => 'Directory that will receive the generated documentation.',
-                'v'    => 'Be verbose.',
+                'v'    => 'Be verbose (add some debug information).',
                 'help' => 'This help.'
             ]);
 
