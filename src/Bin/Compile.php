@@ -39,6 +39,7 @@ declare(strict_types=1);
 namespace Kitab\Bin;
 
 use Hoa\Console;
+use Hoa\File\Temporary\Temporary;
 use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
@@ -59,6 +60,7 @@ class Compile extends Console\Dispatcher\Kit
         ['with-logo-url',     Console\GetOption::REQUIRED_ARGUMENT, 'l'],
         ['with-project-name', Console\GetOption::REQUIRED_ARGUMENT, 'p'],
         ['output-directory',  Console\GetOption::REQUIRED_ARGUMENT, 'o'],
+        ['open',              Console\GetOption::NO_ARGUMENT,       'r'],
         ['help',              Console\GetOption::NO_ARGUMENT,       'h'],
         ['help',              Console\GetOption::NO_ARGUMENT,       '?']
     ];
@@ -73,9 +75,10 @@ class Compile extends Console\Dispatcher\Kit
     public function run()
     {
         $composerFile    = null;
-        $outputDirectory = null;
-        $directoryToScan = getcwd();
+        $outputDirectory = Temporary::getTemporaryDirectory() . DS . 'Kitab.html.output';
+        $directoryToScan = null;
         $configuration   = new Configuration();
+        $open            = false;
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
@@ -105,6 +108,11 @@ class Compile extends Console\Dispatcher\Kit
 
                 case 'o':
                     $outputDirectory = $v;
+
+                    break;
+
+                case 'r':
+                    $open = $v;
 
                     break;
 
@@ -147,11 +155,13 @@ class Compile extends Console\Dispatcher\Kit
             }
         }
 
-        if (null !== $outputDirectory) {
-            Protocol::getInstance()['Kitab']['Output']->setReach("\r" . $outputDirectory . DS);
-        }
+        Protocol::getInstance()['Kitab']['Output']->setReach("\r" . $outputDirectory . DS);
 
         $this->parser->listInputs($directoryToScan);
+
+        if (empty($directoryToScan)) {
+            throw new \RuntimeException('Directory to scan must not be empty.');
+        }
 
         $finder = new Finder();
         $finder->in($directoryToScan);
@@ -160,6 +170,43 @@ class Compile extends Console\Dispatcher\Kit
 
         $compiler = new Compiler($configuration);
         $compiler->compile($finder, $target);
+
+        $index = $outputDirectory;
+
+        if (true === file_exists($index . DS . 'index.html')) {
+            $index .= DS . 'index.html';
+        }
+
+        if (true === $open) {
+            if (isset($_SERVER['BROWSER'])) {
+                echo
+                    'Opening…', "\n",
+                    Console\Processus::execute($_SERVER['BROWSER'] . ' ' . $index, false);
+
+                return;
+            }
+
+            $utilities = [
+                'open',
+                'xdg-open',
+                'gnome-open',
+                'kde-open'
+            ];
+
+            foreach ($utilities as $utility) {
+                if (null !== $utilityPath = Console\Processus::locate($utility)) {
+                    echo
+                        'Opening…', "\n",
+                        Console\Processus::execute($utilityPath . ' ' . $index, false);
+
+                    return;
+                }
+            }
+
+            echo 'Did not succeed to open the documentation automatically (', $index, ').', "\n";
+        } else {
+            echo $index, "\n";
+        }
 
         return;
     }
@@ -181,6 +228,7 @@ class Compile extends Console\Dispatcher\Kit
                 'l'    => 'URL of the logo.',
                 'p'    => 'Project name.',
                 'o'    => 'Directory that will receive the generated documentation.',
+                'r'    => 'Open the documentation in a browser after its computation.',
                 'help' => 'This help.'
             ]);
 

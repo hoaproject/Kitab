@@ -41,7 +41,7 @@ namespace Kitab\Bin;
 use Hoa\Console;
 use Hoa\Console\Processus;
 use Hoa\Event;
-use Hoa\File;
+use Hoa\File\Temporary\Temporary;
 use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
@@ -73,7 +73,7 @@ class Test extends Console\Dispatcher\Kit
     public function run()
     {
         $composerFile    = null;
-        $outputDirectory = File\Temporary\Temporary::getTemporaryDirectory() . DS . 'Kitab.output';
+        $outputDirectory = Temporary::getTemporaryDirectory() . DS . 'Kitab.test.output';
         $directoryToScan = null;
         $verbose         = false;
 
