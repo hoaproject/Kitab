@@ -1,5 +1,6 @@
-#!/usr/bin/env php
 <?php
+
+declare(strict_types=1);
 
 /**
  * Hoa
@@ -37,6 +38,6 @@
 
 require_once
     dirname(__DIR__) . DIRECTORY_SEPARATOR .
-    'src' . DIRECTORY_SEPARATOR .
-    'Bin' . DIRECTORY_SEPARATOR .
-    'Kitab.php';
+    'Bootstrap.php';
+
+Kitab\Bin\Bin::main();

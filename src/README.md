@@ -21,7 +21,7 @@ great look for your documentation. This is possible to customize the
 logo, the project name, etc.
 
 A static search engine is compiled specifically for your
-documentation. It contains all the modern feature we can expect from a
+documentation. It contains all the modern features we can expect from a
 search engine, like tokenizing, stemming, stop word filtering, term
 frequency-inverse document frequency (TF-ID), inverted index etc. The
 search engine database is pre-computed and optimized to load as fast

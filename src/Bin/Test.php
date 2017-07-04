@@ -41,6 +41,7 @@ namespace Kitab\Bin;
 use Hoa\Console;
 use Hoa\Console\Processus;
 use Hoa\Event;
+use Hoa\File;
 use Hoa\File\Temporary\Temporary;
 use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
@@ -56,6 +57,7 @@ class Test extends Console\Dispatcher\Kit
      * @var array
      */
     protected $options = [
+        ['autoloader',       Console\GetOption::REQUIRED_ARGUMENT, 'l'],
         ['output-directory', Console\GetOption::REQUIRED_ARGUMENT, 'o'],
         ['verbose',          Console\GetOption::NO_ARGUMENT,       'v'],
         ['help',             Console\GetOption::NO_ARGUMENT,       'h'],
@@ -71,7 +73,8 @@ class Test extends Console\Dispatcher\Kit
      */
     public function run()
     {
-        $outputDirectory = Temporary::getTemporaryDirectory() . DS . 'Kitab.test.output';
+        $outputDirectory = null;
+        $autoloader      = null;
         $directoryToScan = null;
         $verbose         = false;
 
@@ -79,6 +82,11 @@ class Test extends Console\Dispatcher\Kit
             switch ($c) {
                 case 'o':
                     $outputDirectory = $v;
+
+                    break;
+
+                case 'l':
+                    $autoloader = $v;
 
                     break;
 
@@ -98,8 +106,6 @@ class Test extends Console\Dispatcher\Kit
             }
         }
 
-        Protocol::getInstance()['Kitab']['Output']->setReach("\r" . $outputDirectory . DS);
-
         $this->parser->listInputs($directoryToScan);
 
         if (empty($directoryToScan)) {
@@ -109,6 +115,12 @@ class Test extends Console\Dispatcher\Kit
                 'to test the documentation inside the `src` directory.'
             );
         }
+
+        if (null === $outputDirectory) {
+            $outputDirectory = Temporary::getTemporaryDirectory() . DS . 'Kitab.test.output' . DS . hash('sha256', realpath($directoryToScan)). DS;
+        }
+
+        Protocol::getInstance()['Kitab']['Output']->setReach("\r" . $outputDirectory . DS);
 
         if (true === $verbose) {
             echo
@@ -129,29 +141,54 @@ class Test extends Console\Dispatcher\Kit
         $compiler = new Compiler();
         $compiler->compile($finder, $target);
 
-        $command =
-            dirname(dirname(__DIR__)) . DS .
-            'vendor' . DS .
-            'atoum' . DS .
-            'atoum' . DS .
-            'bin' . DS .
-            'atoum';
-        $autoloaderFile =
-            dirname(dirname(__DIR__)) . DS .
-            'vendor' . DS .
-            'autoload.php';
+        if (defined('KITAB_PHAR_NAME')) {
+            $command = PHP_BINARY . ' ' . KITAB_PHAR_PATH . ' atoum';
 
-        if (false === file_exists($command)) {
-            throw new \RuntimeException(
-                'Cannot locate `atoum` to execute the generated test suites.'
+            $temporaryAutoloader = new File\Write(Temporary::create());
+            $temporaryAutoloader->writeAll(
+                '<?php' . "\n\n" .
+                'Phar::loadPhar(\'' . KITAB_PHAR_PATH . '\', \'' . KITAB_PHAR_NAME . '\');' . "\n\n" .
+                'require_once \'phar://'. KITAB_PHAR_NAME .'/vendor/autoload.php\';' . "\n" .
+                'require_once \'' . str_replace("'", "\\'", realpath($autoloader)) . '\';'
             );
+
+            $autoloader = $temporaryAutoloader->getStreamName();
+        } else {
+            $command =
+                dirname(dirname(__DIR__)) . DS .
+                'vendor' . DS .
+                'atoum' . DS .
+                'atoum' . DS .
+                'bin' . DS .
+                'atoum';
+
+            if (false === file_exists($command)) {
+                throw new \RuntimeException(
+                    'Cannot locate `atoum` to execute the generated test suites.'
+                );
+            }
+
+            $command .=
+                ' --configurations ' .
+                    dirname(__DIR__) . DS . 'DocTest' . DS . '.atoum.php';
+
+            $temporaryAutoloader = new File\Write(Temporary::create());
+            $temporaryAutoloader->writeAll(
+                '<?php' . "\n\n" .
+                'require_once \'' . str_replace("'", "\\'", realpath(dirname(__DIR__, 2) . DS . 'vendor' . DS . 'autoload.php')) . '\';' . "\n" .
+                'require_once \'' . str_replace("'", "\\'", realpath($autoloader)) . '\';'
+            );
+
+            $autoloader = $temporaryAutoloader->getStreamName();
+        }
+
+        if (true === $verbose) {
+            $command .= ' ++verbose';
         }
 
         $command .=
-            ' --configurations ' .
-                dirname(__DIR__) . DS . 'DocTest' . DS . '.atoum.php' .
             ' --autoloader-file ' .
-                $autoloaderFile .
+                $autoloader .
             ' --force-terminal' .
             ' --max-children-number 4' .
             ' --directories ' .
@@ -196,6 +233,7 @@ class Test extends Console\Dispatcher\Kit
             'Usage   : test <options> directory-to-scan', "\n",
             'Options :', "\n",
             $this->makeUsageOptionsList([
+                'l'    => 'Path to the autoloader file.',
                 'o'    => 'Directory that will receive the generated documentation.',
                 'v'    => 'Be verbose (add some debug information).',
                 'help' => 'This help.'
