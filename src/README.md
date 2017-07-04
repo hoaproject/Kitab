@@ -1,7 +1,8 @@
 Kitab is the ideal companion for **Documentation-Driven Quality** for
 PHP programs.
 
-The goal of Kitab is twofold:
+The goal of Kitab is twofold, **render** and **test** the
+documentation:
 
   1. Generate a quality and searchable documentation based on your
      code. The documentation inside your code is compiled into static
