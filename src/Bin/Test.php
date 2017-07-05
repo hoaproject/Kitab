@@ -43,7 +43,6 @@ use Hoa\Console\Processus;
 use Hoa\Event;
 use Hoa\File;
 use Hoa\File\Temporary\Temporary;
-use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
 use Kitab\Compiler\Target\DocTest\DocTest;
