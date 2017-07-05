@@ -1,8 +1,8 @@
 {
     "name"       : "hoa/kitab",
-    "description": "Kitab is a documentation generator application.",
+    "description": "Kitab is the ideal companion for Documentation-Driven Quality: Render and Test your documentation.",
     "type"       : "library",
-    "keywords"   : ["library", "documentation", "generator"],
+    "keywords"   : ["library", "documentation", "generate", "search", "test"],
     "homepage"   : "https://hoa-project.net/",
     "license"    : "BSD-3-Clause",
     "authors"    : [
