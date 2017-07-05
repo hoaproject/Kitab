@@ -20,11 +20,28 @@ $root = dirname(__DIR__) . DIRECTORY_SEPARATOR;
 
 $_flags = FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::SKIP_DOTS;
 
-$iterator = new AppendIterator();
-$iterator->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . 'bin', $_flags)));
-$iterator->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . 'src', $_flags)));
-$iterator->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . 'vendor', $_flags)));
-$iterator->append(new GlobIterator($root . '*.*'));
+$iterators = new AppendIterator();
+$iterators->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . 'bin', $_flags)));
+$iterators->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . 'src', $_flags)));
+$iterators->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . 'vendor', $_flags)));
+$iterators->append(new GlobIterator($root . '*.*'));
+
+$iterator = new CallbackFilterIterator(
+    $iterators,
+    function ($file) use ($root) {
+        $relativePath = substr($file->getPathname(), strlen($root));
+
+        return 0 === preg_match(
+            '#^(' .
+                'vendor/atoum/atoum/tests|' .
+                'vendor/hoa/[^/]+/Test|' .
+                'vendor/nikic/php-parser/test|' .
+                'vendor/nikic/php-parser/test_old' .
+            ')#',
+            $relativePath
+        );
+    }
+);
 
 $phar = new Phar($fileName, 0, 'Kitab.phar');
 $phar->buildFromIterator($iterator, $root);
