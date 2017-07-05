@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 define('KITAB_PHAR_NAME', 'Kitab.phar');
