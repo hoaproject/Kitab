@@ -59,6 +59,6 @@ class Finder extends File\Finder
         $this
             ->files()
             ->name('/\.php$/')
-            ->notIn('#^\.(git|hg)$#');
+            ->notIn('/^\.(git|hg)$/');
     }
 }

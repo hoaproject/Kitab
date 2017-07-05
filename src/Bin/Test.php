@@ -132,7 +132,9 @@ class Test extends Console\Dispatcher\Kit
         }
 
         $finder = new Finder();
-        $finder->in($directoryToScan);
+        $finder
+            ->in($directoryToScan)
+            ->notIn('/^vendor$/');
 
         if (is_dir($outputDirectory)) {
             $since = time() - filemtime($outputDirectory);
@@ -162,13 +164,24 @@ class Test extends Console\Dispatcher\Kit
 
             $autoloader = $temporaryAutoloader->getStreamName();
         } else {
-            $command =
-                dirname(dirname(__DIR__)) . DS .
-                'vendor' . DS .
-                'atoum' . DS .
-                'atoum' . DS .
-                'bin' . DS .
-                'atoum';
+            if (WITH_COMPOSER) {
+                $command =
+                    dirname(__DIR__, 4) . DS .
+                    'atoum' . DS .
+                    'atoum' . DS .
+                    'bin' . DS .
+                    'atoum';
+                $composerAutoloader = realpath(dirname(__DIR__, 4) . DS . 'autoload.php');
+            } else {
+                $command =
+                    dirname(__DIR__, 2) . DS .
+                    'vendor' . DS .
+                    'atoum' . DS .
+                    'atoum' . DS .
+                    'bin' . DS .
+                    'atoum';
+                $composerAutoloader = realpath(dirname(__DIR__, 2) . DS . 'vendor' . DS . 'autoload.php');
+            }
 
             if (false === file_exists($command)) {
                 throw new \RuntimeException(
@@ -186,7 +199,7 @@ class Test extends Console\Dispatcher\Kit
             $temporaryAutoloader = new File\Write($temporaryAutoloaderPath, File\File::MODE_TRUNCATE_WRITE);
             $temporaryAutoloader->writeAll(
                 '<?php' . "\n\n" .
-                'require_once \'' . str_replace("'", "\\'", realpath(dirname(__DIR__, 2) . DS . 'vendor' . DS . 'autoload.php')) . '\';' . "\n" .
+                'require_once \'' . str_replace("'", "\\'", $composerAutoloader) . '\';' . "\n" .
                 (!empty($autoloader) ? 'require_once \'' . str_replace("'", "\\'", realpath($autoloader)) . '\';' : '')
             );
 
