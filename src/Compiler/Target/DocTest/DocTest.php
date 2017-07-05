@@ -116,7 +116,7 @@ class DocTest implements Target
         }
 
         $testSuite .= '}';
-        $fileName   = 'hoa://Kitab/Output/' . $entity->file->name;
+        $fileName   = 'hoa://Kitab/Output/' . realpath($entity->file->name);
 
         Directory::create(dirname($fileName));
 
