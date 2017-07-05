@@ -94,7 +94,7 @@ class Into extends NodeVisitorAbstract
      * This method returns nothing because it is called several times by the
      * traverser API. To get the final result, see the `collect` method.
      */
-    public function leaveNode(Node $node): void
+    public function leaveNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Class_) {
             $classNode            = $node;

@@ -90,7 +90,7 @@ class Trait_ extends Entity implements HasMethods
     /**
      * Return all methods declared for this entity.
      */
-    public function getMethods(): iterable
+    public function getMethods(): array
     {
         return $this->methods;
     }

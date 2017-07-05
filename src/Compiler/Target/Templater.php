@@ -72,7 +72,7 @@ class Templater implements Viewable
         return $this->_out;
     }
 
-    public function getData(): ?StdClass
+    public function getData(): StdClass
     {
         return $this->_data;
     }
@@ -92,7 +92,7 @@ class Templater implements Viewable
         return;
     }
 
-    public function getRouter(): ?Router
+    public function getRouter()
     {
         return $this->_router;
     }

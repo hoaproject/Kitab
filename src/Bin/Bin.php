@@ -65,7 +65,7 @@ class Bin
         self::exitWith($message, $code);
     }
 
-    protected static function setErrorHandler(): void
+    protected static function setErrorHandler()
     {
         Exception\Error::enableErrorHandler();
         Exception::enableUncaughtHandler();

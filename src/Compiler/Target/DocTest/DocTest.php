@@ -38,6 +38,7 @@ declare(strict_types=1);
 
 namespace Kitab\Compiler\Target\DocTest;
 
+use Generator;
 use Hoa\File\Directory;
 use Hoa\File\Write;
 use Kitab\Compiler\IntermediateRepresentation;
@@ -130,7 +131,7 @@ class DocTest implements Target
         return;
     }
 
-    protected function getCodeBlocks(IntermediateRepresentation\Documentation $documentation = null): iterable
+    protected function getCodeBlocks(IntermediateRepresentation\Documentation $documentation = null): Generator
     {
         if (empty($documentation) ||
             empty($documentation->documentation)) {
@@ -142,7 +143,7 @@ class DocTest implements Target
         );
     }
 
-    protected function parseCodeBlocks(CommonMark\Node\NodeWalker $walker): iterable
+    protected function parseCodeBlocks(CommonMark\Node\NodeWalker $walker): Generator
     {
         $hashes = [];
 
