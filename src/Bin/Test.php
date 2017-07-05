@@ -164,15 +164,15 @@ class Test extends Console\Dispatcher\Kit
 
             $autoloader = $temporaryAutoloader->getStreamName();
         } else {
-            if (WITH_COMPOSER) {
-                $command =
-                    dirname(__DIR__, 4) . DS .
-                    'atoum' . DS .
-                    'atoum' . DS .
-                    'bin' . DS .
-                    'atoum';
-                $composerAutoloader = realpath(dirname(__DIR__, 4) . DS . 'autoload.php');
-            } else {
+            $command =
+                dirname(__DIR__, 4) . DS .
+                'atoum' . DS .
+                'atoum' . DS .
+                'bin' . DS .
+                'atoum';
+            $composerAutoloader = realpath(dirname(__DIR__, 4) . DS . 'autoload.php');
+
+            if (false === file_exists($command)) {
                 $command =
                     dirname(__DIR__, 2) . DS .
                     'vendor' . DS .
