@@ -143,11 +143,12 @@ class Into extends NodeVisitorAbstract
 
             $this->_file[] = $interface;
         } elseif ($node instanceof Node\Stmt\Trait_) {
-            $traitNode        = $node;
-            $trait            = new Trait_($traitNode->namespacedName->toString());
-            $trait->lineStart = $traitNode->getAttribute('startLine');
-            $trait->lineEnd   = $traitNode->getAttribute('endLine');
-            $trait->methods   = $this->intoMethods($traitNode);
+            $traitNode            = $node;
+            $trait                = new Trait_($traitNode->namespacedName->toString());
+            $trait->lineStart     = $traitNode->getAttribute('startLine');
+            $trait->lineEnd       = $traitNode->getAttribute('endLine');
+            $trait->documentation = new Documentation(Parser::extractFromComment($traitNode->getDocComment()));
+            $trait->methods       = $this->intoMethods($traitNode);
 
             $this->_file[] = $trait;
         } elseif ($node instanceof Node\Stmt\Function_) {
