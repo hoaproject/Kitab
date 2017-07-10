@@ -33,10 +33,18 @@ $iterator = new CallbackFilterIterator(
 
         return 0 === preg_match(
             '#^(' .
+                'vendor/atoum/atoum/bin|' .
                 'vendor/atoum/atoum/tests|' .
+                'vendor/hoa/[^/]+/Bin|' .
+                'vendor/hoa/[^/]+/Documentation|' .
                 'vendor/hoa/[^/]+/Test|' .
+                'vendor/league/commonmark/bin|' .
+                'vendor/nikic/php-parser/bin|' .
+                'vendor/nikic/php-parser/doc|' .
+                'vendor/nikic/php-parser/grammar|' .
+                'vendor/nikic/php-parser/test_old|' .
                 'vendor/nikic/php-parser/test|' .
-                'vendor/nikic/php-parser/test_old' .
+                '.*\.md$' .
             ')#',
             $relativePath
         );
