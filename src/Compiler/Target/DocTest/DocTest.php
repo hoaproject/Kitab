@@ -57,12 +57,23 @@ class DocTest implements Target
 
     protected static $_markdownParser = null;
     protected static $_phpTraverser   = null;
+    protected $_generatedTestSuites   = [];
 
     public function compile(IntermediateRepresentation\File $file)
     {
+        $testSuites =
+            '<?php' . "\n\n" .
+            'declare(strict_types=1);' . "\n\n";
+        $anyTestSuite = false;
+
         foreach ($file as $representation) {
             if ($representation instanceof IntermediateRepresentation\Entity) {
-                $this->compileEntity($representation);
+                $_testSuites = $this->compileEntity($representation);
+
+                if (!empty($_testSuites)) {
+                    $testSuites   .= $_testSuites;
+                    $anyTestSuite  = true;
+                }
             } else {
                 throw new Exception\TargetUnknownIntermediateRepresentation(
                     'Intermediate representation `%s` has not been handled.',
@@ -71,59 +82,60 @@ class DocTest implements Target
                 );
             }
         }
+
+        if (false === $anyTestSuite) {
+            return;
+        }
+
+        $fileName = 'hoa://Kitab/Output/' . realpath($file->name);
+
+        Directory::create(dirname($fileName));
+
+        $output = new Write($fileName, Write::MODE_TRUNCATE_WRITE);
+        $output->writeAll($testSuites);
     }
 
-    protected function compileEntity(IntermediateRepresentation\Entity $entity)
+    protected function compileEntity(IntermediateRepresentation\Entity $entity): string
     {
-        $testSuite = sprintf(
-            '<?php' . "\n\n" .
-            'declare(strict_types=1);' . "\n\n" .
-            'namespace Kitab\Generated\DocTest%s;' . "\n\n" .
-            'use Kitab\DocTest;' . "\n\n" .
-            'class %s extends DocTest\Suite' . "\n" .
-            '{',
-            $entity->inNamespace() ? '\\' . $entity->getNamespaceName() : '',
-            $entity->getShortName()
-        );
-        $anyTestCase = false;
+        $testCases = '';
 
         // Introduction.
         foreach ($this->getCodeBlocks($entity->documentation) as $i => $codeBlock) {
-            $testSuite .= $this->compileToTestCase(
+            $testCases .= $this->compileToTestCase(
                 '0introduction_' . $i, // start with `0` to avoid conflict with existing identifier.
                 $codeBlock
             );
-
-            $anyTestCase = true;
         }
 
         // Methods
         if ($entity instanceof IntermediateRepresentation\HasMethods) {
             foreach ($entity->getMethods() as $method) {
                 foreach ($this->getCodeBlocks($method->documentation) as $i => $codeBlock) {
-                    $testSuite .= $this->compileToTestCase(
+                    $testCases .= $this->compileToTestCase(
                         $method->name . '_' . $i,
                         $codeBlock
                     );
-
-                    $anyTestCase = true;
                 }
             }
         }
 
-        if (false === $anyTestCase) {
-            return;
+        if (null === $testCases) {
+            return null;
         }
 
-        $testSuite .= '}';
-        $fileName   = 'hoa://Kitab/Output/' . realpath($entity->file->name);
+        return
+            sprintf(
+                'namespace Kitab\Generated\DocTest%s;' . "\n\n" .
+                'class %s extends \Kitab\DocTest\Suite' . "\n" .
+                '{',
+                $entity->inNamespace() ? '\\' . $entity->getNamespaceName() : '',
+                $this->computeTestSuiteShortName($entity->getShortName(), $entity->name)
+            ) .
+            $testCases .
+            '}';
 
-        Directory::create(dirname($fileName));
 
-        $output = new Write($fileName, Write::MODE_TRUNCATE_WRITE);
-        $output->writeAll($testSuite);
-
-        return;
+        return $testCases;
     }
 
     public function assemble(array $symbols)
@@ -284,5 +296,16 @@ class DocTest implements Target
         }
 
         return self::$_phpTraverser;
+    }
+
+    protected function computeTestSuiteShortName(string $shortName, string $longName): string
+    {
+        if (false === isset($this->_generatedTestSuites[$longName])) {
+            $this->_generatedTestSuites[$longName] = 1;
+
+            return $shortName;
+        }
+
+        return $shortName . '__' . $this->_generatedTestSuites[$longName]++;
     }
 }
