@@ -22,8 +22,10 @@ use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 
 $output = sys_get_temp_dir() . DS . 'Kitab' . DS;
-
 Directory::create($output);
+
+$temporary = sys_get_temp_dir() . DS . 'Kitab.temp' . DS;
+Directory::create($temporary);
 
 $protocol = Protocol::getInstance();
 $protocol[] = new Node(
@@ -31,6 +33,7 @@ $protocol[] = new Node(
     __DIR__ . DS,
     [
         new Node('Input', "\r" . getcwd() . DS),
-        new Node('Output', "\r" . $output)
+        new Node('Output', "\r" . $output),
+        new Node('Temporary', "\r" . $temporary)
     ]
 );

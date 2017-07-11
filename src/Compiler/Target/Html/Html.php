@@ -614,12 +614,22 @@ class Html implements Target
         $output   = 'hoa://Kitab/Output/javascript/search-index.js';
         touch($output);
 
+        if (defined('KITAB_PHAR_NAME')) {
+            $temporaryJavascriptDirectory = 'hoa://Kitab/Temporary/Target/Html/Javascript';
+            (new Directory(__DIR__ . DS . 'Javascript'))->copy($temporaryJavascriptDirectory, Touchable::OVERWRITE);
+
+            $searchBuildIndex = $protocol->resolve($temporaryJavascriptDirectory . '/search-build-index.js');
+        } else {
+            $searchBuildIndex = __DIR__ . DS . 'Javascript' . DS . 'search-build-index.js';
+        }
+
         Processus::execute(
             sprintf(
-                'node %s %s %s',
-                __DIR__ . DS . 'Javascript' . DS . 'search-build-index.js',
-                $protocol->resolve(Search::DATABASE_FILE),
-                $protocol->resolve($output)
+                '%s %s %s %s',
+                Processus::locate('node'),
+                escapeshellarg($searchBuildIndex),
+                escapeshellarg($protocol->resolve(Search::DATABASE_FILE)),
+                escapeshellarg($protocol->resolve($output))
             )
         );
 
