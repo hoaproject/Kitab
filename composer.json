@@ -13,7 +13,7 @@
     ],
     "require": {
         "php"              : ">=7.0",
-        "atoum/atoum"      : "~3.0",
+        "atoum/atoum"      : "~3.1",
         "hoa/console"      : "~3.0",
         "hoa/dispatcher"   : "~1.0",
         "hoa/exception"    : "~1.0",
