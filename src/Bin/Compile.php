@@ -181,7 +181,7 @@ class Compile extends Console\Dispatcher\Kit
             if (isset($_SERVER['BROWSER'])) {
                 echo
                     'Opening…', "\n",
-                    Console\Processus::execute($_SERVER['BROWSER'] . ' ' . $index, false);
+                    Console\Processus::execute($_SERVER['BROWSER'] . ' ' . escapeshellarg($index), false);
 
                 return;
             }
@@ -197,7 +197,7 @@ class Compile extends Console\Dispatcher\Kit
                 if (null !== $utilityPath = Console\Processus::locate($utility)) {
                     echo
                         'Opening…', "\n",
-                        Console\Processus::execute($utilityPath . ' ' . $index, false);
+                        Console\Processus::execute($utilityPath . ' ' . escapeshellarg($index), false);
 
                     return;
                 }

@@ -191,7 +191,7 @@ class Test extends Console\Dispatcher\Kit
 
             $command .=
                 ' --configurations ' .
-                    dirname(__DIR__) . DS . 'DocTest' . DS . '.atoum.php';
+                    escapeshellarg(dirname(__DIR__) . DS . 'DocTest' . DS . '.atoum.php');
 
             $temporaryAutoloaderPath = $outputDirectory . '.kitab.autoloader.php';
             touch($temporaryAutoloaderPath);
@@ -212,11 +212,11 @@ class Test extends Console\Dispatcher\Kit
 
         $command .=
             ' --autoloader-file ' .
-                $autoloader .
+                escapeshellarg($autoloader) .
             ' --force-terminal' .
             ' --max-children-number 4' .
             ' --directories ' .
-                $outputDirectory;
+                escapeshellarg($outputDirectory);
 
         $processus = new Processus($command, null, null, getcwd(), $_SERVER);
         $processus->on(
