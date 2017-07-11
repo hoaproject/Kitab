@@ -119,6 +119,12 @@ class Test extends Console\Dispatcher\Kit
             );
         }
 
+        if (false === is_dir($directoryToScan)) {
+            throw new \RuntimeException(
+                'Directory to scan `' . $directoryToScan . '` does not exist.'
+            );
+        }
+
         if (null === $outputDirectory) {
             $outputDirectory = Temporary::getTemporaryDirectory() . DS . 'Kitab.test.output' . DS . hash('sha256', realpath($directoryToScan)). DS;
         }
@@ -258,7 +264,7 @@ class Test extends Console\Dispatcher\Kit
             'Options :', "\n",
             $this->makeUsageOptionsList([
                 'l'    => 'Path to the autoloader file.',
-                'o'    => 'Directory that will receive the generated documentation.',
+                'o'    => 'Directory that will receive the generated documentation test suites.',
                 'v'    => 'Be verbose (add some debug information).',
                 'help' => 'This help.'
             ]);

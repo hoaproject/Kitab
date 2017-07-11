@@ -160,7 +160,17 @@ class Compile extends Console\Dispatcher\Kit
         $this->parser->listInputs($directoryToScan);
 
         if (empty($directoryToScan)) {
-            throw new \RuntimeException('Directory to scan must not be empty.');
+            throw new \RuntimeException(
+                'Directory to scan must not be empty.' . "\n" .
+                'Retry with ' . '`' . implode(' ', $_SERVER['argv']) . ' src` ' .
+                'to compile the documentation inside the `src` directory.'
+            );
+        }
+
+        if (false === is_dir($directoryToScan)) {
+            throw new \RuntimeException(
+                'Directory to scan `' . $directoryToScan . '` does not exist.'
+            );
         }
 
         $finder = new Finder();
