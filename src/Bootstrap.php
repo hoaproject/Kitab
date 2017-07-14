@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+if (true === function_exists('xdebug_disable')) {
+    xdebug_disable();
+}
+
 $autoloaders = ['vendor', '../..'];
 
 foreach ($autoloaders as $autoloader) {
