@@ -227,6 +227,7 @@ class Test extends Console\Dispatcher\Kit
             ' --autoloader-file ' .
                 escapeshellarg($autoloader) .
             ' --force-terminal' .
+            ' --no-code-coverage' .
             ' --max-children-number ' .
                 $concurrentProcesses .
             ' --directories ' .
