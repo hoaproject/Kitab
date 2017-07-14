@@ -1,14 +1,15 @@
 <?php
 
 require_once 'phar://' . KITAB_PHAR_NAME . '/vendor/atoum/atoum/scripts/runner.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'Script' . DIRECTORY_SEPARATOR . 'Runner.php';
 
-use mageekguy\atoum\scripts;
+use Kitab\DocTest\Script\Runner;
 
 // Disable autorun.
-scripts\runner::disableAutorun();
+Runner::disableAutorun();
 
 // Allocate the default runner.
-$runner = new scripts\runner(scripts\runner);
+$runner = new Runner(mageekguy\atoum\scripts\runner);
 
 // Manually add the configuration file.
 $runner->useConfigurationCallable(

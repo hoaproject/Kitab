@@ -36,15 +36,22 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Disable xdebug.
- */
-if (true === function_exists('xdebug_disable')) {
-    xdebug_disable();
-}
+namespace Kitab\DocTest\Script;
 
-/**
- * Our own report.
- */
-$report = new Kitab\DocTest\Report\Cli\Cli();
-$runner->addReport($report->addWriter(new atoum\writers\std\out()));
+use atoum\scripts;
+
+class Runner extends scripts\runner
+{
+    /**
+     * When there is no test to run, atoum prints its help/usage. Avoid this
+     * by exiting with a message on `stderr`.
+     */
+    public function doRun()
+    {
+        if (0 >= (count($this->runner->getTestPaths()) + count($this->runner->getDeclaredTestClasses()))) {
+            throw new \RuntimeException('No test found in the provided directories.');
+        }
+
+        return parent::doRun();
+    }
+}

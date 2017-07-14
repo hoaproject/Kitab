@@ -36,15 +36,32 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Disable xdebug.
- */
-if (true === function_exists('xdebug_disable')) {
-    xdebug_disable();
-}
+require_once
+    dirname(__DIR__, 2) . DIRECTORY_SEPARATOR .
+    'vendor' . DIRECTORY_SEPARATOR .
+    'atoum' . DIRECTORY_SEPARATOR .
+    'atoum' . DIRECTORY_SEPARATOR .
+    'scripts' . DIRECTORY_SEPARATOR .
+    'runner.php';
+require_once
+    __DIR__ . DIRECTORY_SEPARATOR .
+    'Script' . DIRECTORY_SEPARATOR .
+    'Runner.php';
 
-/**
- * Our own report.
- */
-$report = new Kitab\DocTest\Report\Cli\Cli();
-$runner->addReport($report->addWriter(new atoum\writers\std\out()));
+use Kitab\DocTest\Script\Runner;
+
+// Disable autorun.
+Runner::disableAutorun();
+
+// Allocate the default runner.
+$runner = new Runner(mageekguy\atoum\scripts\runner);
+
+// Manually add the configuration file.
+$runner->useConfigurationCallable(
+    function ($script, $runner) {
+        require_once __DIR__ . DIRECTORY_SEPARATOR . '.atoum.php';
+    }
+);
+
+// Run atoum.
+$runner->run();

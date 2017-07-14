@@ -36,15 +36,40 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Disable xdebug.
- */
-if (true === function_exists('xdebug_disable')) {
-    xdebug_disable();
-}
+namespace Kitab\Bin;
 
-/**
- * Our own report.
- */
-$report = new Kitab\DocTest\Report\Cli\Cli();
-$runner->addReport($report->addWriter(new atoum\writers\std\out()));
+use Hoa\Console;
+use Hoa\File\Temporary\Temporary;
+use Hoa\Protocol\Node;
+use Hoa\Protocol\Protocol;
+use Kitab\Compiler\Compiler;
+use Kitab\Compiler\Target\Html\Html;
+use Kitab\Configuration;
+use Kitab\Finder;
+
+class Atoum extends Console\Dispatcher\Kit
+{
+    /**
+     * The entry method.
+     *
+     * @return  int
+     */
+    public function run()
+    {
+        unset($_SERVER['argv'][1]);
+
+        require_once dirname(__DIR__) . DS . 'DocTest' . DS . 'Runner.php';
+    }
+
+    /**
+     * Print help.
+     *
+     * @return  int
+     */
+    public function usage()
+    {
+        echo 'Usage : atoum <atoum-options>', "\n";
+
+        return;
+    }
+}

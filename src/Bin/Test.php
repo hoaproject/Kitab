@@ -160,10 +160,9 @@ class Test extends Console\Dispatcher\Kit
 
         $compiler = new Compiler();
         $compiler->compile($finder, $target);
+        $command = $_SERVER['argv'][0] . ' atoum';
 
         if (defined('KITAB_PHAR_NAME')) {
-            $command = PHP_BINARY . ' ' . KITAB_PHAR_PATH . ' atoum';
-
             $temporaryAutoloaderPath = $outputDirectory . '.kitab.phar.autoloader.php';
             touch($temporaryAutoloaderPath);
 
@@ -177,34 +176,11 @@ class Test extends Console\Dispatcher\Kit
 
             $autoloader = $temporaryAutoloader->getStreamName();
         } else {
-            $command =
-                dirname(__DIR__, 4) . DS .
-                'atoum' . DS .
-                'atoum' . DS .
-                'bin' . DS .
-                'atoum';
             $composerAutoloader = realpath(dirname(__DIR__, 4) . DS . 'autoload.php');
 
-            if (false === file_exists($command)) {
-                $command =
-                    dirname(__DIR__, 2) . DS .
-                    'vendor' . DS .
-                    'atoum' . DS .
-                    'atoum' . DS .
-                    'bin' . DS .
-                    'atoum';
+            if (false === $composerAutoloader) {
                 $composerAutoloader = realpath(dirname(__DIR__, 2) . DS . 'vendor' . DS . 'autoload.php');
             }
-
-            if (false === file_exists($command)) {
-                throw new \RuntimeException(
-                    'Cannot locate `atoum` to execute the generated test suites.'
-                );
-            }
-
-            $command .=
-                ' --configurations ' .
-                    escapeshellarg(dirname(__DIR__) . DS . 'DocTest' . DS . '.atoum.php');
 
             $temporaryAutoloaderPath = $outputDirectory . '.kitab.autoloader.php';
             touch($temporaryAutoloaderPath);
