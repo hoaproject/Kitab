@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Kitab\DocTest\Report\Cli;
 
-use atoum;
-use atoum\report\fields\runner;
-use atoum\report\fields\test;
+use mageekguy\atoum;
+use mageekguy\atoum\report\fields\runner;
+use mageekguy\atoum\report\fields\test;
 
 class Cli extends atoum\reports\realtime
 {

@@ -36,25 +36,13 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once
-    dirname(__DIR__, 2) . DIRECTORY_SEPARATOR .
-    'vendor' . DIRECTORY_SEPARATOR .
-    'atoum' . DIRECTORY_SEPARATOR .
-    'atoum' . DIRECTORY_SEPARATOR .
-    'scripts' . DIRECTORY_SEPARATOR .
-    'runner.php';
-require_once
-    __DIR__ . DIRECTORY_SEPARATOR .
-    'Script' . DIRECTORY_SEPARATOR .
-    'Runner.php';
-
 use Kitab\DocTest\Script\Runner;
 
 // Disable autorun.
 Runner::disableAutorun();
 
 // Allocate the default runner.
-$runner = new Runner(mageekguy\atoum\scripts\runner);
+$runner = new Runner(Runner::class);
 
 // Manually add the configuration file.
 $runner->useConfigurationCallable(

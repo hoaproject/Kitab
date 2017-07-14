@@ -38,7 +38,7 @@ declare(strict_types=1);
 
 namespace Kitab\DocTest\Script;
 
-use atoum\scripts;
+use mageekguy\atoum\scripts;
 
 class Runner extends scripts\runner
 {

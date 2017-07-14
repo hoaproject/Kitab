@@ -39,13 +39,6 @@ declare(strict_types=1);
 namespace Kitab\Bin;
 
 use Hoa\Console;
-use Hoa\File\Temporary\Temporary;
-use Hoa\Protocol\Node;
-use Hoa\Protocol\Protocol;
-use Kitab\Compiler\Compiler;
-use Kitab\Compiler\Target\Html\Html;
-use Kitab\Configuration;
-use Kitab\Finder;
 
 class Atoum extends Console\Dispatcher\Kit
 {

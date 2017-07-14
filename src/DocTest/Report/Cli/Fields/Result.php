@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kitab\DocTest\Report\Cli\Fields;
 
-use atoum\report\fields;
+use mageekguy\atoum\report\fields;
 
 class Result extends fields\runner\result\cli
 {

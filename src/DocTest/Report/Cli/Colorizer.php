@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kitab\DocTest\Report\Cli;
 
-use atoum;
+use mageekguy\atoum;
 use Hoa\Console;
 
 class Colorizer extends atoum\cli\colorizer
