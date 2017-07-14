@@ -73,8 +73,8 @@ class Test extends Console\Dispatcher\Kit
      */
     public function run()
     {
-        $outputDirectory     = null;
         $autoloader          = null;
+        $outputDirectory     = null;
         $directoryToScan     = null;
         $concurrentProcesses = 4;
         $verbose             = false;
@@ -116,12 +116,16 @@ class Test extends Console\Dispatcher\Kit
             }
         }
 
+        if (empty($autoloader) && true === file_exists('vendor' . DS . 'autoload.php')) {
+            $autoloader = realpath('vendor' . DS . 'autoload.php');
+        }
+
         $this->parser->listInputs($directoryToScan);
 
         if (empty($directoryToScan)) {
             throw new \RuntimeException(
                 'Directory to scan must not be empty.' . "\n" .
-                'Retry with ' . '`' . implode(' ', $_SERVER['argv']) . ' src` ' .
+                'Retry with `' . implode(' ', $_SERVER['argv']) . ' src` ' .
                 'to test the documentation inside the `src` directory.'
             );
         }
