@@ -56,11 +56,12 @@ class Test extends Console\Dispatcher\Kit
      * @var array
      */
     protected $options = [
-        ['autoloader',       Console\GetOption::REQUIRED_ARGUMENT, 'l'],
-        ['output-directory', Console\GetOption::REQUIRED_ARGUMENT, 'o'],
-        ['verbose',          Console\GetOption::NO_ARGUMENT,       'v'],
-        ['help',             Console\GetOption::NO_ARGUMENT,       'h'],
-        ['help',             Console\GetOption::NO_ARGUMENT,       '?']
+        ['autoloader',           Console\GetOption::REQUIRED_ARGUMENT, 'l'],
+        ['output-directory',     Console\GetOption::REQUIRED_ARGUMENT, 'o'],
+        ['concurrent-processes', Console\GetOption::REQUIRED_ARGUMENT, 'p'],
+        ['verbose',              Console\GetOption::NO_ARGUMENT,       'v'],
+        ['help',                 Console\GetOption::NO_ARGUMENT,       'h'],
+        ['help',                 Console\GetOption::NO_ARGUMENT,       '?']
     ];
 
 
@@ -72,10 +73,11 @@ class Test extends Console\Dispatcher\Kit
      */
     public function run()
     {
-        $outputDirectory = null;
-        $autoloader      = null;
-        $directoryToScan = null;
-        $verbose         = false;
+        $outputDirectory     = null;
+        $autoloader          = null;
+        $directoryToScan     = null;
+        $concurrentProcesses = 4;
+        $verbose             = false;
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
@@ -90,6 +92,11 @@ class Test extends Console\Dispatcher\Kit
                     if (false === file_exists($autoloader)) {
                         throw new \RuntimeException('Autoloader file `' . $autoloader . '` does not exist.');
                     }
+
+                    break;
+
+                case 'p':
+                    $concurrentProcesses = max(1, intval($v));
 
                     break;
 
@@ -220,7 +227,8 @@ class Test extends Console\Dispatcher\Kit
             ' --autoloader-file ' .
                 escapeshellarg($autoloader) .
             ' --force-terminal' .
-            ' --max-children-number 4' .
+            ' --max-children-number ' .
+                $concurrentProcesses .
             ' --directories ' .
                 escapeshellarg($outputDirectory);
 
@@ -265,6 +273,7 @@ class Test extends Console\Dispatcher\Kit
             $this->makeUsageOptionsList([
                 'l'    => 'Path to the autoloader file.',
                 'o'    => 'Directory that will receive the generated documentation test suites.',
+                'p'    => 'Maximum concurrent processes that can run.',
                 'v'    => 'Be verbose (add some debug information).',
                 'help' => 'This help.'
             ]);
