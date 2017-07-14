@@ -54,4 +54,14 @@ class Runner extends scripts\runner
 
         return parent::doRun();
     }
+
+    /**
+     * Avoid to load a default autoloader.
+     *
+     * Everything is managed by Kitab itself.
+     */
+    public function setDefaultAutoloaderFiles($startDirectory = null)
+    {
+        // Do nothing.
+    }
 }
