@@ -53,7 +53,8 @@ use PhpParser\PrettyPrinter;
 
 class DocTest implements Target
 {
-    const DOCUMENTATION_SECTION = 'Examples';
+    const EXAMPLES_SECTION   = 'Examples';
+    const EXCEPTIONS_SECTION = 'Exceptions';
 
     protected static $_markdownParser = null;
     protected static $_phpTraverser   = null;
@@ -165,7 +166,8 @@ class DocTest implements Target
             if (false === $event->isEntering() ||
                 !($node instanceof CommonMark\Block\Element\Heading) ||
                 1 !== $node->getLevel() ||
-                self::DOCUMENTATION_SECTION !== $node->getStringContent()) {
+                (self::EXAMPLES_SECTION !== $node->getStringContent() &&
+                 self::EXCEPTIONS_SECTION !== $node->getStringContent())) {
                 continue;
             }
 
@@ -173,7 +175,8 @@ class DocTest implements Target
                 $childNode = $childEvent->getNode();
 
                 if ($childNode instanceof CommonMark\Block\Element\Heading &&
-                    self::DOCUMENTATION_SECTION !== $childNode->getStringContent()) {
+                    self::EXAMPLES_SECTION !== $childNode->getStringContent() &&
+                    self::EXCEPTIONS_SECTION !== $childNode->getStringContent()) {
 
                     break;
                 }
