@@ -126,13 +126,14 @@ class DocTest implements Target
 
         return
             sprintf(
-                'namespace Kitab\Generated\DocTest%s;' . "\n\n" .
+                'namespace Kitab\Generated\DocTest%s {' . "\n\n" .
                 'class %s extends \Kitab\DocTest\Suite' . "\n" .
                 '{',
                 $entity->inNamespace() ? '\\' . $entity->getNamespaceName() : '',
                 $this->computeTestSuiteShortName($entity->getShortName(), $entity->name)
             ) .
             $testCases .
+            '}' . "\n\n" .
             '}';
 
 
@@ -217,7 +218,7 @@ class DocTest implements Target
     protected function unfoldCode(string $phpCode): string
     {
         $ast = Parser::getPhpParser()->parse('<?php ' . $phpCode);
-        self::getPhpTraverser()->traverse($ast);
+        $ast = self::getPhpTraverser()->traverse($ast);
 
         return Parser::getPhpPrettyPrinter()->prettyPrint($ast);
     }
@@ -296,6 +297,7 @@ class DocTest implements Target
         if (null === self::$_phpTraverser) {
             self::$_phpTraverser = new NodeTraverser();
             self::$_phpTraverser->addVisitor(new NodeVisitor\NameResolver());
+            self::$_phpTraverser->addVisitor(new IntoTestCaseBody());
         }
 
         return self::$_phpTraverser;

@@ -89,28 +89,6 @@ class Parser
     protected static $_phpPrettyPrinter = null;
 
     /**
-     * When allocating a `Parser` instance, a PHP-Parser instance is created
-     * and stored in `self::$_phpParser` only once. Also, a pre-configured
-     * traverser is created and stored in `self::$_phpTraverser` too.
-     */
-    public function __construct()
-    {
-        if (null === self::$_phpParser) {
-            self::$_phpParser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
-        }
-
-        if (null === self::$_phpTraverser) {
-            self::$_phpTraverser = new NodeTraverser();
-            self::$_phpTraverser->addVisitor(new NodeVisitor\NameResolver());
-        }
-
-        if (null === self::$_phpPrettyPrinter) {
-            self::$_phpPrettyPrinter = new PrettyPrinter\Standard(['shortArraySyntax' => true]);
-        }
-    }
-
-    /**
-
      * The `parse` methods parses a file aiming at containing PHP code, and
      * produces the Intermediate Representation of it if valid. [Get more
      * information about the general workflow](kitab/compiler/index.html).
@@ -181,6 +159,10 @@ class Parser
      */
     public static function getPhpParser(): ParserMultiple
     {
+        if (null === self::$_phpParser) {
+            self::$_phpParser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        }
+
         return self::$_phpParser;
     }
 
@@ -189,6 +171,11 @@ class Parser
      */
     protected static function getTraverser(): NodeTraverser
     {
+        if (null === self::$_phpTraverser) {
+            self::$_phpTraverser = new NodeTraverser();
+            self::$_phpTraverser->addVisitor(new NodeVisitor\NameResolver());
+        }
+
         return self::$_phpTraverser;
     }
 
@@ -197,6 +184,10 @@ class Parser
      */
     public static function getPhpPrettyPrinter(): PrettyPrinter\Standard
     {
+        if (null === self::$_phpPrettyPrinter) {
+            self::$_phpPrettyPrinter = new PrettyPrinter\Standard(['shortArraySyntax' => true]);
+        }
+
         return self::$_phpPrettyPrinter;
     }
 
