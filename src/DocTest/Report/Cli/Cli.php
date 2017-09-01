@@ -120,7 +120,7 @@ class Cli extends atoum\reports\realtime
         $errorPrompt = clone $thirdLevelPrompt;
         $errorPrompt->setColorizer($errorColorizer);
 
-        $runnerErrorsField = new runner\errors\cli();
+        $runnerErrorsField = new Fields\Errors();
         $runnerErrorsField
             ->setTitlePrompt($errorTitlePrompt)
             ->setTitleColorizer($errorColorizer)
