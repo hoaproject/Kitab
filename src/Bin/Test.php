@@ -52,8 +52,6 @@ class Test extends Console\Dispatcher\Kit
 {
     /**
      * Options description.
-     *
-     * @var array
      */
     protected $options = [
         ['autoloader',           Console\GetOption::REQUIRED_ARGUMENT, 'l'],
@@ -68,10 +66,8 @@ class Test extends Console\Dispatcher\Kit
 
     /**
      * The entry method.
-     *
-     * @return  int
      */
-    public function run()
+    public function run(): int
     {
         $autoloader          = null;
         $outputDirectory     = null;
@@ -107,7 +103,9 @@ class Test extends Console\Dispatcher\Kit
 
                 case 'h':
                 case '?':
-                    return $this->usage();
+                    $this->usage();
+
+                    return 0;
 
                 case '__ambiguous':
                     $this->resolveOptionAmbiguity($v);
@@ -238,13 +236,11 @@ class Test extends Console\Dispatcher\Kit
         );
         $processus->run();
 
-        return;
+        return 0;
     }
 
     /**
      * Print help.
-     *
-     * @return  int
      */
     public function usage()
     {
@@ -258,7 +254,5 @@ class Test extends Console\Dispatcher\Kit
                 'v'    => 'Be verbose (add some debug information).',
                 'help' => 'This help.'
             ]);
-
-        return;
     }
 }

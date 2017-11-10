@@ -56,13 +56,9 @@ class Atoum extends Console\Dispatcher\Kit
 
     /**
      * Print help.
-     *
-     * @return  int
      */
     public function usage()
     {
         echo 'Usage : atoum <atoum-options>', "\n";
-
-        return;
     }
 }

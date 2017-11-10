@@ -44,8 +44,6 @@ class Welcome extends Console\Dispatcher\Kit
 {
     /**
      * Options description.
-     *
-     * @var array
      */
     protected $options = [
         ['list', Console\GetOption::NO_ARGUMENT, 'l'],
@@ -62,10 +60,8 @@ class Welcome extends Console\Dispatcher\Kit
 
     /**
      * The entry method.
-     *
-     * @return  int
      */
-    public function run()
+    public function run(): int
     {
         $printList = false;
 
@@ -78,7 +74,9 @@ class Welcome extends Console\Dispatcher\Kit
 
                 case 'h':
                 case '?':
-                    return $this->usage();
+                    $this->usage();
+
+                    return 0;
 
                 case '__ambiguous':
                     $this->resolveOptionAmbiguity($v);
@@ -90,7 +88,7 @@ class Welcome extends Console\Dispatcher\Kit
         if (true === $printList) {
             echo implode("\t", array_keys($this->_subCommands));
 
-            return;
+            return 0;
         }
 
         echo
@@ -109,13 +107,11 @@ class Welcome extends Console\Dispatcher\Kit
             'Example:', "\n\n",
             '    $ ', $_SERVER['argv'][0], ' compile src', "\n";
 
-        return;
+        return 0;
     }
 
     /**
      * Print help.
-     *
-     * @return  int
      */
     public function usage()
     {
@@ -126,7 +122,5 @@ class Welcome extends Console\Dispatcher\Kit
                 'l'    => 'List available sub-commands.',
                 'help' => 'This help.'
             ]);
-
-        return;
     }
 }

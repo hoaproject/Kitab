@@ -69,10 +69,8 @@ class Compile extends Console\Dispatcher\Kit
 
     /**
      * The entry method.
-     *
-     * @return  int
      */
-    public function run()
+    public function run(): int
     {
         $composerFile    = null;
         $outputDirectory = Temporary::getTemporaryDirectory() . DS . 'Kitab.html.output';
@@ -118,7 +116,9 @@ class Compile extends Console\Dispatcher\Kit
 
                 case 'h':
                 case '?':
-                    return $this->usage();
+                    $this->usage();
+
+                    return 0;
 
                 case '__ambiguous':
                     $this->resolveOptionAmbiguity($v);
@@ -193,7 +193,7 @@ class Compile extends Console\Dispatcher\Kit
                     'Opening…', "\n",
                     Console\Processus::execute($_SERVER['BROWSER'] . ' ' . escapeshellarg($index), false);
 
-                return;
+                return 0;
             }
 
             $utilities = [
@@ -209,7 +209,7 @@ class Compile extends Console\Dispatcher\Kit
                         'Opening…', "\n",
                         Console\Processus::execute($utilityPath . ' ' . escapeshellarg($index), false);
 
-                    return;
+                    return 0;
                 }
             }
 
@@ -218,13 +218,11 @@ class Compile extends Console\Dispatcher\Kit
             echo $index, "\n";
         }
 
-        return;
+        return 0;
     }
 
     /**
      * Print help.
-     *
-     * @return  int
      */
     public function usage()
     {
@@ -241,7 +239,5 @@ class Compile extends Console\Dispatcher\Kit
                 'r'    => 'Open the documentation in a browser after its computation.',
                 'help' => 'This help.'
             ]);
-
-        return;
     }
 }
