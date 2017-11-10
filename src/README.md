@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="../resource/logo.svg" width="250px" />
+    <img src="https://raw.githubusercontent.com/hoaproject/Kitab/master/resource/logo.svg?sanitize=true" width="250px" />
 </p>
 
 ---
