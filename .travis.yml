@@ -1,0 +1,35 @@
+language: php
+
+matrix:
+  include:
+    - php: 7.0
+    - php: 7.1
+    - php: nightly
+  allow_failures:
+    - php: nightly
+  fast_finish: true
+
+os:
+  - linux
+
+notifications:
+  irc: "chat.freenode.net#hoaproject"
+
+sudo: false
+
+env:
+  global:
+    - secure: "AAAAB3NzaC1yc2EAAAADAQABAAACAQDU0zDEbdcW1I8+9EPJiBLNrikxOplyMD8uOinynpyGlcKqlG6fBAe2SpAnor8UFr/5KQ4wHmCqDg+RMYYpr4MidmZX4h9KsaYjI6iTrvl885MCOKD81qmVC+XJjuY1u6EFzmPKern2J0rX8PKlC+5LGl9om4tksTyxd1t9Hdi5275gr/fZzDLAAmP1Mtm3x2olyUyZ0CU87n/c0HOEz/Qwuh65w66DlbIH8D5yntO9vN2UB1UgdxtyHLmWemWa17gfsSADrIwZnI9gs5tKNiek1TNuTX8fPEoVj7pLOudfDst4Oam88JWyWG6Ul7nCKSkPlP3Pv9kt/XuPl0DGL5loYiBLhGJ6/vqPdwl9qrVajrrnFsqXtadKP32xzEvgDbJoE+Z0S89AIAN/W/vJrn4tsA6Iaa7MsMmzFfNw2Evk6xgzG84wmq19H3ErdJuW1+F5DT9Sm6tg5hGArPaG3mH1m/nJUJQv/npYn0BFwnSCZt2ih7ifXE6DeAU6SnwWwVOWLbEc8/sKRPaGlPqMxq7oOlSA7TehTlpWYCGRuBx92Rmcw1CgcpPJbpz22i2qaGe4KNAc2pT4cE2MlkDjS2xnqc5C5+UL9mapsseGPwlsP9kJBmNqjXm4XBtekLeY/IipnViEn1MxhxVDWGMfGDLIeLetDCGQubXHwdUpXrsZjw=="
+
+cache:
+  directories:
+    - vendor/
+
+before_script:
+  - export PATH="$PATH:$HOME/.composer/vendor/bin"
+  - phpenv config-rm xdebug.ini || echo "ext-xdebug is not available, cannot remove it."
+
+script:
+  - composer install
+  - bin/kitab test src
+  - bin/kitab compile --default-namespace Kitab --with-composer --with-project-name Kitab --output-directory /tmp src
