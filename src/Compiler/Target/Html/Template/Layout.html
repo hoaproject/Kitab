@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns#">
     <head>
         <base href="<?php echo $data->layout->base ?>" />
         <title><?php echo $data->layout->title ?></title>
@@ -10,6 +10,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <meta name="generator" content="Kitab (https://hoa-project.net/)" />
+
+        <meta property="og:title" content="<?php echo $data->layout->title ?>" />
+        <meta property="og:type" content="website" />
+        <meta proprery="og:image" content="<?php echo $data->configuration->logoURL ?>" />
+
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:creator" content="@hoaproject" />
 
         <link rel="stylesheet" href="./css/main.css" media="all" />
         <link rel="stylesheet" href="./css/prism.css" media="all" />

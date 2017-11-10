@@ -176,6 +176,8 @@ class Html implements Target
 
         $dataSource = new StdClass();
 
+        $dataSource->configuration = $this->_configuration;
+
         $dataSource->layout        = new StdClass();
         $dataSource->layout->base  = './' . str_repeat('../', substr_count($namespaceName, '/') + 1);
         $dataSource->layout->title = sprintf(
@@ -255,6 +257,9 @@ class Html implements Target
                     );
 
                 $data = new StdClass();
+
+                $data->configuration = $this->_configuration;
+
                 $data->namespace       = new StdClass();
                 $data->namespace->name = rtrim($nextAccumulator, '\\');
 
@@ -512,6 +517,8 @@ class Html implements Target
                 }
 
                 $data = new StdClass();
+
+                $data->configuration = $this->_configuration;
 
                 $data->layout        = new StdClass();
                 $data->layout->base  = './' . str_repeat('../', substr_count($accumulator, '\\'));
