@@ -11,12 +11,16 @@
 
         <meta name="generator" content="Kitab (https://hoa-project.net/)" />
 
+        <meta name="description" content="<?php echo $data->layout->title ?>">
+
         <meta property="og:title" content="<?php echo $data->layout->title ?>" />
         <meta property="og:type" content="website" />
         <meta proprery="og:image" content="<?php echo $data->configuration->logoURL ?>" />
 
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:creator" content="@hoaproject" />
+        <meta name="twitter:text:title" content="<?php echo $data->layout->title ?>" />
+        <meta name="twitter:img:src" content="<?php echo $data->configuration->logoURL ?>" />
 
         <link rel="stylesheet" href="./css/main.css" media="all" />
         <link rel="stylesheet" href="./css/prism.css" media="all" />
