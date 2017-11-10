@@ -27,7 +27,7 @@ cache:
 
 before_script:
   - export PATH="$PATH:$HOME/.composer/vendor/bin"
-  - phpenv config-rm xdebug.ini || echo "ext-xdebug is not available, cannot remove it."
+  - phpenv config-rm xdebug.ini || echo "ext-xdebug is not available, cannot remove it, but that's OK"
 
 script:
   - composer install
