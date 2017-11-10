@@ -36,83 +36,14 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Target;
+namespace Kitab\Exception;
 
-use Hoa\Router\Router;
-use Hoa\Stream\IStream\Out;
-use Hoa\View\Viewable;
-use Kitab\Exception;
-use StdClass;
-
-class Templater implements Viewable
+/**
+ * Runtime exception when the templater encounters a runtime error.
+ *
+ * It should normally happen _only_ when a developer is hacking Kitab, not when
+ * a user is using it.
+ */
+class Templater extends Exception
 {
-    protected $_in     = null;
-    protected $_out    = null;
-    protected $_data   = null;
-    protected $_router = null;
-
-    public function __construct(
-        string   $in,
-        Out      $out,
-        Router   $router = null,
-        StdClass $data = null
-    ) {
-        if (null === $data) {
-            $data = new StdClass();
-        }
-
-        $this->_in     = $in;
-        $this->_out    = $out;
-        $this->_data   = $data;
-        $this->_router = $router;
-
-        return;
-    }
-    public function getOutputStream(): Out
-    {
-        return $this->_out;
-    }
-
-    public function getData(): StdClass
-    {
-        return $this->_data;
-    }
-
-    public function render()
-    {
-        $data   = $this->getData();
-        $router = $this->getRouter();
-
-        try {
-            ob_start();
-            require $this->_in;
-            $content = ob_get_contents();
-            ob_end_clean();
-
-            $this->getOutputStream()->writeAll($content);
-        } catch (\Exception $e) {
-            throw new Exception\Templater(
-                'Unexpected error while rendering the template %s.',
-                0,
-                $this->_in,
-                $e
-            );
-        }
-
-        return;
-    }
-
-    public function getRouter()
-    {
-        return $this->_router;
-    }
-
-    public function import(string $template, StdClass $data = null)
-    {
-        $router = $this->getRouter();
-
-        require $template;
-
-        return;
-    }
 }
