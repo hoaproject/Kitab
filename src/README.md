@@ -1,5 +1,24 @@
-Kitab is the ideal companion for **Documentation-Driven Quality** for
-PHP programs.
+<p align="center">
+    <img src="../resource/logo.svg" width="250px" />
+</p>
+
+---
+
+<p align="center">
+  <a href="https://travis-ci.org/hoaproject/Kitab"><img src="https://img.shields.io/travis/hoaproject/Kitab/master.svg" alt="Build status" /></a>
+  <a href="https://packagist.org/packages/hoa/kitab"><img src="https://img.shields.io/packagist/dt/hoa/kitab.svg" alt="Packagist" /></a>
+  <a href="https://hoa-project.net/LICENSE"><img src="https://img.shields.io/packagist/l/hoa/kitab.svg" alt="License" /></a>
+</p>
+
+<p align="center">
+  <strong>Kitab</strong> is the ideal companion for
+  <strong>Documentation-Driven Quality</strong> for PHP programs.
+</p>
+<p align="center">
+  Made with ❤️ by <a href="https://hoa-project.net"><img src="https://static.hoa-project.net/Image/Hoa.svg" height="18" alt="Hoa" /></a>
+</p>
+
+# Kitab
 
 The goal of Kitab is twofold, **render** and **test** the
 documentation:
@@ -13,7 +32,7 @@ documentation:
      are run directly to ensure the examples are still up-to-date and
      working.
 
-# Static documentation
+## Static documentation
 
 Kitab is able to compile the documentation inside your code into
 static HTML files. A carefully crafted design is provided to ensure a
@@ -43,7 +62,7 @@ namespace directories, more below. The `--open` option opens the
 documentation in your default browser as soon as it is generated
 successfully.
 
-# DocTest
+## DocTest
 
 Documentation test suites, aka DocTest, are generated based on the
 examples present in your documentation. Examples are compiled into
