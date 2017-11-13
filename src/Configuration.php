@@ -46,42 +46,19 @@ namespace Kitab;
  *
  * # Examples
  *
- * ```php
- * $configuration              = new Kitab\Configuration();
- * $configuration->projectName = 'Kitab';
+ * Assuming the `foo` item is correctly declared:
  *
- * assert('Kitab' === $configuration->projectName);
+ * ```php
+ * $configuration = new class () extends Kitab\Configuration {
+ *     public $foo = null;
+ * };
+ * $configuration->foo = 'bar';
+ *
+ * assert('bar' === $configuration->foo);
  * ```
  */
-class Configuration
+abstract class Configuration
 {
-    /**
-     * The default namespace of the project currently documented.
-     *
-     * A project can contain several namespaces, either because it hosts many,
-     * or because of the dependencies. The default namespace is the entry
-     * point of the documentation. If a default namespace is provided, when
-     * the user will open the documentation, she will be automatically
-     * redirected to the default namespace.
-     */
-    public $defaultNamespace = null;
-
-    /**
-     * URL to the logo of the documentation.
-     *
-     * Each page contains a logo, representing a link to the “home”. It is
-     * possible to customise the logo by using this configuration item. By
-     * default, a placeholder is used.
-     */
-    public $logoURL          = 'https://placehold.it/150x150';
-
-    /**
-     * Project name.
-     *
-     * This configuration item represents the name of the project being documented.
-     */
-    public $projectName      = '(unknown)';
-
     /**
      * Get a configuration item value, or —if `null`— return a default value.
      * If the configuration item is not set, it will be considered as `null`.
@@ -89,10 +66,12 @@ class Configuration
      * # Examples
      *
      * ```php
-     * $configuration = new Kitab\Configuration();
+     * $configuration = new class () extends Kitab\Configuration {
+     *     public $foo = null;
+     * };
      *
-     * assert($configuration->defaultNamespace === null);
-     * assert($configuration->getOr('defaultNamespace', 'foobar') === 'foobar');
+     * assert($configuration->foo === null);
+     * assert($configuration->getOr('foo', 'foobar') === 'foobar');
      * ```
      */
     public function getOr(string $item, $default)

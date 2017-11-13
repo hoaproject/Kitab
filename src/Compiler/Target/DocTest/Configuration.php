@@ -36,13 +36,26 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Target\DocTest\CodeBlockHandler;
+namespace Kitab\Compiler\Target\DocTest;
 
-interface Definition
+use Kitab;
+
+/**
+ * Configuration structure for the DocTest target.
+ *
+ * This structure contains all the configuration items used by the DocTest
+ * target of Kitab. It extends the default Kitab configuration structure.
+ *
+ *
+ * # Examples
+ *
+ * ```php
+ * $configuration              = new Kitab\Compiler\Target\DocTest\Configuration();
+ * $configuration->projectName = 'Kitab';
+ *
+ * assert('Kitab' === $configuration->projectName);
+ * ```
+ */
+class Configuration extends Kitab\Configuration
 {
-    public function getDefinitionName(): string;
-
-    public function mightHandleCodeBlock(string $codeBlockType): bool;
-
-    public function compileToTestCaseBody(string $codeBlockType, string $codeBlockContent): string;
 }

@@ -36,13 +36,59 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Target\DocTest\CodeBlockHandler;
+namespace Kitab\Compiler\Target\Html;
 
-interface Definition
+use Kitab;
+
+/**
+ * Configuration structure for the HTML target.
+ *
+ * This structure contains all the configuration items used by the HTML target
+ * of Kitab. It extends the default Kitab configuration structure.
+ *
+ *
+ * # Examples
+ *
+ * ```php
+ * $configuration              = new Kitab\Compiler\Target\Html\Configuration();
+ * $configuration->projectName = 'Kitab';
+ *
+ * assert('Kitab' === $configuration->projectName);
+ * ```
+ */
+class Configuration extends Kitab\Configuration
 {
-    public function getDefinitionName(): string;
+    /**
+     * The default namespace of the project currently documented.
+     *
+     * A project can contain several namespaces, either because it hosts many,
+     * or because of the dependencies. The default namespace is the entry
+     * point of the documentation. If a default namespace is provided, when
+     * the user will open the documentation, she will be automatically
+     * redirected to the default namespace.
+     */
+    public $defaultNamespace = null;
 
-    public function mightHandleCodeBlock(string $codeBlockType): bool;
+    /**
+     * URL to the logo of the documentation.
+     *
+     * Each page contains a logo, representing a link to the “home”. It is
+     * possible to customise the logo by using this configuration item. By
+     * default, a placeholder is used.
+     */
+    public $logoURL          = 'https://placehold.it/150x150';
 
-    public function compileToTestCaseBody(string $codeBlockType, string $codeBlockContent): string;
+    /**
+     * Project name.
+     *
+     * This configuration item represents the name of the project being documented.
+     */
+    public $projectName      = '(unknown)';
+
+    /**
+     * Composer file.
+     *
+     * Use a specific Composer file to get PSR-4 mappings.
+     */
+    public $composerFile     = null;
 }

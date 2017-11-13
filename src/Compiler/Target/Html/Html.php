@@ -45,7 +45,6 @@ use Hoa\Protocol\Protocol;
 use Hoa\Stream\IStream\Touchable;
 use Kitab\Compiler\IntermediateRepresentation;
 use Kitab\Compiler\Target\Target;
-use Kitab\Configuration;
 use Kitab\Exception;
 use StdClass;
 

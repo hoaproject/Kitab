@@ -32,4 +32,4 @@ before_script:
 script:
   - composer install
   - bin/kitab test src
-  - bin/kitab compile --default-namespace Kitab --with-composer --with-project-name Kitab --output-directory /tmp src
+  - bin/kitab compile --configuration-file .kitab.target.html.php --output-directory /tmp src

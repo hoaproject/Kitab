@@ -44,7 +44,7 @@ use Hoa\Protocol\Node;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
 use Kitab\Compiler\Target\Html\Html;
-use Kitab\Configuration;
+use Kitab\Compiler\Target\Html\Configuration;
 use Kitab\Finder;
 
 class Compile extends Console\Dispatcher\Kit
@@ -55,14 +55,15 @@ class Compile extends Console\Dispatcher\Kit
      * @var array
      */
     protected $options = [
-        ['default-namespace', Console\GetOption::REQUIRED_ARGUMENT, 'd'],
-        ['with-composer',     Console\GetOption::OPTIONAL_ARGUMENT, 'c'],
-        ['with-logo-url',     Console\GetOption::REQUIRED_ARGUMENT, 'l'],
-        ['with-project-name', Console\GetOption::REQUIRED_ARGUMENT, 'p'],
-        ['output-directory',  Console\GetOption::REQUIRED_ARGUMENT, 'o'],
-        ['open',              Console\GetOption::NO_ARGUMENT,       'r'],
-        ['help',              Console\GetOption::NO_ARGUMENT,       'h'],
-        ['help',              Console\GetOption::NO_ARGUMENT,       '?']
+        ['configuration-file', Console\GetOption::REQUIRED_ARGUMENT, 'c'],
+        ['default-namespace',  Console\GetOption::REQUIRED_ARGUMENT, 'd'],
+        ['with-composer',      Console\GetOption::OPTIONAL_ARGUMENT, 'a'],
+        ['with-logo-url',      Console\GetOption::REQUIRED_ARGUMENT, 'l'],
+        ['with-project-name',  Console\GetOption::REQUIRED_ARGUMENT, 'p'],
+        ['output-directory',   Console\GetOption::REQUIRED_ARGUMENT, 'o'],
+        ['open',               Console\GetOption::NO_ARGUMENT,       'r'],
+        ['help',               Console\GetOption::NO_ARGUMENT,       'h'],
+        ['help',               Console\GetOption::NO_ARGUMENT,       '?']
     ];
 
 
@@ -80,12 +81,32 @@ class Compile extends Console\Dispatcher\Kit
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
+                case 'c':
+                    if (false === file_exists($v)) {
+                        throw new RuntimeException(
+                            'Tried to load the configuration file ' . $v . ', but the file does not exist.'
+                        );
+                    }
+
+                    $_configuration = require $v;
+
+                    if (!($_configuration instanceof Configuration)) {
+                        throw new RuntimeException(
+                            'The configuration file ' . $v . ' exists, but it returns ' .
+                            'a value that is _not_ an object of kind ' . Configuration::class . '.'
+                        );
+                    }
+
+                    $configuration = $_configuration;
+
+                    break;
+
                 case 'd':
                     $configuration->defaultNamespace = $v;
 
                     break;
 
-                case 'c':
+                case 'a':
                     if (false === is_string($v)) {
                         $composerFile = './composer.json';
                     } else {
@@ -178,7 +199,7 @@ class Compile extends Console\Dispatcher\Kit
 
         $target = new Html(null, $configuration);
 
-        $compiler = new Compiler($configuration);
+        $compiler = new Compiler();
         $compiler->compile($finder, $target);
 
         $index = $outputDirectory;
@@ -230,8 +251,12 @@ class Compile extends Console\Dispatcher\Kit
             'Usage   : compile <options> directory-to-scan', "\n",
             'Options :', "\n",
             $this->makeUsageOptionsList([
+                'c'    => 'Path to a PHP file returning a `' . Configuration::class . '` ' .
+                          'instance to be the default configuration. All the other options ' .
+                          'in this command-line will overwrite the items in the configuration. ' .
+                          'If used, it must be the first option in the command-line.',
                 'd'    => 'Default namespace that must be displayed.',
-                'c'    => 'Use a specific Composer file to get PSR-4 mappings ' .
+                'a'    => 'Use a specific Composer file to get PSR-4 mappings ' .
                           '(default: `./composer.json` if enabled).',
                 'l'    => 'URL of the logo.',
                 'p'    => 'Project name.',
