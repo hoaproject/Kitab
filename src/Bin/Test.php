@@ -45,7 +45,7 @@ use Hoa\File;
 use Hoa\File\Temporary\Temporary;
 use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
-use Kitab\Compiler\Target\DocTest\DocTest;
+use Kitab\Compiler\Target\DocTest;
 use Kitab\Finder;
 
 class Test extends Console\Dispatcher\Kit
@@ -165,7 +165,8 @@ class Test extends Console\Dispatcher\Kit
             $finder->modified('since ' . $since . ' seconds');
         }
 
-        $target = new DocTest();
+        $target = new DocTest\DocTest();
+        $target->addCodeBlockHandler(new DocTest\CodeBlockHandler\Php());
 
         $compiler = new Compiler();
         $compiler->compile($finder, $target);

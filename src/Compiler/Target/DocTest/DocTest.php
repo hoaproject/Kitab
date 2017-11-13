@@ -42,14 +42,11 @@ use Generator;
 use Hoa\File\Directory;
 use Hoa\File\Write;
 use Kitab\Compiler\IntermediateRepresentation;
-use Kitab\Compiler\Parser;
 use Kitab\Compiler\Target\Target;
 use Kitab\Configuration;
 use Kitab\Exception;
 use League\CommonMark;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor;
-use PhpParser\PrettyPrinter;
+use RuntimeException;
 
 class DocTest implements Target
 {
@@ -57,8 +54,22 @@ class DocTest implements Target
     const EXCEPTIONS_SECTION = 'Exceptions';
 
     protected static $_markdownParser = null;
-    protected static $_phpTraverser   = null;
     protected $_generatedTestSuites   = [];
+    protected $_codeBlockHandlers     = [];
+
+    public function addCodeBlockHandler(CodeBlockHandler\Definition $codeBlockHandler): self
+    {
+        $this->_codeBlockHandlers[$codeBlockHandler->getDefinitionName()] = $codeBlockHandler;
+
+        return $this;
+    }
+
+    public function removeCodeBlockHandler(CodeBlockHandler\Definition $codeBlockHandler): self
+    {
+        unset($this->_codeBlockHandlers[$codeBlockHandler->getDefinitionName()]);
+
+        return $this;
+    }
 
     public function compile(IntermediateRepresentation\File $file)
     {
@@ -94,6 +105,7 @@ class DocTest implements Target
 
         $output = new Write($fileName, Write::MODE_TRUNCATE_WRITE);
         $output->writeAll($testSuites);
+        $output->close();
     }
 
     protected function compileEntity(IntermediateRepresentation\Entity $entity): string
@@ -102,20 +114,30 @@ class DocTest implements Target
 
         // Introduction.
         foreach ($this->getCodeBlocks($entity->documentation) as $i => $codeBlock) {
-            $testCases .= $this->compileToTestCase(
-                '0introduction_' . $i, // start with `0` to avoid conflict with existing identifier.
-                $codeBlock
-            );
+            foreach (
+                $this->compileToTestCases(
+                    '0introduction_' . $i, // start with `0` to avoid conflict with existing identifier.
+                    $codeBlock
+                )
+                as $testCase
+            ) {
+                $testCases .= $testCase;
+            }
         }
 
         // Methods
         if ($entity instanceof IntermediateRepresentation\HasMethods) {
             foreach ($entity->getMethods() as $method) {
                 foreach ($this->getCodeBlocks($method->documentation) as $i => $codeBlock) {
-                    $testCases .= $this->compileToTestCase(
-                        $method->name . '_' . $i,
-                        $codeBlock
-                    );
+                    foreach (
+                        $this->compileToTestCases(
+                            $method->name . '_' . $i,
+                            $codeBlock
+                        )
+                        as $testCase
+                    ) {
+                        $testCases .= $testCase;
+                    }
                 }
             }
         }
@@ -126,7 +148,7 @@ class DocTest implements Target
 
         return
             sprintf(
-                'namespace Kitab\Generated\DocTest%s {' . "\n\n" .
+                'namespace Kitab\Generated\DocTest%s' . "\n" . '{' . "\n\n" .
                 'class %s extends \Kitab\DocTest\Suite' . "\n" .
                 '{',
                 $entity->inNamespace() ? '\\' . $entity->getNamespaceName() : '',
@@ -195,90 +217,58 @@ class DocTest implements Target
                     $hashes[] = $hash;
                 }
 
-                $type = trim($childNode->getInfo());
-
-                if (empty($type)) {
-                    $type = 'php';
-                }
-
-                if (0 === preg_match('/\bphp\b/', $type)) {
-                    continue;
-                }
-
-                $code = $this->unfoldCode($childNode->getStringContent());
-
                 yield [
-                    'type' => $type,
-                    'code' => $code
+                    'type'    => trim($childNode->getInfo()),
+                    'content' => $childNode->getStringContent()
                 ];
             }
         }
     }
 
-    protected function unfoldCode(string $phpCode): string
+    protected function compileToTestCases(string $testCaseName, array $codeBlock): Generator
     {
-        $ast = Parser::getPhpParser()->parse('<?php ' . $phpCode);
-        $ast = self::getPhpTraverser()->traverse($ast);
+        if (empty($this->_codeBlockHandlers)) {
+            throw new RuntimeException(
+                'Target `' . __CLASS__ . '` has no code block handlers. ' .
+                'Use the `' . __CLASS__ . '::addCodeBlockHandler` method to add ' .
+                'at least one code block handler to compile test cases.'
+            );
+        }
 
-        return Parser::getPhpPrettyPrinter()->prettyPrint($ast);
-    }
+        $suffix = "\n" . '    }' . "\n";
 
-    protected function compileToTestCase(string $testCaseName, array $codeBlock): string
-    {
-        $prefix =
-            "\n" .
-            '    public function case_' . $testCaseName . '()' . "\n" .
-            '    {' . "\n";
-        $suffix =
-            "\n" .
-            '    }' . "\n";
+        foreach ($this->_codeBlockHandlers as $codeBlockHandler) {
+            $prefix =
+                "\n" .
+                '    public function case_' . $testCaseName . '_' . $codeBlockHandler->getDefinitionName() . '()' . "\n" .
+                '    {' . "\n";
 
-        if (0 !== preg_match('/\bignore\b/', $codeBlock['type'])) {
-            return
+            if (false === $codeBlockHandler->mightHandleCodeblock($codeBlock['type'])) {
+                yield
+                    $prefix .
+                    '        ' .
+                    sprintf(
+                        '$this->skip(\'Skipped because there is no handler for the code block of type `%s`.\');',
+                        $codeBlock['type']
+                    ) .
+                    $suffix;
+
+                continue;
+            }
+
+            yield
                 $prefix .
-                sprintf(
-                    '        $this' . "\n" .
-                    '            ->skip(\'Skipped because ' .
-                    'the code block type contains `ignore`: `%s`.\');',
-                    $codeBlock['type']
+                '        ' .
+                str_replace(
+                    "\n",
+                    "\n" . '        ',
+                    $codeBlockHandler->compileToTestCaseBody(
+                        $codeBlock['type'],
+                        $codeBlock['content']
+                    )
                 ) .
                 $suffix;
         }
-
-
-        if (0 !== preg_match('/\bmust_throw(?:\(([^\)]+)\)|\b)/', $codeBlock['type'], $matches)) {
-            return
-                $prefix .
-                sprintf(
-                        '        $this' . "\n" .
-                    '            ->exception(function () {' . "\n" .
-                    '                %s' . "\n" .
-                    '            })' . "\n" .
-                    '                ->isInstanceOf(\'%s\');',
-                    preg_replace(
-                        '/^\h+$/m',
-                        '',
-                        str_replace("\n", "\n" . '                ', $codeBlock['code'])
-                    ),
-                    isset($matches[1]) ? $matches[1] : 'Exception'
-                ) .
-                $suffix;
-        }
-
-        return
-            $prefix .
-                sprintf(
-                '        $this' . "\n" .
-                '            ->assert(function () {' . "\n" .
-                '                %s' . "\n" .
-                '            });',
-                preg_replace(
-                    '/^\h+$/m',
-                    '',
-                    str_replace("\n", "\n" . '                ', $codeBlock['code'])
-                )
-            ) .
-            $suffix;
     }
 
     protected function getMarkdownParser()
@@ -290,17 +280,6 @@ class DocTest implements Target
         }
 
         return static::$_markdownParser;
-    }
-
-    protected static function getPhpTraverser(): NodeTraverser
-    {
-        if (null === self::$_phpTraverser) {
-            self::$_phpTraverser = new NodeTraverser();
-            self::$_phpTraverser->addVisitor(new NodeVisitor\NameResolver());
-            self::$_phpTraverser->addVisitor(new IntoTestCaseBody());
-        }
-
-        return self::$_phpTraverser;
     }
 
     protected function computeTestSuiteShortName(string $shortName, string $longName): string

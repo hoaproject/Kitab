@@ -36,45 +36,13 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Kitab\Compiler\Target\DocTest;
+namespace Kitab\Compiler\Target\DocTest\CodeBlockHandler;
 
-use PhpParser\Node;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitorAbstract;
-
-/**
- * A visitor to transform an Abstract Syntax Tree (AST) into a test case body
- * candidate.
- *
- * So far, it applies the following transformations:
- *
- *   * Remove the `use` statements (assuming all names have been resolved).
- *
- * # Examples
- *
- * ```php
- * $code = '<?php use A\B\C; new C();';
- * $ast  = Kitab\Compiler\Parser::getPhpParser()->parse($code);
-
- * $traverser = new PhpParser\NodeTraverser();
- * $traverser->addVisitor(new PhpParser\NodeVisitor\NameResolver());
- * $traverser->addVisitor(new Kitab\Compiler\Target\DocTest\IntoTestCaseBody());
- *
- * $ast = $traverser->traverse($ast);
- *
- * $testCaseCandidate = Kitab\Compiler\Parser::getPhpPrettyPrinter()->prettyPrint($ast);
- *
- * assert('new \A\B\C();' === $testCaseCandidate);
- * ```
- */
-class IntoTestCaseBody extends NodeVisitorAbstract
+interface Definition
 {
-    public function leaveNode(Node $node) {
-        if ($node instanceof Node\Stmt\Use_ ||
-            $node instanceof Node\Stmt\GroupUse) {
-            return NodeTraverser::REMOVE_NODE;
-        }
+    public function getDefinitionName(): string;
 
-        return null;
-    }
+    public function mightHandleCodeblock(string $codeBlockType): bool;
+
+    public function compileToTestCaseBody(string $codeBlockType, string $codeBlockContent): string;
 }
