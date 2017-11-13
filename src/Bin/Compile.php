@@ -75,7 +75,6 @@ class Compile extends Console\Dispatcher\Kit
     public function run(): int
     {
         $configuration   = new Configuration();
-        $composerFile    = null;
         $outputDirectory = Temporary::getTemporaryDirectory() . DS . 'Kitab.html.output';
         $directoryToScan = null;
         $open            = false;
@@ -111,9 +110,9 @@ class Compile extends Console\Dispatcher\Kit
 
                 case 'a':
                     if (false === is_string($v)) {
-                        $composerFile = './composer.json';
+                        $configuration->composerFile = './composer.json';
                     } else {
-                        $composerFile = $v;
+                        $configuration->composerFile = $v;
                     }
 
                     break;
@@ -151,17 +150,17 @@ class Compile extends Console\Dispatcher\Kit
             }
         }
 
-        if (null !== $composerFile) {
-            if (false === file_exists($composerFile)) {
-                throw new RuntimeException('Composer file `' . $composerFile . '` is not found.');
+        if (null !== $configuration->composerFile) {
+            if (false === file_exists($configuration->composerFile)) {
+                throw new RuntimeException('Composer file `' . $configuration->composerFile . '` is not found.');
             }
 
-            $composerFileContent = json_decode(file_get_contents($composerFile), true);
+            $composerFileContent = json_decode(file_get_contents($configuration->composerFile), true);
 
             if (isset($composerFileContent['autoload']) &&
                 isset($composerFileContent['autoload']['psr-4'])) {
                 $protocolInput     = Protocol::getInstance()['Kitab']['Input'];
-                $composerDirectory = dirname($composerFile);
+                $composerDirectory = dirname($configuration->composerFile);
 
                 foreach ($composerFileContent['autoload']['psr-4'] as $psrNamespaces => $psrDirectory) {
                     $latestNode = $protocolInput;
