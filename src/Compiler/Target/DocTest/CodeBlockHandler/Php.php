@@ -95,9 +95,10 @@ class Php implements Definition
      * ```php
      * $handler = new Kitab\Compiler\Target\DocTest\CodeBlockHandler\Php();
      *
-     * assert($handler->mightHandleCodeblock('php'));
-     * assert($handler->mightHandleCodeblock('php,ignore'));
-     * assert($handler->mightHandleCodeblock('php,must_throw'));
+     * assert(true  === $handler->mightHandleCodeblock('php'));
+     * assert(true  === $handler->mightHandleCodeblock('php,ignore'));
+     * assert(true  === $handler->mightHandleCodeblock('php,must_throw'));
+     * assert(false === $handler->mightHandleCodeblock('foobar'));
      * ```
      *
      * A code block with no type is assumed to be of type `php`:

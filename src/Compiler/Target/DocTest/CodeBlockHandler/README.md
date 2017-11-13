@@ -1,13 +1,13 @@
 Kitab uses code blocks written in the documentation to generate tests
 (written in [CommonMark](http://commonmark.org/), as a reminder). A
-code block can have a type, such as `php` or `http`:
+code block can have a type, such as `php`:
 
-    ```md
     ```php
     // here is some PHP code
     ```
 
-    ```md
+or `http`:
+
     ```http
     // here is some HTTP messages.
     ```
