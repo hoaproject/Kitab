@@ -38,6 +38,29 @@ declare(strict_types=1);
 
 namespace Kitab\Compiler\Target\DocTest\CodeBlockHandler;
 
+/**
+ * Code block handler definition.
+ *
+ * Kitab uses code blocks written in the documentation to generate tests
+ * (written in CommonMark, as a reminder). A code block can have a type, e.g.:
+ *
+ *     ```md
+ *     ```php
+ *     // here is some PHP code
+ *     ```
+ *
+ *     ```md
+ *     ```http
+ *     // here is some HTTP messages.
+ *     ```
+ * A code block handler is a class that is able to compile specific code
+ * blocks into test case bodies.
+ *
+ * When compiling code blocks into test cases, the target will loop over all
+ * attached code block handlers. If one of them is able to handle a specific
+ * code block, then it is used. Many code block handlers can handle the same
+ * code block.
+ */
 interface Definition
 {
     public function getDefinitionName(): string;
