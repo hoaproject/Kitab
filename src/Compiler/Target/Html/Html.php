@@ -598,6 +598,11 @@ class Html implements Target
 
         (new Directory($from))->copy($to, Touchable::OVERWRITE);
 
+        $from = dirname(__DIR__, 4) . DS . 'resource';
+        $to   = 'hoa://Kitab/Output/resource';
+
+        (new Directory($from))->copy($to, Touchable::OVERWRITE);
+
         Search::pack();
 
         $searchDatabase      = json_decode(file_get_contents(Search::DATABASE_FILE));
