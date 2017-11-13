@@ -243,7 +243,7 @@ class DocTest implements Target
                 '    public function case_' . $testCaseName . '_' . $codeBlockHandler->getDefinitionName() . '()' . "\n" .
                 '    {' . "\n";
 
-            if (false === $codeBlockHandler->mightHandleCodeblock($codeBlock['type'])) {
+            if (false === $codeBlockHandler->mightHandleCodeBlock($codeBlock['type'])) {
                 yield
                     $prefix .
                     '        ' .

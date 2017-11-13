@@ -31,5 +31,5 @@ before_script:
 
 script:
   - composer install
-  - bin/kitab test src
+  - bin/kitab test --configuration-file .kitab.target.doctest.php src
   - bin/kitab compile --configuration-file .kitab.target.html.php --output-directory /tmp src

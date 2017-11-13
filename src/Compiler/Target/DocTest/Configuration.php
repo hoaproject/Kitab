@@ -50,12 +50,46 @@ use Kitab;
  * # Examples
  *
  * ```php
- * $configuration              = new Kitab\Compiler\Target\DocTest\Configuration();
- * $configuration->projectName = 'Kitab';
+ * $configuration                      = new Kitab\Compiler\Target\DocTest\Configuration();
+ * $configuration->concurrentProcesses = 2;
  *
- * assert('Kitab' === $configuration->projectName);
+ * assert(2 === $configuration->concurrentProcesses);
  * ```
  */
 class Configuration extends Kitab\Configuration
 {
+    /**
+     * Path to the autoloader file.
+     *
+     * Tests are likely to require an autoloader to load entities, like
+     * classes. If Composer is used as a dependency manager, then the
+     * autoloader file should be `vendor/autoload.php`.
+     */
+    public $autoloaderFile        = null;
+
+    /**
+     * Maximum concurrent processes that can be used to run the tests.
+     */
+    public $concurrentProcesses   = 4;
+
+    /**
+     * Bypass the compilation cache.
+     *
+     * If `true`, the compiler will compile test suites like it is for the
+     * first time.
+     */
+    public $bypassCache           = false;
+
+    /**
+     * Code block handlers.
+     *
+     * List of code block handler class names. A handler is responsible to
+     * compile a code block content into a test case body. If you write your
+     * own code block handlers, it is the correct place to declare them.
+     *
+     * The code block handler for `php` code block type is already declared.
+     */
+    public $codeBlockHandlerNames = [
+        CodeBlockHandler\Php::class
+    ];
 }

@@ -46,6 +46,7 @@ use Kitab\Compiler\Compiler;
 use Kitab\Compiler\Target\Html\Html;
 use Kitab\Compiler\Target\Html\Configuration;
 use Kitab\Finder;
+use RuntimeException;
 
 class Compile extends Console\Dispatcher\Kit
 {
@@ -73,10 +74,10 @@ class Compile extends Console\Dispatcher\Kit
      */
     public function run(): int
     {
+        $configuration   = new Configuration();
         $composerFile    = null;
         $outputDirectory = Temporary::getTemporaryDirectory() . DS . 'Kitab.html.output';
         $directoryToScan = null;
-        $configuration   = new Configuration();
         $open            = false;
 
         while (false !== $c = $this->getOption($v)) {
@@ -88,7 +89,9 @@ class Compile extends Console\Dispatcher\Kit
                         );
                     }
 
-                    $_configuration = require $v;
+                    $_configuration = (function () use ($v) {
+                        return require $v;
+                    })();
 
                     if (!($_configuration instanceof Configuration)) {
                         throw new RuntimeException(
@@ -181,7 +184,7 @@ class Compile extends Console\Dispatcher\Kit
         $this->parser->listInputs($directoryToScan);
 
         if (empty($directoryToScan)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Directory to scan must not be empty.' . "\n" .
                 'Retry with ' . '`' . implode(' ', $_SERVER['argv']) . ' src` ' .
                 'to compile the documentation inside the `src` directory.'
@@ -189,7 +192,7 @@ class Compile extends Console\Dispatcher\Kit
         }
 
         if (false === is_dir($directoryToScan)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Directory to scan `' . $directoryToScan . '` does not exist.'
             );
         }

@@ -47,6 +47,7 @@ use Hoa\Protocol\Protocol;
 use Kitab\Compiler\Compiler;
 use Kitab\Compiler\Target\DocTest;
 use Kitab\Finder;
+use RuntimeException;
 
 class Test extends Console\Dispatcher\Kit
 {
@@ -54,6 +55,7 @@ class Test extends Console\Dispatcher\Kit
      * Options description.
      */
     protected $options = [
+        ['configuration-file',   Console\GetOption::REQUIRED_ARGUMENT, 'c'],
         ['autoloader',           Console\GetOption::REQUIRED_ARGUMENT, 'l'],
         ['output-directory',     Console\GetOption::REQUIRED_ARGUMENT, 'o'],
         ['concurrent-processes', Console\GetOption::REQUIRED_ARGUMENT, 'p'],
@@ -70,6 +72,7 @@ class Test extends Console\Dispatcher\Kit
      */
     public function run(): int
     {
+        $configuration       = new DocTest\Configuration();
         $autoloader          = null;
         $outputDirectory     = null;
         $directoryToScan     = null;
@@ -79,27 +82,49 @@ class Test extends Console\Dispatcher\Kit
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
+                case 'c':
+                    if (false === file_exists($v)) {
+                        throw new RuntimeException(
+                            'Tried to load the configuration file ' . $v . ', but the file does not exist.'
+                        );
+                    }
+
+                    $_configuration = (function () use ($v) {
+                        return require $v;
+                    })();
+
+                    if (!($_configuration instanceof DocTest\Configuration)) {
+                        throw new RuntimeException(
+                            'The configuration file ' . $v . ' exists, but it returns ' .
+                            'a value that is _not_ an object of kind ' . DocTest\Configuration::class . '.'
+                        );
+                    }
+
+                    $configuration = $_configuration;
+
+                    break;
+
                 case 'o':
                     $outputDirectory = $v;
 
                     break;
 
                 case 'l':
-                    $autoloader = $v;
-
-                    if (false === file_exists($autoloader)) {
-                        throw new \RuntimeException('Autoloader file `' . $autoloader . '` does not exist.');
+                    if (false === file_exists($v)) {
+                        throw new RuntimeException('Autoloader file `' . $v . '` does not exist.');
                     }
+
+                    $configuration->autoloaderFile = $v;
 
                     break;
 
                 case 'p':
-                    $concurrentProcesses = max(1, intval($v));
+                    $configuration->concurrentProcesses = max(1, intval($v));
 
                     break;
 
                 case 'C':
-                    $compilationCache = !$v;
+                    $configuration->bypassCache = $v;
 
                     break;
 
@@ -121,14 +146,14 @@ class Test extends Console\Dispatcher\Kit
             }
         }
 
-        if (empty($autoloader) && true === file_exists('vendor' . DS . 'autoload.php')) {
-            $autoloader = realpath('vendor' . DS . 'autoload.php');
+        if (empty($configuration->autoloaderFile) && true === file_exists('vendor' . DS . 'autoload.php')) {
+            $configuration->autoloaderFile = realpath('vendor' . DS . 'autoload.php');
         }
 
         $this->parser->listInputs($directoryToScan);
 
         if (empty($directoryToScan)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Directory to scan must not be empty.' . "\n" .
                 'Retry with `' . implode(' ', $_SERVER['argv']) . ' src` ' .
                 'to test the documentation inside the `src` directory.'
@@ -136,7 +161,7 @@ class Test extends Console\Dispatcher\Kit
         }
 
         if (false === is_dir($directoryToScan)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Directory to scan `' . $directoryToScan . '` does not exist.'
             );
         }
@@ -160,13 +185,16 @@ class Test extends Console\Dispatcher\Kit
 
         if (false === is_dir($outputDirectory)) {
             File\Directory::create($outputDirectory);
-        } elseif (true === $compilationCache) {
+        } elseif (false === $configuration->bypassCache) {
             $since = time() - filemtime($outputDirectory);
             $finder->modified('since ' . $since . ' seconds');
         }
 
         $target = new DocTest\DocTest();
-        $target->addCodeBlockHandler(new DocTest\CodeBlockHandler\Php());
+
+        foreach ($configuration->codeBlockHandlerNames as $codeBlockHandlerName) {
+            $target->addCodeBlockHandler(new $codeBlockHandlerName);
+        }
 
         $compiler = new Compiler();
         $compiler->compile($finder, $target);
@@ -181,7 +209,7 @@ class Test extends Console\Dispatcher\Kit
                 '<?php' . "\n\n" .
                 'Phar::loadPhar(\'' . KITAB_PHAR_PATH . '\', \'' . KITAB_PHAR_NAME . '\');' . "\n\n" .
                 'require_once \'phar://'. KITAB_PHAR_NAME .'/vendor/autoload.php\';' . "\n" .
-                (!empty($autoloader) ? 'require_once \'' . str_replace("'", "\\'", realpath($autoloader)) . '\';' : '')
+                (!empty($configuration->autoloaderFile) ? 'require_once \'' . str_replace("'", "\\'", realpath($configuration->autoloaderFile)) . '\';' : '')
             );
 
             $autoloader = $temporaryAutoloader->getStreamName();
@@ -199,10 +227,10 @@ class Test extends Console\Dispatcher\Kit
             $temporaryAutoloader->writeAll(
                 '<?php' . "\n\n" .
                 'require_once \'' . str_replace("'", "\\'", $composerAutoloader) . '\';' . "\n" .
-                (!empty($autoloader) ? 'require_once \'' . str_replace("'", "\\'", realpath($autoloader)) . '\';' : '')
+                (!empty($configuration->autoloaderFile) ? 'require_once \'' . str_replace("'", "\\'", realpath($configuration->autoloaderFile)) . '\';' : '')
             );
 
-            $autoloader = $temporaryAutoloader->getStreamName();
+            $configuration->autoloaderFile = $temporaryAutoloader->getStreamName();
         }
 
         if (true === $verbose) {
@@ -211,11 +239,11 @@ class Test extends Console\Dispatcher\Kit
 
         $command .=
             ' --autoloader-file ' .
-                escapeshellarg($autoloader) .
+                escapeshellarg($configuration->autoloaderFile) .
             ' --force-terminal' .
             ' --no-code-coverage' .
             ' --max-children-number ' .
-                $concurrentProcesses .
+                $configuration->concurrentProcesses .
             ' --directories ' .
                 escapeshellarg($outputDirectory);
 
@@ -256,6 +284,10 @@ class Test extends Console\Dispatcher\Kit
             'Usage   : test <options> directory-to-scan', "\n",
             'Options :', "\n",
             $this->makeUsageOptionsList([
+                'c'    => 'Path to a PHP file returning a `' . DocTest\Configuration::class . '` ' .
+                          'instance to be the default configuration. All the other options ' .
+                          'in this command-line will overwrite the items in the configuration. ' .
+                          'If used, it must be the first option in the command-line.',
                 'l'    => 'Path to the autoloader file.',
                 'o'    => 'Directory that will receive the generated documentation test suites.',
                 'p'    => 'Maximum concurrent processes that can run.',
