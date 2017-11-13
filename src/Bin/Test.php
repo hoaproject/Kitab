@@ -57,6 +57,7 @@ class Test extends Console\Dispatcher\Kit
         ['autoloader',           Console\GetOption::REQUIRED_ARGUMENT, 'l'],
         ['output-directory',     Console\GetOption::REQUIRED_ARGUMENT, 'o'],
         ['concurrent-processes', Console\GetOption::REQUIRED_ARGUMENT, 'p'],
+        ['bypass-cache',         Console\GetOption::NO_ARGUMENT,       'C'],
         ['verbose',              Console\GetOption::NO_ARGUMENT,       'v'],
         ['help',                 Console\GetOption::NO_ARGUMENT,       'h'],
         ['help',                 Console\GetOption::NO_ARGUMENT,       '?']
@@ -74,6 +75,7 @@ class Test extends Console\Dispatcher\Kit
         $directoryToScan     = null;
         $concurrentProcesses = 4;
         $verbose             = false;
+        $compilationCache   = true;
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
@@ -93,6 +95,11 @@ class Test extends Console\Dispatcher\Kit
 
                 case 'p':
                     $concurrentProcesses = max(1, intval($v));
+
+                    break;
+
+                case 'C':
+                    $compilationCache = !$v;
 
                     break;
 
@@ -151,11 +158,11 @@ class Test extends Console\Dispatcher\Kit
             ->in($directoryToScan)
             ->notIn('/^vendor$/');
 
-        if (is_dir($outputDirectory)) {
+        if (false === is_dir($outputDirectory)) {
+            File\Directory::create($outputDirectory);
+        } elseif (true === $compilationCache) {
             $since = time() - filemtime($outputDirectory);
             $finder->modified('since ' . $since . ' seconds');
-        } else {
-            File\Directory::create($outputDirectory);
         }
 
         $target = new DocTest();
@@ -251,6 +258,7 @@ class Test extends Console\Dispatcher\Kit
                 'l'    => 'Path to the autoloader file.',
                 'o'    => 'Directory that will receive the generated documentation test suites.',
                 'p'    => 'Maximum concurrent processes that can run.',
+                'C'    => 'Bypass the cache; compile test suites like it is for the first time.',
                 'v'    => 'Be verbose (add some debug information).',
                 'help' => 'This help.'
             ]);
