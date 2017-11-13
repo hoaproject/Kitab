@@ -38,7 +38,6 @@ declare(strict_types=1);
 
 namespace Kitab\Compiler;
 
-use Kitab\Configuration;
 use Kitab\Exception;
 use Kitab\Finder;
 use StdClass;
@@ -56,12 +55,6 @@ use StdClass;
 class Compiler
 {
     /**
-     * Configuration of the Kitab project, represented by the
-     * `Kitab\Configuration` class.
-     */
-    protected $_configuration = null;
-
-    /**
      * The parsed used to parse PHP files.
      *
      * The parser is allocated once, hence the static declaration.
@@ -70,17 +63,10 @@ class Compiler
 
     /**
      * When constructing the compiler, a new instance of the
-     * `Kitab\Compiler\Parser` parser is created and stored statically. If no
-     * configuration is provided, a default configuration is allocated.
+     * `Kitab\Compiler\Parser` parser is created and stored statically.
      */
-    public function __construct(Configuration $configuration = null)
+    public function __construct()
     {
-        if (null === $configuration) {
-            $configuration = new Configuration();
-        }
-
-        $this->_configuration = $configuration;
-
         if (null === self::$_parser) {
             self::$_parser = new Parser();
         }
