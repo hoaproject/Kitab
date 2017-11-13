@@ -43,20 +43,126 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\PrettyPrinter;
 
+/**
+ * A code block handler for the `php` type.
+ *
+ * This handler defines the `php` type with the following options:
+ *
+ *   * `php,ignore` to avoid compiling the code block into a test case. The code
+ *     block is just displayed in the documentation, but not tested,
+ *   * `php,must_throw` to indicate that the code block must throw an exception,
+ *     so catching an exception is expected,
+ *   * `php,must_throw(E)` to indicate that the code block must throw an
+ *     exception of kind `E`.
+ */
 class Php implements Definition
 {
+    /**
+     * A traverser, for PHP-Parser, is a set of visitors visiting the Abstract
+     * Syntax Tree produced by the parser. This traverser will be used to
+     * pretty print the PHP code, and to make it embeddable inside a test
+     * case.
+     *
+     * The traverser is allocated once, hence the static declaration.
+     */
     protected static $_phpTraverser = null;
 
+    /**
+     * The handler name is `php`.
+     *
+     * # Examples
+     *
+     * ```php
+     * $handler = new Kitab\Compiler\Target\DocTest\CodeBlockHandler\Php();
+     *
+     * assert('php' === $handler->getDefinitionName());
+     * ```
+     */
     public function getDefinitionName(): string
     {
         return 'php';
     }
 
+    /**
+     * Check whether a code block type contains `php` or is empty. The
+     * consequence is that the `php` type will be assumed if a code block has
+     * no type.
+     *
+     * # Examples
+     *
+     * All the following type syntaxes are handled:
+     *
+     * ```php
+     * $handler = new Kitab\Compiler\Target\DocTest\CodeBlockHandler\Php();
+     *
+     * assert($handler->mightHandleCodeblock('php'));
+     * assert($handler->mightHandleCodeblock('php,ignore'));
+     * assert($handler->mightHandleCodeblock('php,must_throw'));
+     * ```
+     *
+     * A code block with no type is assumed to be of type `php`:
+     *
+     * ```php
+     * $handler = new Kitab\Compiler\Target\DocTest\CodeBlockHandler\Php();
+     *
+     * assert($handler->mightHandleCodeblock(''));
+     * ```
+     */
     public function mightHandleCodeblock(string $codeBlockType): bool
     {
         return empty($codeBlockType) || 0 !== preg_match('/\bphp\b/', $codeBlockType);
     }
 
+    /**
+     * Unfold the code block content, and compile it into a test case.
+     *
+     * # Examples
+     *
+     * A regular code block content:
+     *
+     * ```php
+     * $handler = new Kitab\Compiler\Target\DocTest\CodeBlockHandler\Php();
+     *
+     * $codeBlockType    = 'php';
+     * $codeBlockContent = 'assert(true);';
+     * $output           =
+     *     '$this' . "\n" .
+     *     '    ->assert(function () {' . "\n" .
+     *     '        \assert(\true);' . "\n" .
+     *     '    });';
+     *
+     * assert($output === $handler->compileToTestCaseBody($codeBlockType, $codeBlockContent));
+     * ```
+     *
+     * A code block that must not be tested:
+     *
+     * ```php
+     * $handler = new Kitab\Compiler\Target\DocTest\CodeBlockHandler\Php();
+     *
+     * $codeBlockType    = 'php,ignore';
+     * $codeBlockContent = 'assert(true);';
+     * $output           = '$this->skip(\'Skipped because the code block type contains `ignore`: `php,ignore`.\');';
+     *
+     * assert($output === $handler->compileToTestCaseBody($codeBlockType, $codeBlockContent));
+     * ```
+     *
+     * A code block that must throw an exception of kind `E`:
+     *
+     * ```php
+     * $handler = new Kitab\Compiler\Target\DocTest\CodeBlockHandler\Php();
+     *
+     * $codeBlockType    = 'php,must_throw(E)';
+     * $codeBlockContent = 'assert(true);';
+     * $output           =
+     *     '$this' . "\n" .
+     *     '    ->exception(function () {' . "\n" .
+     *     '        \assert(\true);' . "\n" .
+     *     '    })' . "\n" .
+     *     '        ->isInstanceOf(\E::class);';
+     *
+     * assert($output === $handler->compileToTestCaseBody($codeBlockType, $codeBlockContent));
+     * ```
+     */
     public function compileToTestCaseBody(string $codeBlockType, string $codeBlockContent): string
     {
         $codeBlockContent = $this->unfoldCode($codeBlockContent);
@@ -77,7 +183,7 @@ class Php implements Definition
                     '    ->exception(function () {' . "\n" .
                     '        %s' . "\n" .
                     '    })' . "\n" .
-                    '        ->isInstanceOf(\'%s\');',
+                    '        ->isInstanceOf(\\%s::class);',
                     preg_replace(
                         '/^\h+$/m',
                         '',
@@ -101,6 +207,9 @@ class Php implements Definition
             );
     }
 
+    /**
+     * Prepare the code to be embeddable inside a test case.
+     */
     protected function unfoldCode(string $phpCode): string
     {
         $ast = Parser::getPhpParser()->parse('<?php ' . $phpCode);
@@ -109,6 +218,9 @@ class Php implements Definition
         return Parser::getPhpPrettyPrinter()->prettyPrint($ast);
     }
 
+    /**
+     * Get the statically allocated traverser instance.
+     */
     protected static function getPhpTraverser(): NodeTraverser
     {
         if (null === self::$_phpTraverser) {

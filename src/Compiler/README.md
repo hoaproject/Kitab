@@ -8,7 +8,7 @@ The compiler is composed of 3 parts:
 
 In order to fast handle large projects to document, Kitab compiler has
 been designed to work as a *stream*. Objects in memory are freed as
-soon as possible, they are not accumulate. The same memory space can
+soon as possible, they are not accumulated. The same memory space can
 be reused for each file being compiled. The algorithm works as
 follows:
 
@@ -45,7 +45,9 @@ class. It acts as a visitor to traverse the AST.
 
 # Targets
 
-Kitab can compile to many targets. So far, it only has the HTML target.
+Kitab can compile to many targets. So far, it has two targets: HTML
+and DocTest, respectively to render the documentation into HTML, and
+to test it.
 
 All targets must implement the `Kitab\Compiler\Target\Target`
 interface. It requires few basic methods. It's up to the implementer

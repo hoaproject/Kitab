@@ -48,7 +48,7 @@ use PhpParser\NodeVisitorAbstract;
  *
  * So far, it applies the following transformations:
  *
- *   * Remove the `use` statements (assuming all names have been resolved).
+ *   * Remove the `use` statements, assuming all names have been resolved.
  *
  * # Examples
  *
