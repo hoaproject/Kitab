@@ -40,12 +40,14 @@ namespace Kitab\Bin;
 
 use Hoa\Console;
 
+/**
+ * This `kitab` sub command is used to run atoum from the `kitab` command-line
+ * with a specific runner.
+ */
 class Atoum extends Console\Dispatcher\Kit
 {
     /**
      * The entry method.
-     *
-     * @return  int
      */
     public function run()
     {

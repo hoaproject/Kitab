@@ -43,8 +43,21 @@ use Hoa\Dispatcher;
 use Hoa\Exception;
 use Hoa\Router;
 
+/**
+ * Run the sub commands of the `kitab` command.
+ *
+ * A sub command must be a class declared in the `Kitab\Bin` namespace. Its
+ * `run` public method —the entry method— will be called to run the sub
+ * command.
+ *
+ * Any exception thrown will be outputed in `php://stderr` with a brilliant
+ * colour.
+ */
 class Bin
 {
+    /**
+     * Call the sub command.
+     */
     public static function main()
     {
         self::setErrorHandler();
@@ -65,6 +78,9 @@ class Bin
         self::exitWith($message, $code);
     }
 
+    /**
+     * Use the Hoa default error and exception handlers.
+     */
     protected static function setErrorHandler()
     {
         Exception\Error::enableErrorHandler();

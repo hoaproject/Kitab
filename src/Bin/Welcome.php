@@ -40,6 +40,9 @@ namespace Kitab\Bin;
 
 use Hoa\Console;
 
+/**
+ * This `kitab` sub command is run when no sub command is specified.
+ */
 class Welcome extends Console\Dispatcher\Kit
 {
     /**

@@ -49,6 +49,9 @@ use Kitab\Compiler\Target\DocTest;
 use Kitab\Finder;
 use RuntimeException;
 
+/**
+ * This `kitab` sub command compiles and runs the doctests.
+ */
 class Test extends Console\Dispatcher\Kit
 {
     /**

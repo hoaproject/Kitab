@@ -48,12 +48,13 @@ use Kitab\Compiler\Target\Html\Configuration;
 use Kitab\Finder;
 use RuntimeException;
 
+/**
+ * This `kitab` sub command compiles the documentation into HTML.
+ */
 class Compile extends Console\Dispatcher\Kit
 {
     /**
      * Options description.
-     *
-     * @var array
      */
     protected $options = [
         ['configuration-file', Console\GetOption::REQUIRED_ARGUMENT, 'c'],
