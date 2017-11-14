@@ -35,6 +35,7 @@ $iterator = new CallbackFilterIterator(
         return 0 === preg_match(
             '#^(' .
                 'vendor/atoum/atoum/bin|' .
+                'vendor/atoum/atoum/resources|' .
                 'vendor/atoum/atoum/tests|' .
                 'vendor/hoa/[^/]+/Bin|' .
                 'vendor/hoa/[^/]+/Documentation|' .
