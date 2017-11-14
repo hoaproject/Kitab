@@ -35,6 +35,6 @@ script:
   - ./bin/kitab test --configuration-file .kitab.target.doctest.php src
   - ./bin/kitab compile --configuration-file .kitab.target.html.php --output-directory /tmp src
 
-  - ./sbin/phar.php kitab.phar
+  - php -n -dphar.readonly=0 sbin/phar.php kitab.phar
   - ./kitab.phar test --configuration-file .kitab.target.doctest.php src
   - ./kitab.phar compile --configuration-file .kitab.target.html.php --output-directory /tmp src
