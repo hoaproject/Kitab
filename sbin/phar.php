@@ -1,4 +1,4 @@
-#!/usr/bin/env php -d phar.readonly=0
+#!/usr/bin/env php -n -dphar.readonly=0
 <?php
 
 if (!isset($_SERVER['argv'][1])) {
