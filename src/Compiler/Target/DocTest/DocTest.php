@@ -75,7 +75,7 @@ class DocTest implements Target
     {
         $testSuites =
             '<?php' . "\n\n" .
-            'declare(strict_types=1);' . "\n\n";
+            'declare(strict_types=1);';
         $anyTestSuite = false;
 
         foreach ($file as $representation) {
@@ -148,7 +148,7 @@ class DocTest implements Target
 
         return
             sprintf(
-                'namespace Kitab\Generated\DocTest%s' . "\n" . '{' . "\n\n" .
+                "\n\n" . 'namespace Kitab\Generated\DocTest%s' . "\n" . '{' . "\n\n" .
                 'class %s extends \Kitab\DocTest\Suite' . "\n" .
                 '{',
                 $entity->inNamespace() ? '\\' . $entity->getNamespaceName() : '',
