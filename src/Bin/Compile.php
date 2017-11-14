@@ -221,10 +221,10 @@ class Compile extends Console\Dispatcher\Kit
             }
 
             $utilities = [
-                'open',
                 'xdg-open',
                 'gnome-open',
-                'kde-open'
+                'kde-open',
+                'open'
             ];
 
             foreach ($utilities as $utility) {
