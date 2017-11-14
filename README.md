@@ -132,7 +132,7 @@ class C { }
 
 There are only 2 special section names: _Examples_, and _Exceptions_. Use
 them to introduce one or more examples, and exceptions
-explanations. This is a common standard used by other tools.
+explanations. This is a common standard used by many other tools.
 
 Any kind of entities can be documented: Classes, interfaces, traits,
 class attributes, constants, methods, and functions.
@@ -162,23 +162,30 @@ the page contains information about the entity or the namespace.
 Documentation can contain block of codes. This is possible to specify
 the type of the block with this standard notation:
 
-<pre>
-```type
-code
-```
-</pre>
+    ```type
+    code
+    ```
 
-where `type` can be `php`, `sh`, `html`, `css` etc. It impacts the
-syntax highlighting.
+where `type` can be `php`, `http`, `sh`, `html`, `css` etc.
 
-The `php` type is special since it indicates a potential test
-case. Indeed, all code blocks inside an Examples Section can be
-compiled into test suites with the `./bin/kitab test` command. We can
-control the expectation of the test case:
+The type has 2 impacts:
+
+  1. It specifies the syntax highlighting when rendering the
+     documentation in HTML,
+  2. It is an identifier for a potential code block handler. A code
+     block handler is responsible to compile a code block content into
+     a valid test.
+
+Indeed, all code blocks inside the Examples and Exceptions Sections
+can be compiled into test suites with the `./bin/kitab test`
+command. For instance, with the `php` code block type, one can specify
+the expectation of the test case:
 
   * `php` indicates the test case must be a success,
-  * `php,ignore` indicates the test case must be skiped,
-  * `php,must_throw` indicates the test case must throw an exception,
+  * `php,ignore` indicates the test case must be skiped (only
+    rendered, not tested),
+  * `php,must_throw` indicates the test case must throw an exception
+    of any kind,
   * `php,must_throw(E)` indicates the test case must throw an
     exception of kind `E`.
 
@@ -198,4 +205,60 @@ function panic(string $message): RuntimeException
 {
     throw new RuntimeException($message);
 }
+```
+
+## Extensible
+
+It is possible to write specific code block handlers. It means that
+you can write extensions to Kitab to compile your documentation into
+specific tests. To learn more, check the
+`Kitab\Compiler\Target\DocTest\CodeBlockHandler\Definition` interface
+and implementations.
+
+# Configurations
+
+It is possible to configure Kitab with external PHP files. The file
+names are free, but we recommend the following:
+
+  * `.kitab.target.html.php` to configure the compilation of the
+    documentation to HTML,
+  * `.kitab.target.doctest.php` to configure the test of the
+    documentation.
+
+Both files must respectively return an instance of the
+`Kitab\Compiler\Target\Html\Configuration` and
+`Kitab\Compiler\Target\DocTest\Configuration` classes.
+
+The following example illustrates a common `.kitab.target.html.php`
+file:
+
+```php,ignore
+$configuration = new Kitab\Compiler\Target\Html\Configuration();
+
+$configuration->defaultNamespace = 'Kitab';
+$configuration->logoURL          = 'https://example.org/logo.png';
+$configuration->projectName      = 'Kitab';
+$configuration->composerFile     = __DIR__ . '/composer.json';
+
+return $configuration;
+```
+
+The following example illustrates a common `.kitab.target.doctest.php`
+file:
+
+```php,ignore
+$configuration = new Kitab\Compiler\Target\DocTest();
+
+$configuration->autoloaderFile      = __DIR__ . '/vendor/autoload.php';
+$configuration->concurrentProcesses = 4;
+
+return $configuration;
+```
+
+Both commands `kitab compile` and `kitab test` accept an option named
+`--configuration-file` to use a particular configuration file for the
+defaults, e.g.:
+
+```sh
+$ ./bin/kitab compile --configuration-file .kitab.target.html.php --output-directory doc src
 ```

@@ -81,11 +81,14 @@ class Configuration extends Kitab\Configuration
     public $bypassCache           = false;
 
     /**
-     * Code block handlers.
+     * Code block handler names.
      *
-     * List of code block handler class names. A handler is responsible to
-     * compile a code block content into a test case body. If you write your
-     * own code block handlers, it is the correct place to declare them.
+     * List of code block handler class names. All the listed classes must
+     * implement the
+     * `Kitab\Compiler\Target\DocTest\CodeBlockHandler\Definition`
+     * interface. A handler is responsible to compile a code block content
+     * into a test case body. If you write your own code block handlers, it is
+     * the correct place to declare them.
      *
      * The code block handler for `php` code block type is already declared.
      */
