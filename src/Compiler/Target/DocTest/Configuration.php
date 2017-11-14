@@ -95,4 +95,15 @@ class Configuration extends Kitab\Configuration
     public $codeBlockHandlerNames = [
         CodeBlockHandler\Php::class
     ];
+
+    /**
+     * atoum configuration file.
+     *
+     * Kitab uses [atoum](http://atoum.org/) to execute tests. Kitab comes
+     * with a default atoum configuration file, but it is possible to add
+     * another one that will be executed just after with the same context
+     * (variables & co.). It is useful to add specific atoum extensions for
+     * instance.
+     */
+    public $atoumConfigurationFile = null;
 }
