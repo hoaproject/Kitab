@@ -72,13 +72,10 @@ class Test extends Console\Dispatcher\Kit
      */
     public function run(): int
     {
-        $configuration       = new DocTest\Configuration();
-        $autoloader          = null;
-        $outputDirectory     = null;
-        $directoryToScan     = null;
-        $concurrentProcesses = 4;
-        $verbose             = false;
-        $compilationCache   = true;
+        $configuration   = new DocTest\Configuration();
+        $outputDirectory = null;
+        $directoryToScan = null;
+        $verbose         = false;
 
         while (false !== $c = $this->getOption($v)) {
             switch ($c) {
@@ -146,8 +143,16 @@ class Test extends Console\Dispatcher\Kit
             }
         }
 
+
         if (empty($configuration->autoloaderFile) && true === file_exists('vendor' . DS . 'autoload.php')) {
-            $configuration->autoloaderFile = realpath('vendor' . DS . 'autoload.php');
+            $autoloaderFile = realpath('vendor' . DS . 'autoload.php');
+
+            // Use the existing `vendor/autoload.php` file if it is not the
+            // Kitab's one embedded in the PHAR to avoid double inclusion.
+            if (!(defined('KITAB_PHAR_NAME') &&
+                  file_get_contents($autoloaderFile) === file_get_contents(dirname(__DIR__, 2) . DS . 'vendor' . DS . 'autoload.php'))) {
+                $configuration->autoloaderFile = $autoloaderFile;
+            }
         }
 
         $this->parser->listInputs($directoryToScan);
@@ -212,7 +217,7 @@ class Test extends Console\Dispatcher\Kit
                 (!empty($configuration->autoloaderFile) ? 'require_once \'' . str_replace("'", "\\'", realpath($configuration->autoloaderFile)) . '\';' : '')
             );
 
-            $autoloader = $temporaryAutoloader->getStreamName();
+            $configuration->autoloaderFile = $temporaryAutoloader->getStreamName();
         } else {
             $composerAutoloader = realpath(dirname(__DIR__, 4) . DS . 'autoload.php');
 
