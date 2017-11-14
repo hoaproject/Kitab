@@ -1,8 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-use mageekguy\atoum;
-
 define('KITAB_PHAR_NAME', 'Kitab.phar');
 define('KITAB_PHAR_PATH', realpath($_SERVER['argv'][0]));
 
