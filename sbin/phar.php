@@ -58,3 +58,5 @@ $phar->buildFromIterator($iterator, $root);
 $phar->setSignatureAlgorithm(Phar::SHA512);
 
 $phar->setStub(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'phar.stub.php'));
+
+chmod($fileName, 0744);
