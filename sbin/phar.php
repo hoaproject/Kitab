@@ -22,6 +22,7 @@ $_flags = FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_F
 
 $iterators = new AppendIterator();
 $iterators->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . 'bin', $_flags)));
+$iterators->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . 'resource', $_flags)));
 $iterators->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . 'src', $_flags)));
 $iterators->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . 'vendor', $_flags)));
 $iterators->append(new GlobIterator($root . '*.*'));
