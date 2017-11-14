@@ -32,8 +32,6 @@ $iterator = new CallbackFilterIterator(
     function ($file) use ($root) {
         $relativePath = substr($file->getPathname(), strlen($root));
 
-        var_dump($file->getPathname());
-
         return 0 === preg_match(
             '#^(' .
                 'vendor/atoum/atoum/bin|' .
