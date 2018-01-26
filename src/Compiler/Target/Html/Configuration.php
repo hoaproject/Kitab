@@ -67,7 +67,7 @@ class Configuration extends Kitab\Configuration
      * the user will open the documentation, she will be automatically
      * redirected to the default namespace.
      */
-    public $defaultNamespace = null;
+    public $defaultNamespace        = null;
 
     /**
      * URL to the logo of the documentation.
@@ -76,21 +76,21 @@ class Configuration extends Kitab\Configuration
      * possible to customise the logo by using this configuration item. By
      * default, a placeholder is used.
      */
-    public $logoURL          = 'https://placehold.it/150x150';
+    public $logoURL                 = 'https://placehold.it/150x150';
 
     /**
      * Project name.
      *
      * This configuration item represents the name of the project being documented.
      */
-    public $projectName      = '(unknown)';
+    public $projectName             = '(unknown)';
 
     /**
      * Composer file.
      *
      * Use a specific Composer file to get PSR-4 mappings.
      */
-    public $composerFile     = null;
+    public $composerFile            = null;
 
     /**
      * View-source link formatter.
