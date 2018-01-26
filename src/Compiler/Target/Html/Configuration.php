@@ -91,4 +91,27 @@ class Configuration extends Kitab\Configuration
      * Use a specific Composer file to get PSR-4 mappings.
      */
     public $composerFile     = null;
+
+    /**
+     * View-source link formatter.
+     *
+     * A closure taking an entity
+     * (`Kitab\Compiler\IntermediateRepresentation\Entity`) as input, and
+     * computing a relative or absolute URL as output. If `null`, a default
+     * formatter will be used.
+     *
+     * # Examples
+     *
+     * The following example creates links to view source on a Github repository:
+     *
+     * ```php,ignore
+     * define('GITHUB_BLOB', 'https://github.com/hoaproject/Kitab/blob/master/');
+     *
+     * $configuration = new Kitab\Compiler\Target\Html\Configuration();
+     * $configuration->viewSourceLinkFormatter = function (Kitab\Compiler\IntermediateRepresentation\Entity $entity): string {
+     *     return GITHUB_BLOB . $entity->file->name . '#L' . $entity->lineStart;
+     * };
+     * ```
+     */
+    public $viewSourceLinkFormatter = null;
 }
