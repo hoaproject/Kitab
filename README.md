@@ -30,6 +30,10 @@ documentation:
      are run directly to ensure the examples are still up-to-date and
      working.
 
+Kitab
+([كتاب](https://ar.wiktionary.org/wiki/%D9%83%D9%90%D8%AA%D9%8E%D8%A7%D8%A8))
+means “book” in Arabic. It should pronunced /kitaːb/.
+
 # Static documentation
 
 Kitab is able to compile the documentation inside your code into
