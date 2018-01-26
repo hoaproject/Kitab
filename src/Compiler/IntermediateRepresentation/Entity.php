@@ -52,7 +52,8 @@ abstract class Entity
     const TYPE = '(unknown)';
 
     /**
-     * File name containing the entity.
+     * File containing the entity, as an instance of
+     * `Kitab\Compiler\IntermediateRepresentation\File`.
      */
     public $file;
 
