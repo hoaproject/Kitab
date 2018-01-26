@@ -76,7 +76,7 @@ class File extends \ArrayObject
      * Automatically propagate this instance onto intermediate representations
      * of kind `Kitab\Compiler\IntermediateRepresentation\Entity` when setting
      * a new pair into the collection.
-     * This is handy way to ensure all the entities receive this instance.
+     * This is a handy way to ensure all the entities receive this instance.
      */
     public function offsetSet($name, $value)
     {
