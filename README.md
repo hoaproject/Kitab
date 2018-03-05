@@ -106,7 +106,7 @@ uses [the atoum test framework](http://atoum.org).
 
 Kitab requires [PHP](http://php.net/)
 and [NodeJS](https://nodejs.org/) to be installed: PHP because this is
-a PHP program, and NodeJS to pre-compiled the static search engine
+a PHP program, and NodeJS to pre-compile the static search engine
 (which is written in [Elm](http://elm-lang.org/)).
 
 # Standards and formats
