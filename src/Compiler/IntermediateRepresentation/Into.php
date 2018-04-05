@@ -96,7 +96,7 @@ class Into extends NodeVisitorAbstract
      */
     public function leaveNode(Node $node)
     {
-        if ($node instanceof Node\Stmt\Class_) {
+        if ($node instanceof Node\Stmt\Class_ && false === $node->isAnonymous()) {
             $classNode            = $node;
             $class                = new Class_($classNode->namespacedName->toString());
             $class->lineStart     = $classNode->getAttribute('startLine');
@@ -195,7 +195,7 @@ class Into extends NodeVisitorAbstract
             }
 
             foreach ($statement->consts as $constantNode) {
-                $constant             = new Constant($constantNode->name);
+                $constant             = new Constant($constantNode->name->name);
                 $constant->visibility = $visibility;
                 $constant->value      = $this->_prettyPrinter->prettyPrint([$constantNode->value]);
 
@@ -247,7 +247,7 @@ class Into extends NodeVisitorAbstract
             $static = $statement->isStatic();
 
             foreach ($statement->props as $attributeNode) {
-                $attribute             = new Attribute($attributeNode->name);
+                $attribute             = new Attribute($attributeNode->name->name);
                 $attribute->visibility = $visibility;
                 $attribute->static     = $static;
 
@@ -279,7 +279,7 @@ class Into extends NodeVisitorAbstract
         $methods = [];
 
         foreach ($node->getMethods() as $methodNode) {
-            $method            = new Method($methodNode->name);
+            $method            = new Method($methodNode->name->name);
             $method->lineStart = $methodNode->getAttribute('startLine');
             $method->lineEnd   = $methodNode->getAttribute('endLine');
 
@@ -319,7 +319,7 @@ class Into extends NodeVisitorAbstract
         $parametersNode = $node->params;
 
         foreach ($parametersNode as $parameterNode) {
-            $parameter                  = new Parameter($parameterNode->name);
+            $parameter                  = new Parameter($parameterNode->var->name);
             $parameter->type            = $this->intoType($parameterNode->type);
             $parameter->type->reference = $parameterNode->byRef;
             $parameter->variadic        = $parameterNode->variadic;
