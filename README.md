@@ -251,7 +251,7 @@ The following example illustrates a common `.kitab.target.doctest.php`
 file:
 
 ```php,ignore
-$configuration = new Kitab\Compiler\Target\DocTest();
+$configuration = new Kitab\Compiler\Target\DocTest\Configuration();
 
 $configuration->autoloaderFile      = __DIR__ . '/vendor/autoload.php';
 $configuration->concurrentProcesses = 4;
