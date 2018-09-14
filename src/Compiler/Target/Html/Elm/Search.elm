@@ -89,7 +89,7 @@ view model =
             Result.map (\x -> List.map Tuple.first (Tuple.second x)) (ElmTextSearch.search model.content model.searchIndex)
     in
     div []
-        [ input [ type_ "search", id "searchInput", value model.content, placeholder "Search anything…", autocomplete False, onInput Search ] []
+        [ input [ type_ "search", value model.content, placeholder "Search anything…", autocomplete False, onInput Search ] []
         , output [ ariaHidden (String.isEmpty model.content) ]
             [ div [ id "output-background" ] []
             , section [] [ h1 [] [ text ("Search results for “" ++ model.content ++ "”") ] ]

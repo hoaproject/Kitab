@@ -1,12 +1,14 @@
 document.addEventListener(
     'DOMContentLoaded',
     function () {
-        var searchNode = document.getElementById('search');
-        Elm.Search.embed(
-            searchNode,
+        var searchNode = document.querySelector('#search > div');
+        Elm.Search.init(
             {
-                serializedSearchIndex: window.searchIndex || "",
-                searchDatabase: window.searchMetadata || []
+                node: searchNode,
+                flags: {
+                    serializedSearchIndex: window.searchIndex || "",
+                    searchDatabase: window.searchMetadata || []
+                }
             }
         );
     }
