@@ -1,6 +1,6 @@
-var process = require('process');
-var fs      = require('fs');
-var Elm     = require('./search-index-builder.elm');
+const process = require('process');
+const fs      = require('fs');
+const { Elm } = require('./search-index-builder.elm');
 
 var options = process.argv.slice(2);
 
@@ -30,7 +30,7 @@ try {
     process.exit(3);
 }
 
-var app = Elm.SearchIndexBuilder.worker();
+var app = Elm.SearchIndexBuilder.init();
 
 app.ports.output.subscribe(list => {
     fs.writeFileSync(

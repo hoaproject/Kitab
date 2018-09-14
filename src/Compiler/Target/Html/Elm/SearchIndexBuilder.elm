@@ -1,7 +1,7 @@
-port module SearchIndexBuilder exposing (..)
+port module SearchIndexBuilder exposing (Message(..), Model, SearchIndex, exportIndex, index, input, main, output, update)
 
-import Platform
 import ElmTextSearch exposing (..)
+import Platform
 
 
 type alias SearchIndex =
@@ -17,12 +17,21 @@ port input : (List SearchIndex -> msg) -> Sub msg
 port output : String -> Cmd msg
 
 
+type alias InitInput =
+    ()
+
+
 type alias Model =
     ()
 
 
 type Message
     = Export (List SearchIndex)
+
+
+init : InitInput -> ( Model, Cmd Message )
+init _ =
+    ( (), Cmd.none )
 
 
 update : Message -> Model -> ( Model, Cmd Message )
@@ -50,4 +59,8 @@ exportIndex database =
 
 
 main =
-    Platform.program { init = ( (), Cmd.none ), subscriptions = \model -> input Export, update = update }
+    Platform.worker
+        { init = init
+        , update = update
+        , subscriptions = \model -> input Export
+        }

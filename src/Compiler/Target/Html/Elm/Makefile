@@ -1,6 +1,6 @@
 all:
-	elm-make --output ../Template/Public/javascript/search.elm.js Search.elm
-	elm-make --output ../Javascript/search-index-builder.elm.js SearchIndexBuilder.elm
+	elm make --optimize --output ../Template/Public/javascript/search.elm.js Search.elm
+	elm make --optimize --output ../Javascript/search-index-builder.elm.js SearchIndexBuilder.elm
 
 compress:
 	google-closure-compiler-js ../Template/Public/javascript/search.elm.js > ../Template/Public/javascript/search.elm.min.js
