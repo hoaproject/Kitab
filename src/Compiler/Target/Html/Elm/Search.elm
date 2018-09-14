@@ -1,11 +1,12 @@
-module Search exposing (..)
+module Search exposing (InitInput, Message(..), Model, SearchIndex, SearchMetadata, emptySearchMetadata, find, init, main, searchConfiguration, searchIndex, update, view)
 
-import Platform.Cmd exposing (..)
+import Browser
+import ElmTextSearch exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Attributes.Aria exposing (..)
 import Html.Events exposing (..)
-import ElmTextSearch exposing (..)
+import Platform.Cmd exposing (..)
 
 
 type alias SearchIndex =
@@ -70,14 +71,6 @@ type alias Model =
     }
 
 
-model : Model
-model =
-    { content = ""
-    , searchDatabase = []
-    , searchIndex = searchIndex
-    }
-
-
 type Message
     = Search String
 
@@ -92,36 +85,36 @@ update message model =
 view : Model -> Html Message
 view model =
     let
-        searchResults =
+        allSearchResults =
             Result.map (\x -> List.map Tuple.first (Tuple.second x)) (ElmTextSearch.search model.content model.searchIndex)
     in
-        div []
-            [ input [ type_ "search", id "searchInput", value model.content, placeholder "Search anything…", autocomplete False, onInput Search ] []
-            , output [ ariaHidden (String.isEmpty model.content) ]
-                [ div [ id "output-background" ] []
-                , section [] [ h1 [] [ text ("Search results for “" ++ model.content ++ "”") ] ]
-                , case searchResults of
-                    Ok searchResults ->
-                        ol [ class "list--flat" ]
-                            (List.map
-                                (\searchResult ->
-                                    let
-                                        metadata =
-                                            Maybe.withDefault emptySearchMetadata (find (\l -> .id l == searchResult) model.searchDatabase)
-                                    in
-                                        li []
-                                            [ a [ href (.url metadata) ]
-                                                [ code [] [ text (.name metadata) ] ]
-                                            , span [] [ text (.description metadata) ]
-                                            ]
-                                )
-                                searchResults
+    div []
+        [ input [ type_ "search", id "searchInput", value model.content, placeholder "Search anything…", autocomplete False, onInput Search ] []
+        , output [ ariaHidden (String.isEmpty model.content) ]
+            [ div [ id "output-background" ] []
+            , section [] [ h1 [] [ text ("Search results for “" ++ model.content ++ "”") ] ]
+            , case allSearchResults of
+                Ok searchResults ->
+                    ol [ class "list--flat" ]
+                        (List.map
+                            (\searchResult ->
+                                let
+                                    metadata =
+                                        Maybe.withDefault emptySearchMetadata (find (\l -> .id l == searchResult) model.searchDatabase)
+                                in
+                                li []
+                                    [ a [ href (.url metadata) ]
+                                        [ code [] [ text (.name metadata) ] ]
+                                    , span [] [ text (.description metadata) ]
+                                    ]
                             )
+                            searchResults
+                        )
 
-                    _ ->
-                        p [] [ text "No result found, sorry!" ]
-                ]
+                _ ->
+                    p [] [ text "No result found, sorry!" ]
             ]
+        ]
 
 
 find : (a -> Bool) -> List a -> Maybe a
@@ -133,6 +126,7 @@ find predicate list =
         first :: rest ->
             if predicate first then
                 Just first
+
             else
                 find predicate rest
 
@@ -143,7 +137,7 @@ subscriptions model =
 
 
 main =
-    Html.programWithFlags
+    Browser.element
         { init = init
         , view = view
         , update = update
