@@ -21,7 +21,7 @@
         "hoa/protocol"     : "~1.0",
         "hoa/router"       : "~3.0",
         "hoa/view"         : "~3.0",
-        "league/commonmark": "~0.16",
+        "league/commonmark": "~0.16 || ~1.0",
         "nikic/php-parser" : "~4.0"
     },
     "autoload": {
